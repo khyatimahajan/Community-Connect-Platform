@@ -1,0 +1,150 @@
+
+.h1 {
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: #1da1f2;
+    top: -20px;
+    padding-left: 5px;
+    padding-top: 10px;
+    padding-bottom: 1px;
+    width: auto;
+    text-decoration: none;
+}
+
+.topnav {
+    overflow: hidden;
+    background-color: #fff;
+    float: right;
+  }
+  
+  .topnav a {
+    float: left;
+    color: #1da1f2;
+    text-align: center;
+    margin-top: 0px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 4px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 800;
+    border: 1px solid #fff;
+    -webkit-transition: background .2s ease-in;
+    transition: background .2s ease-in;
+  }
+  
+  .topnav a:hover {
+    text-decoration: none;
+    color: #006dbf;
+  }
+
+  .topnav a.active {
+    color: #006dbf;
+    border: 1px solid #006dbf;
+    border-style: ridge;
+  }
+
+  
+
+.btn {
+float: right;
+margin-left: 1000px;
+margin-right: 90px;
+padding-right: 10px;
+margin-top: 10px;
+background-color: #1da1f2;
+color: #fff;
+border: none;
+font-family: 'Montserrat', sans-serif;
+font-weight: 800;
+}
+
+.receiver {
+    float: right;
+    margin-left: 1000px;
+    margin-right: 90px;
+    padding-right: 10px;
+    margin-top: 10px;
+    background-color: #eef8f5;
+    color: rgb(26, 22, 22);
+    border-radius: 5px;
+    border-color: black;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+}
+
+.btn:hover{
+    background-color: #006dbf;
+    color: #fff;
+}
+
+.h-line {
+    width: auto;
+    margin-top: 20px;
+    border-style: ridge;
+    color: lightgray;
+}
+
+.v-line {
+    border-left: 1px ridge lightgray;
+    height: 100%;
+    position: absolute;
+    left: 20%;
+    margin-left: -3px;
+    top: 48px;
+  }
+
+.placeholder {
+    float: left;
+    margin-top: -30px;
+    margin-left: 50px;
+    padding-left: 10px;
+    width: 120px;
+    height: 120px;
+}
+
+.username {
+    float: left;
+    margin-top: 0px;
+    margin-left: 70px;
+    padding-left: 10px;
+    width: 120px;
+    height: 120px;
+}
+
+.displayName {
+    float: left;
+    margin-top: 20px;
+    margin-left: -125px;
+    padding-left: 10px;
+    width: 120px;
+    height: 120px;
+}
+
+table {
+    margin-top: 10px;
+    float: top;
+    margin-left: 350px;
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 70%;
+}
+
+    .profile-image-thumbnail {
+        width: 0.5px;
+        height: 0.5px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .post-row {
+        text-align: left;
+        height: 40px;
+    }
+
+    .like-btn {
+        float: right;
+        width: 100%;
+    }
