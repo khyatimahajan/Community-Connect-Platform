@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const User = require('../model/User');
 const Feeds = require('../model/Feeds');
+const Comments = require('../model/Comments');
 const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
 const bcrypt = require('bcryptjs');
@@ -9,6 +10,7 @@ const {firstLoginValidation, registerValidation, loginValidation} = require('../
 const session = require('express-session');
 
 var currentUserName = "admin"; // default [temporary]
+var currentUserData;
 
 router.use(session(
     {secret: 'ssshhhhh',
@@ -23,7 +25,21 @@ var sess;
 
 async function getAllPosts() {
     var allPosts = await Feeds.find({});
+    allPosts.sort(function(a, b) {return b["timestamp"]-a["timestamp"]});
+
+    console.log("Getting Comments");
+    for(var curPost = 0; curPost<allPosts.length; curPost++) {
+        var feedComments = await getAllComments(allPosts[curPost]["_id"]);
+        allPosts[curPost].comments = feedComments;
+    }
+
     return allPosts;
+}
+
+async function getAllComments(feedId) {
+    var allComments = await Comments.find({feedId: feedId});
+    allComments.sort(function(a, b) {return b["timestamp"]-a["timestamp"]});
+    return allComments;
 }
 
 router.post('/idlogin', async (req, res) => {
@@ -43,6 +59,7 @@ router.post('/idlogin', async (req, res) => {
     if(!user) return res.status(400).send('ID code not found!');
 
     currentUserName = user.name;
+    currentUserData = {username: user.name, name: user.name, bio: user.bio};
 
     //CREATE A TOKEN
     // const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);
@@ -50,47 +67,55 @@ router.post('/idlogin', async (req, res) => {
 
     // Get All posts
     var posts = await getAllPosts();
-    res.render('../views/feeds_page.ejs',{posts:posts});
-
-    console.log(posts);
-    
-    //console.log('reached feeds page', posts);
+    userPosts = [currentUserData].concat(posts);
+    res.render('../views/feeds_page',{posts:userPosts});
 });
 
 //POST for feeds page --> Post something
 router.post('/feedPost', async (req, res) => {
     console.log("Button clicked from user", currentUserName);
 
-    var receiverName = currentUserName;
-    if(req.body.receiver != "") {
-        const user = await User.findOne({idcode: req.body.receiver});
-        if(!user) return res.status(400).send('Receiver not found!');
-        receiverName = user.name;
+    let { feedId } = req.query;
+
+    if(feedId) {
+        console.log(feedId, "comment: ", req.body.comment)
+        const newComment = new Comments({
+            feedId: feedId,
+            author: currentUserName,
+            body: req.body.comment
+        });
+        try {
+            await newComment.save();
+        }catch(err){
+            res.status(400).send(err);
+        }
     }
+    else {
+        var receiverName = currentUserName;
+        if(req.body.receiver != "") {
+            const user = await User.findOne({idcode: req.body.receiver});
+            if(!user) return res.status(400).send('Receiver not found!');
+            receiverName = user.name;
+        }
 
-    // New Feed
-    const newFeed = new Feeds({
-        author: currentUserName,
-        receiver: receiverName,
-        body: req.body.body
-    });
-    try {
-        await newFeed.save();
-        //res.send({feeds: newFeed._id});
-
-    }catch(err){
-        res.status(400).send(err);
+        const newFeed = new Feeds({
+            author: currentUserName,
+            receiver: receiverName,
+            body: req.body.body
+        });
+        try {
+            await newFeed.save();
+        }catch(err){
+            res.status(400).send(err);
+        }
     }
-
-    console.log('Session feeds');
-    console.log(req.body.body);
 
     console.log('On feeds page');
     var posts = await getAllPosts();
-    res.render('../views/feeds_page.ejs',{posts:posts});
+
+    userPosts = [currentUserData].concat(posts);
+    res.render('../views/feeds_page',{posts:userPosts});
 });
-
-
 
 router.post('/profile', async (req, res) => {
     //VALIDATE BEFORE CREATE

@@ -61,6 +61,19 @@ font-family: 'Montserrat', sans-serif;
 font-weight: 800;
 }
 
+.btn-comment {
+    float: right;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding-right: 10px;
+    margin-top: 10px;
+    background-color: #14ee149d;
+    color: #fff;
+    border: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    }
+
 .receiver {
     float: right;
     margin-left: 1000px;
@@ -123,14 +136,32 @@ font-weight: 800;
     height: 120px;
 }
 
-table {
-    margin-top: 10px;
+.displayBio {
+    float: left;
+    margin-top: 70px;
+    margin-left: -125px;
+    padding-left: 10px;
+    width: 120px;
+    height: 120px;
+}
+
+.post-table {
+    margin-top: 70px;
     float: top;
     margin-left: 350px;
     border: 1px solid black;
     border-collapse: collapse;
     width: 70%;
 }
+
+.post-comment-table {
+        margin-top: 10px;
+        margin-right: 20px;
+        float: right;
+        border: 1px solid black;
+        border-collapse: collapse;
+        width: 50%
+    }
 
     .profile-image-thumbnail {
         width: 0.5px;
@@ -141,6 +172,11 @@ table {
 
     .post-row {
         text-align: left;
+        height: 40px;
+    }
+
+    .post-comment {
+        text-align: right;
         height: 40px;
     }
 

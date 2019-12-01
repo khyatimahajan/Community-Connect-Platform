@@ -46,45 +46,73 @@
 
     <div class="v-line"></div>
     <div class="username">
-        @username
+        @<%=posts[0].username%>
     </div>
     <div class="displayName">
-        Display_Name
+        <%=posts[0].name%>
+    </div>
+    <div class="displayBio">
+        <b>Bio: </b><br> <%=posts[0].bio%>
     </div>
 
     <% if (posts) { %>
-    <% for(var curPost=0; curPost<posts.length; curPost++) { %>
+    <% for(var curPost=1; curPost<posts.length; curPost++) { %>
             
     <table class="post-table">
-            <% if(posts[curPost].author == posts[curPost].receiver) { %>
-                <tr class="post-row">
-                    <td class="post-content">
-                        <b><%= "My Feed!" %></b>
-                    </td>
-                </tr>
-            <%}%>
-
-        <% if(posts[curPost].author != posts[curPost].receiver) { %>
+        <% if(posts[curPost].author == posts[curPost].receiver && posts[curPost].author == posts[0].username) { %>
             <tr class="post-row">
                 <td class="post-content">
-                    <b><%= "To: " + posts[curPost].author %></b>
+                    <b><%= "My Feed!" %></b>
                 </td>
             </tr>
         <%}%>
 
-        <% if(posts[curPost].author != posts[curPost].receiver) { %>
+        <% if(posts[curPost].author == posts[curPost].receiver && posts[curPost].author != posts[0].username) { %>
             <tr class="post-row">
                 <td class="post-content">
-                    <b><%= "To: " + posts[curPost].receiver %></b>
+                    <b>@<%= posts[curPost].author %>'s Feed: </b>
                 </td>
             </tr>
         <%}%>
+        
+        <% if(posts[curPost].author != posts[curPost].receiver) { %>
+            <tr class="post-row">
+                <td class="post-content">
+                    <b>@<%= posts[curPost].author %> posted on @<%= posts[curPost].receiver %>'s wall: </b>
+                </td>
+            </tr>
+        <% } %>
 
         <tr class="post-row">
             <td class="post-content">
                 <%= posts[curPost].body %>
             </td>
         </tr>
+
+        <tr class="post-comment">
+            <td class="post-content">
+                <% var a = "/user/feedPost?feedId=".concat(posts[curPost]._id) %>
+                <form method="POST", action= <%= a %> >
+                    <textarea type="text" rows="4" cols="60" id="comment" name="comment" placeholder="Comment"></textarea>
+                    <button class="btn-comment" type="submit" value="Post">Comment</button>
+                </form>
+            </td>
+        </tr>
+
+        <% if (posts[curPost].comments.length) { %>
+            <% for(var curComment=0; curComment<posts[curPost].comments.length; curComment++) { %>
+                <tr><td><table class="post-comment-table">
+                        <tr class="post-comment">
+                            <td class="post-row">
+                                <b><%= posts[curPost].comments[curComment].author %> : </b>
+                            </td>
+                            <td>
+                                <b><%= posts[curPost].comments[curComment].body %></b>
+                            </td>
+                        </tr>
+                </table></td></tr>
+            <% } %>
+        <% } %>
     </table>
     <% }} %>
  
