@@ -1,4 +1,3 @@
-
 .h1 {
     position: relative;
     font-family: 'Montserrat', sans-serif;
@@ -17,9 +16,9 @@
     overflow: hidden;
     background-color: #fff;
     float: right;
-  }
-  
-  .topnav a {
+}
+
+.topnav a {
     float: left;
     color: #1da1f2;
     text-align: center;
@@ -33,33 +32,45 @@
     border: 1px solid #fff;
     -webkit-transition: background .2s ease-in;
     transition: background .2s ease-in;
-  }
-  
-  .topnav a:hover {
+}
+
+.topnav a:hover {
     text-decoration: none;
     color: #006dbf;
-  }
+}
 
-  .topnav a.active {
+.topnav a.active {
     color: #006dbf;
     border: 1px solid #006dbf;
     border-style: ridge;
-  }
-
-  
-
-.btn {
-float: right;
-margin-left: 1000px;
-margin-right: 90px;
-padding-right: 10px;
-margin-top: 10px;
-background-color: #1da1f2;
-color: #fff;
-border: none;
-font-family: 'Montserrat', sans-serif;
-font-weight: 800;
 }
+
+.btn-primary {
+    float: left;
+    /* margin-left: 1000px;*/
+    margin-right: 600px;
+    /*padding-right: 10px;*/
+    margin-top: 10px;
+    background-color: #1da1f2;
+    color: #fff;
+    border: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+}
+
+
+/* .btn {
+    float: right;
+    margin-left: 1000px;
+    margin-right: 90px;
+    padding-right: 10px;
+    margin-top: 10px;
+    background-color: #1da1f2;
+    color: #fff;
+    border: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+} */
 
 .btn-comment {
     float: right;
@@ -72,9 +83,9 @@ font-weight: 800;
     border: none;
     font-family: 'Montserrat', sans-serif;
     font-weight: 800;
-    }
+}
 
-.receiver {
+/* .receiver {
     float: right;
     margin-left: 1000px;
     margin-right: 90px;
@@ -86,9 +97,9 @@ font-weight: 800;
     border-color: black;
     font-family: 'Montserrat', sans-serif;
     font-weight: 800;
-}
+} */
 
-.btn:hover{
+.btn:hover {
     background-color: #006dbf;
     color: #fff;
 }
@@ -107,7 +118,7 @@ font-weight: 800;
     left: 20%;
     margin-left: -3px;
     top: 48px;
-  }
+}
 
 .placeholder {
     float: left;
@@ -125,6 +136,12 @@ font-weight: 800;
     padding-left: 10px;
     width: 120px;
     height: 120px;
+}
+
+body {
+    background-color: #fff;
+    color: #000;
+    font-size: 14px;
 }
 
 .displayName {
@@ -146,41 +163,183 @@ font-weight: 800;
 }
 
 .post-table {
-    margin-top: 70px;
+    padding: 30px;
     float: top;
-    margin-left: 350px;
-    border: 1px solid black;
+    border-bottom: 2px solid rgba(236, 240, 241, 1);
     border-collapse: collapse;
-    width: 70%;
+    width: 100%;
 }
 
 .post-comment-table {
-        margin-top: 10px;
-        margin-right: 20px;
-        float: right;
-        border: 1px solid black;
-        border-collapse: collapse;
-        width: 50%
-    }
+    
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 10px;
+}
 
-    .profile-image-thumbnail {
-        width: 0.5px;
-        height: 0.5px;
-        padding-left: 5px;
-        padding-right: 5px;
-    }
+.pos{
+    border-radius: 10px;
+    border: 1px solid rgba(189, 195, 199, 0.7);
+}
 
-    .post-row {
-        text-align: left;
-        height: 40px;
-    }
+.profile-image-thumbnail {
+    width: 0.5px;
+    height: 0.5px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
 
-    .post-comment {
-        text-align: right;
-        height: 40px;
-    }
+.post-row {
+    text-align: left;
+    /* height: 40px; */
+}
 
-    .like-btn {
-        float: right;
-        width: 100%;
-    }
+.post-comment {
+    text-align: right;
+    height: 40px;
+}
+
+.like-btn {
+    float: right;
+    width: 100%;
+}
+
+.main-container .left-column .dropdown-list .list-group-item {
+    background-color: transparent;
+    font-size: 110%;
+    border: 0px;
+}
+
+.main-container .left-column .dropdown-list .list-group-item .list-icon {
+    vertical-align: baseline;
+    font-size: 120%;
+}
+
+.main-container .left-column .dropdown-list .list-group-item .on-hover-show a {
+    color: #000;
+    text-decoration: none;
+    border-radius: 30px;
+}
+
+.main-container .left-column .dropdown-list .list-group-item .on-hover-show a:hover {
+    background-color: rgba(41, 128, 185, 0.2);
+    color: #1DA1F2;
+}
+
+.main-container .left-column .dropdown-list .list-group-item .on-hover-show a:active {
+    background-color: black;
+}
+
+.main-container .left-column .dropdown-list .list-group-item .on-hover-show a:visited {
+    background-color: rgba(41, 128, 185, 0.2);
+}
+
+.custom-border {
+    border-right: 1px solid rgba(236, 240, 241, 1);
+    border-left: 1px solid rgba(236, 240, 241, 1);
+}
+
+.custom-border-bottom {
+    border-bottom: 1px solid rgba(236, 240, 241, 1);
+}
+
+.main-container .middle-column .middle-upper-layer {
+    border-bottom: 12px solid rgba(236, 240, 241, 1);
+}
+
+.main-container .middle-column .middle-upper-layer textarea {
+    padding: 15px;
+
+}
+
+.main-container .middle-column .middle-upper-layer .emoji-picker-icon {
+    color: black;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.input-type-dec {
+    padding: 15px;
+    width: 100%;
+    outline: none;
+    position: absolute;
+    border: none;
+    background-color: transparent;
+    border-style: none;
+    resize: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    color:#1DA1F2
+}
+
+.input-type-dec:focus,
+.input-type-dec:active,
+.input-type-dec:hover {
+    color: black;
+    border: transparent;
+    background-color: transparent;
+    outline: 0px !important;
+    -webkit-appearance: none;
+    box-shadow: none !important;
+}
+
+.input-type-dec1 {
+    padding: 15px;
+    width: 100%;
+    outline: none;
+    background-color: transparent;
+    border-radius: 30px;
+    border: 1px solid rgba(41, 128, 185, 1);
+
+}
+
+.tweet-buttons {
+    background: none;
+    border: 0px;
+    padding: 5px 10px 5px 10px;
+}
+
+.retweet-icon {
+    border-radius: 50px;
+    padding: 5px 10px 5px 10px;
+}
+
+.tweet-buttons:hover .retweet-icon {
+    color: rgba(26, 188, 156, 1);
+    background-color: rgba(26, 188, 156, 0.1);
+
+}
+
+.edit-icon {
+    border-radius: 50px;
+    padding: 5px 10px 5px 10px;
+}
+
+.tweet-buttons:hover .edit-icon {
+    color: rgba(241, 196, 15, 1);
+    background-color: rgba(241, 196, 15, 0.1);
+
+}
+
+.love-icon {
+    border-radius: 50px;
+    padding: 5px 10px 5px 10px;
+}
+
+.tweet-buttons:hover .love-icon {
+    color: rgba(192, 57, 43, 1);
+    background-color: rgba(192, 57, 43, 0.1);
+
+}
+
+.comment-icon {
+    border-radius: 50px;
+    padding: 5px 10px 5px 10px;
+}
+
+.tweet-buttons:hover .comment-icon {
+    color: rgba(52, 152, 219, 1);
+    background-color: rgba(52, 152, 219, 0.1);
+
+}

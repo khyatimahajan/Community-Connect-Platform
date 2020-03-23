@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema ({
-    idcode: {
+const userSchema = new mongoose.Schema({
+    name: {
         type: String,
-        required: true,
+        // required: true,
         min: 6
     },
-    name: {
+    username: {
         type: String,
         // required: true,
         min: 6,
@@ -28,10 +28,27 @@ const userSchema = new mongoose.Schema ({
         type: String,
         max: 1024
     },
+    // location: {
+    //     type: String,
+    //     max: 255
+
+    // },
+    location: {
+        type: String,
+        min: 2,
+        max: 255,
+
+    },
     date: {
         type: Date,
         default: Date.now
+    },
+    connection: {
+        name: Array
+    },
+    image_src:{
+        type: String
     }
 });
 
-module.exports = mongoose.model('User', userSchema,'user');
+module.exports = mongoose.model('user', userSchema);

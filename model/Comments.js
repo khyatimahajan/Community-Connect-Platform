@@ -7,12 +7,24 @@ const userSchema = new mongoose.Schema ({
     author: {
         type: String,
     },
+    author_img_src:{
+        type: String,
+    },
     body: {
         type: String
     },
     timestamp: {
         type: Date,
         default: Date.now
+    },
+    count: {
+        type: Number
+    },
+    love_count: {
+        type: Number
+    },
+    love_people: {
+        type: Array
     }
 });
 
