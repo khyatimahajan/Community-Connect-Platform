@@ -49,14 +49,14 @@
 
 <body>
 
-    <div class="container-fluid">
+    <div class="container-fluid p-4">
         <div class="row  text-center">
 
             <div class="col-12">
 
                 <form method="POST" action="user/profile">
 
-                    <div class="col-12 mt-3">
+                    <div class="col-12">
                         <h3><a href="feeds_page.ejs">Community Connect</a></h3>
                     </div>
 
@@ -69,16 +69,45 @@
                                 src="http://placehold.it/140X140" />
                             <div class="card-body">
                                 <h6 class="card-title">Choose between these images</h6>
-                                <img src="../assets/lib/img/B_boy.png" width="45" height="45" alt="..."
-                                    class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(1)">
-                                <img src="../assets/lib/img/B_girl.png" width="45" height="45" alt="..."
-                                    class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(2)">
-                                <img src="../assets/lib/img/W_boy.png" width="45" height="45" alt="..."
-                                    class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(3)">
-                                <img src="../assets/lib/img/W_girl.png" width="45" height="45" alt="..."
-                                    class="img-thumbnail cursorPointer" onclick="pictureChange(4)">
-                                <input type="hidden" name="image_src" id="image_src"
-                                    value="http://placehold.it/140X140">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <img id="image-1" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(1)">
+                                        <img id="image-2" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(2)">
+                                        <img id="image-3" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(3)">
+                                        <img id="image-4" width="45" height="45" alt="..."
+                                            class="img-thumbnail cursorPointer" onclick="pictureChange(4)">
+                                    </div>
+
+                                    <div class="col-md-12 mt-2">
+                                        <img id="image-5" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(5)">
+                                        <img id="image-6" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(6)">
+                                        <img id="image-7" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(7)">
+                                        <img id="image-8" width="45" height="45" alt="..."
+                                            class="img-thumbnail cursorPointer" onclick="pictureChange(8)">
+                                    </div>
+
+                                    <div class="col-md-12 mt-2">
+                                        <img id="image-9" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(9)">
+                                        <img id="image-10" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(10)">
+                                        <img id="image-11" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(11)">
+                                        <img id="image-12" width="45" height="45" alt="..."
+                                            class="img-thumbnail cursorPointer" onclick="pictureChange(12)">
+
+                                    </div>
+
+                                    <input type="hidden" name="image_src" id="image_src"
+                                        value="http://placehold.it/140X140">
+
+                                </div>
                             </div>
                         </div>
 
@@ -165,19 +194,76 @@
     <script src="js/emojiPicker.js"></script>
 
     <script>
+        var image_1 = "../assets/lib/img/1.png";
+        var image_2 = "../assets/lib/img/2.png";
+        var image_3 = "../assets/lib/img/3.png";
+        var image_4 = "../assets/lib/img/4.png";
+        var image_5 = "../assets/lib/img/5.png";
+        var image_6 = "../assets/lib/img/6.png";
+        var image_7 = "../assets/lib/img/7.png";
+        var image_8 = "../assets/lib/img/8.png";
+        var image_9 = "../assets/lib/img/9.png";
+        var image_10 = "../assets/lib/img/10.png";
+        var image_11 = "../assets/lib/img/11.png";
+        var image_12 = "../assets/lib/img/12.png";
+
+
+
+        document.getElementById('image-1').src = "../assets/lib/img/1.png";
+        document.getElementById('image-2').src = image_2;
+        document.getElementById('image-3').src = image_3;
+        document.getElementById('image-4').src = image_4;
+
+        // ----------------------------CHANGE REQUIRED-----------------------------
+
+        document.getElementById('image-5').src = image_5;
+        document.getElementById('image-6').src = image_6;
+        document.getElementById('image-7').src = image_7;
+        document.getElementById('image-8').src = image_8;
+
+        document.getElementById('image-9').src = image_9;
+        document.getElementById('image-10').src = image_10;
+        document.getElementById('image-11').src = image_11;
+        document.getElementById('image-12').src = image_12;
+
+
         function pictureChange(int_v) {
             if (int_v == 1) {
-                document.getElementById('theImage').src = "../assets/lib/img/B_boy.png";
-                document.getElementById('image_src').value = "../assets/lib/img/B_boy.png";
+                document.getElementById('theImage').src = image_1;
+                document.getElementById('image_src').value = image_1;
             } else if (int_v == 2) {
-                document.getElementById('theImage').src = "../assets/lib/img/B_girl.png";
-                document.getElementById('image_src').value = "../assets/lib/img/B_girl.png";
+                document.getElementById('theImage').src = image_2;
+                document.getElementById('image_src').value = image_2;
             } else if (int_v == 3) {
-                document.getElementById('theImage').src = "../assets/lib/img/W_boy.png";
-                document.getElementById('image_src').value = "../assets/lib/img/W_boy.png";
+                document.getElementById('theImage').src = image_3;
+                document.getElementById('image_src').value = image_3;
             } else if (int_v == 4) {
-                document.getElementById('theImage').src = "../assets/lib/img/W_girl.png";
-                document.getElementById('image_src').value = "../assets/lib/img/B_girl.png";
+                document.getElementById('theImage').src = image_4;
+                document.getElementById('image_src').value = image_4;
+            } else if (int_v == 5) {
+                document.getElementById('theImage').src = image_5;
+                document.getElementById('image_src').value = image_5;
+            } else if (int_v == 6) {
+                document.getElementById('theImage').src = image_6;
+                document.getElementById('image_src').value = image_6;
+            } else if (int_v == 7) {
+                document.getElementById('theImage').src = image_7;
+                document.getElementById('image_src').value = image_7;
+            } else if (int_v == 8) {
+                document.getElementById('theImage').src = image_8;
+                document.getElementById('image_src').value = image_8;
+            } else if (int_v == 9) {
+                document.getElementById('theImage').src = image_9;
+                document.getElementById('image_src').value = image_9;
+            } else if (int_v == 10) {
+                document.getElementById('theImage').src = image_10;
+                document.getElementById('image_src').value = image_10;
+            } else if (int_v == 11) {
+                document.getElementById('theImage').src = image_11;
+                document.getElementById('image_src').value = image_11;
+            } else if (int_v == 12) {
+                document.getElementById('theImage').src = image_12;
+                document.getElementById('image_src').value = image_12;
             } else {
                 document.getElementById('theImage').src = "http://placehold.it/140X140"
             }

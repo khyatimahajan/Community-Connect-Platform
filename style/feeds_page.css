@@ -163,18 +163,17 @@ body {
 }
 
 .post-table {
-    padding: 30px;
     float: top;
-    border-bottom: 2px solid rgba(236, 240, 241, 1);
+    
     border-collapse: collapse;
     width: 100%;
 }
 
 .post-comment-table {
-    
     border-collapse: collapse;
-    width: 100%;
+    width: 84%;
     margin-bottom: 10px;
+    margin-left: 62px;
 }
 
 .pos{
