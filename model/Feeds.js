@@ -34,10 +34,19 @@ const userSchema = new mongoose.Schema({
     retweet_edit_count: {
         type: Number
     },
+    notification: {
+        type: String
+    },
     timestamp: {
         type: Date,
         default: Date.now
-    }
+    },
+    for: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: "User"
+        }
+    ]
 });
 
 module.exports = mongoose.model('Feeds', userSchema, 'feeds');

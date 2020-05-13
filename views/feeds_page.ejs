@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Raleway:200" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
@@ -14,13 +12,14 @@
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/emoji-picker/1.1.5/css/emoji.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://ichord.github.io/At.js/dist/css/jquery.atwho.css" />
+
     <link rel="stylesheet" href="../style/feeds_page.css">
-
+    <link rel="stylesheet" href="../style/main.css">
     <!-- <script src="../assets/emojionearea.min.js"></script> -->
-
     <title>User Feed</title>
 </head>
-
 <style>
     .all-posts {
         padding: 0;
@@ -31,71 +30,12 @@
         border-bottom: 2px solid rgba(236, 240, 241, 1);
     }
 </style>
-
-
-
 <body>
 
     <div class="container-fluid mh-100 main-container">
         <div class="row">
             <!-- ----------------Left Column -->
-            <div class="col-md-3 left-column ">
-                <div class="position-fixed">
-                    <ul class="list-group py-3 dropdown-list">
-
-
-                        <li class="list-group-item">
-                            <div class="on-hover-show">
-                                <a href="feeds_page.ejs" class=" py-3 px-4">
-                                    <i class="fa fa-home fa-lg mr-3" aria-hidden="true"></i>Home
-                                </a>
-                            </div>
-                        </li>
-
-                        <li class="list-group-item">
-                            <div class="on-hover-show">
-                                <a href="#" class=" py-3 px-4">
-                                    <img class="rounded-circle mr-3" height="25px" width="25px"
-                                        src=<%= posts[0].image_src %> /><%=posts[0].username%>
-                                </a>
-                            </div>
-                        </li>
-
-                        <li class="list-group-item">
-                            <div class="on-hover-show">
-                                <a href="#" class=" py-3 px-4">
-                                    <i class="fa fa-user fa-lg mr-3" aria-hidden="true"></i><%=posts[0].name%>
-                                </a>
-                            </div>
-                        </li>
-
-                        <li class="list-group-item">
-                            <div class="on-hover-show">
-                                <a href="#" class=" py-3 px-4">
-                                    <i class="fa fa-map-marker fa-lg mr-3" aria-hidden="true"></i><%=posts[0].location%>
-                                </a>
-                            </div>
-                        </li>
-
-                        <li class="list-group-item">
-                            <div class="on-hover-show">
-                                <a href="#" class=" py-3 px-4">
-                                    <i class="fa fa-pencil fa-lg mr-3" aria-hidden="true"></i><%=posts[0].bio%>
-                                </a>
-                            </div>
-                        </li>
-
-                        <li class="list-group-item">
-                            <div class="on-hover-show">
-                                <a href="../login" class=" py-3 px-4">
-                                    <i class="fa fa-sign-in fa-lg mr-3" aria-hidden="true"></i>Logout
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-            </div>
+            <%- include partials/sidemenu.ejs %>
             <!-- ----------------END Left Column -->
 
 
@@ -130,7 +70,7 @@
                                     <div class="col-md-12 mt-2">
                                         <div class="text">
                                         </div>
-                                        <button class="btn btn-primary btn-sm float-right float-bottom ml-auto"
+                                        <button class="btn btn-primary post-btn btn-sm float-right float-bottom ml-auto"
                                             style="margin-top: -1px; margin-right: 20px;" type="submit"
                                             value="Post">Post</button>
                                         <input class="receiver float-right mr-2 mt-0" type="text" name="receiver"
@@ -146,7 +86,7 @@
 
                     </div>
                     <div class="col-md-12 all-posts custom-border">
-                        <% if (posts) { %>
+                        <% if (posts.length > 1) { %>
                         <% for(var curPost=1; curPost<posts.length; curPost++) { %>
 
                         <div class="table-container">
@@ -342,31 +282,62 @@
                                                                 </div>
                                                             </div>
 
+                                                            <div class="col-md-3 text-center ">
+                                                                <div class="btn-group dropleft">
+                                                                    <button
+                                                                        class="custom-padding tweet-buttons dropright"
+                                                                        name="edit" data-toggle="dropdown"
+                                                                        title="Retweet/Retweet with comment"
+                                                                        id=openmodal<%= posts[curPost]._id %>
+                                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                                        aria-expanded="false" type="button">
+                                                                        <div class="edit-icon">
+                                                                            <i class="fa fa-twitter-square"
+                                                                                aria-hidden="true"></i></a>
+                                                                        </div>
+                                                                    </button>
+                                                                    <div class="dropdown-menu">
+                                                                        <a class="dropdown-item" href="#"
+                                                                            style="padding: 0;">
+                                                                            <button class="custom-padding tweet-buttons"
+                                                                                name="retweet" id="retweet"
+                                                                                type="submit" value="Post"
+                                                                                title="Retweet" style="width: 100%;">
+
+                                                                                <div class="retweet-icon"
+                                                                                    style="padding: 0; background-color: transparent;">
+                                                                                    <i class="fa fa-retweet"
+                                                                                        aria-hidden="true"></i>
+                                                                                    <%= posts[curPost].count %>
+                                                                                </div>
 
 
-                                                            <div class="col-md-3 text-center">
-                                                                <button class="custom-padding tweet-buttons"
-                                                                    name="retweet" id="retweet" type="submit"
-                                                                    value="Post" title="Retweet">
-                                                                    <div class="retweet-icon">
-                                                                        <i class="fa fa-retweet"
-                                                                            aria-hidden="true"></i></a>
-                                                                        <%= posts[curPost].count %>
+                                                                            </button>
+                                                                        </a>
+                                                                        <a class="dropdown-item" href="#">
+                                                                            <button class="custom-padding tweet-buttons"
+                                                                                name="edit" data-toggle="modal"
+                                                                                title="Retweet with comment"
+                                                                                style="width: 100px;"
+                                                                                data-target=#edit<%= posts[curPost]._id %>
+                                                                                type="button">
+
+
+
+                                                                                <div class="edit-icon"
+                                                                                    style="padding: 0; background-color: transparent;">
+                                                                                    <i class="fa fa-share"
+                                                                                        aria-hidden="true"></i>
+                                                                                    <%= posts[curPost].retweet_edit_count %>
+
+
+                                                                                </div>
+                                                                            </button>
+                                                                        </a>
                                                                     </div>
-                                                                </button>
+                                                                </div>
                                                             </div>
-                                                            <div class="col-md-3 text-center">
-                                                                <button class="custom-padding tweet-buttons" name="edit"
-                                                                    data-toggle="modal" title="Retweet with comment"
-                                                                    data-target=#edit<%= posts[curPost]._id %>
-                                                                    type="button">
-                                                                    <div class="edit-icon">
-                                                                        <i class="fa fa-share"
-                                                                            aria-hidden="true"></i></a>
-                                                                        <%= posts[curPost].retweet_edit_count %>
-                                                                    </div>
-                                                                </button>
-                                                            </div>
+
 
                                                             <div class="modal" id=edit<%= posts[curPost]._id %>
                                                                 tabindex="-1" role="dialog"
@@ -376,7 +347,8 @@
                                                                         <div class="modal-header">
                                                                             <h5 class="modal-title"
                                                                                 id="exampleModalLabel">
-                                                                                Type your Tweet</h5>
+                                                                                Type your Tweet
+                                                                            </h5>
                                                                             <button type="button" class="close"
                                                                                 data-dismiss="modal" aria-label="Close">
                                                                                 <span aria-hidden="true">&times;</span>
@@ -408,8 +380,8 @@
                                                                                     </b>
 
                                                                                     <%}%>
-
-                                                                                <% if(posts[curPost].author != posts[curPost].receiver) { %>
+                                        
+                                                                                                                        <% if(posts[curPost].author != posts[curPost].receiver) { %>
 
                                                                                     <img src=<%= posts[curPost].receiver_image %>
                                                                                         class="rounded-circle mr-3"
@@ -443,6 +415,23 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
                                                             <div class="col-md-3 text-center">
@@ -491,7 +480,9 @@
                                 </td>
                             </tr> -->
 
-                                <% if (posts[curPost].comments.length) { %>
+
+
+                                <% if (posts[curPost].comments && posts[curPost].comments.length) { %>
                                 <% for(var curComment=0; curComment<posts[curPost].comments.length; curComment++) { %>
                                 <tr>
                                     <td>
@@ -583,18 +574,160 @@
                                                                                 </div>
                                                                             </div>
                                                                         </div>
+
+
+
+
+
+
+
+
+
+
+
                                                                         <div class="col-md-4">
-                                                                            <button class="custom-padding tweet-buttons"
-                                                                                name="retweet_com" id="retweet_com"
-                                                                                type="submit" title="Retweet"
-                                                                                value=<%= posts[curPost].comments[curComment].author %>>
-                                                                                <div class="retweet-icon">
-                                                                                    <i class="fa fa-retweet"
-                                                                                        aria-hidden="true"></i></a>
-                                                                                    <%= posts[curPost].comments[curComment].count %>
+                                                                            <div class="btn-group dropleft">
+                                                                                <button
+                                                                                    class="custom-padding tweet-buttons dropright"
+                                                                                    name="edit" data-toggle="dropdown"
+                                                                                    title="Retweet/Retweet with comment"
+                                                                                    id=openmodal<%= posts[curPost]._id %>
+                                                                                    data-toggle="dropdown"
+                                                                                    aria-haspopup="true"
+                                                                                    aria-expanded="false" type="button">
+                                                                                    <div class="edit-icon">
+                                                                                        <i class="fa fa-twitter-square"
+                                                                                            aria-hidden="true"></i></a>
+                                                                                    </div>
+                                                                                </button>
+
+
+                                                                                <div class="dropdown-menu">
+                                                                                    <a class="dropdown-item" href="#"
+                                                                                        style="padding: 0;">
+                                                                                        <button
+                                                                                            class="custom-padding tweet-buttons"
+                                                                                            name="retweet_com"
+                                                                                            id="retweet_com"
+                                                                                            type="submit"
+                                                                                            title="Retweet"
+                                                                                            style="width: 100%"
+                                                                                            value=<%= posts[curPost].comments[curComment].author %>>
+                                                                                            <div class="retweet-icon">
+                                                                                                <i class="fa fa-retweet"
+                                                                                                    aria-hidden="true"></i>
+
+                                                                                                <%= posts[curPost].comments[curComment].count %>
+
+                                                                                        </button>
+                                                                                    </a>
+                                                                                    <a class="dropdown-item" href="#">
+                                                                                        <button
+                                                                                            class="custom-padding tweet-buttons"
+                                                                                            name="edit"
+                                                                                            data-toggle="modal"
+                                                                                            title="Retweet with comment"
+                                                                                            style="width: 100px;"
+                                                                                            data-target=#edit<%= posts[curPost].comments[curComment]._id %>
+                                                                                            type="button">
+
+
+
+                                                                                            <div class="edit-icon"
+                                                                                                style="padding: 0; background-color: transparent;">
+                                                                                                <i class="fa fa-share"
+                                                                                                    aria-hidden="true"></i>
+                                                                                                <%= posts[curPost].comments[curComment].retweet_edit_count %>
+
+
+                                                                                            </div>
+                                                                                        </button>
+                                                                                    </a>
                                                                                 </div>
-                                                                            </button>
+                                                                            </div>
                                                                         </div>
+
+                                                                        <div class="modal" id=edit<%= posts[curPost].comments[curComment]._id %>
+                                                                            tabindex="-1" role="dialog"
+                                                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                            <div class="modal-dialog" role="document">
+                                                                                <div class="modal-content">
+                                                                                    <div class="modal-header">
+                                                                                        <h5 class="modal-title"
+                                                                                            id="exampleModalLabel">
+                                                                                            Type your Tweet
+                                                                                        </h5>
+                                                                                        <button type="button" class="close"
+                                                                                            data-dismiss="modal" aria-label="Close">
+                                                                                            <span aria-hidden="true">&times;</span>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                    <div class="modal-body">
+                                                                                        <textarea class="input-type-dec1"
+                                                                                            type="text" rows="2" cols="60"
+                                                                                            id="retweet_edit_body_comm"
+                                                                                            name="retweet_edit_body_comm"
+                                                                                            placeholder="Tweet"
+                                                                                            color:black></textarea>
+                                                                                        <br>
+                                                                                        <br>
+            
+            
+                                                                                        <div class="row">
+            
+                                                                                            <div class="col-md-12"
+                                                                                                style="padding-left: 30px;">
+            
+                                                                                                
+            
+                                                                                                <img src=<%= posts[curPost].comments[curComment].author_img_src %>
+                                                                                                    class="rounded-circle mr-3"
+                                                                                                    height="25px" width="25px" />
+                                                                                                <b>@<%= posts[curPost].comments[curComment].author %></b>
+            
+                                                                                            </div>
+            
+                                                                                            <div class="col-md-12">
+                                                                                                <div
+                                                                                                    class="comment-background p-2 pl-3 ml-5">
+                                                                                                    <%= posts[curPost].comments[curComment].body %>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+            
+            
+                                                                                        <button class="btn-comment"
+                                                                                            name="retweet_edit_id_comm"
+                                                                                            id="retweet_edit_id_comm" type="submit"
+                                                                                            value=<%= posts[curPost].comments[curComment]._id %>>Tweet</button>
+                                                                                    </div>
+                                                                                    <div class="modal-footer">
+                                                                                        <button type="button"
+                                                                                            class="btn btn-secondary"
+                                                                                            data-dismiss="modal">Close</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--hash code-->
+
+
+
+
+                                                                        
                                                                         <div class="col-md-4">
                                                                             <button class="custom-padding tweet-buttons"
                                                                                 name="love_com" id="love_com"
@@ -629,67 +762,40 @@
 
                         </div>
 
-                        <% }} %>
+                        <% }
+                    } else { %>
+                        <%- include('partials/empty-view.ejs', { "message": "No feeds", "subMessage": "You haven't posted anything yet. Post something to get started", icon: "fa fa-pencil" }) %>
+                    <% } %>
                     </div>
-
-
-
                 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             </div>
             <!-- ----------------END Middle Column -->
 
-
             <!-- ----------------Right Column -->
-            <div class="col-md-3">
+            <div class="col-md-3 mt-3">
                 <div class="col-md-12 right-header">
                     <h4>Connections</h4>
                 </div>
+
+
+                <% if(connections.length != 0){ %>
                 <div class="col-md-12">
-                    <%=posts[0].connection%>
+
+
+                    <% for(var i = 0; i < connections.length; i++) { %>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <img class="rounded-circle mr-3" height="25px" width="25px"
+                                src=<%= connections[i].image_src %> />
+                            <%=connections[i].username%>
+                        </li>
+                    </ul>
+                    <% } %>
+
                 </div>
+                <% } %>
 
-                <ul class="list-group py-3 dropdown-list">
-
-
-                    <!-- <li class="list-group-item">
-                                <div class="on-hover-show">
-                                    <div class=" py-3 px-4">
-                                        <i class="fa fa-home fa-lg mr-3" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-                            </li> -->
-                </ul>
             </div>
             <!-- ----------------END Right Column -->
         </div>
@@ -717,6 +823,11 @@
         integrity="sha256-/bDNB+kJN2OZmomHgEiAQp1yZZQzYWc3cs19/5EbkPo=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emoji-picker/1.1.5/js/emoji-picker.js"
         integrity="sha256-YQRUwQOwVUyoQTdQQ9dq4o5uoWO5eSEXuj9Yux55cgI=" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="http://ichord.github.io/Caret.js/src/jquery.caret.js"></script>
+    <script type="text/javascript" src="http://ichord.github.io/At.js/dist/js/jquery.atwho.js"></script>
+
+
     <script>
         $(function () {
             // Initializes and creates emoji set from sprite sheet
@@ -748,7 +859,8 @@
         ga('create', 'UA-49610253-3', 'auto');
         ga('send', 'pageview');
     </script>
-
+    <script>var connections = `<%= suggestions %>`;</script>
+    <script src="./../assets/js/user/feeds.js"></script>
 </body>
 
 </html>

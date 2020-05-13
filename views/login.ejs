@@ -1,57 +1,31 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Raleway:200" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="../style/first_login.css" type="text/css">
-
-  <title>Login | Community Connect</title>
+<%- include partials/head.ejs -%>
+<link rel="stylesheet" href="../style/first_login.css" type="text/css">
 </head>
 
 <body>
-
-
-
   <div class="login-card">
-
-    <!-- <img src="../assets/images/login-card-background.jpg" alt="login-background not found" style="width:100%"> -->
     <div class="card-container">
-
-      <!-- <table>
-          <tr>
-            <form method="POST" action="/api/user/signup">
-              <input type="text" name="username" />
-              <input type="submit" />
-            </form>
-          </tr>
-        </table> -->
-
       <table class="login-form">
         <tr>
           <td>
             <h2>Community Connect</h2>
           </td>
-
-
         </tr>
-
         <tr>
           <td>
             <h3>Enter your ID code and click on the 'sign in' button below.</h3>
           </td>
         </tr>
-
         <tr>
           <form id="login-form" method="POST" action="/user/idlogin">
-            <td><input type="text" id="idcode" name="idcode" placeholder="ID Code" required>
-            
-
+            <td>
+              <input 
+                type="text" 
+                id="idcode" 
+                name="idcode" 
+                placeholder="ID Code" 
+                value="<%= form.length>0 ? form[0].idcode : 'john_doe' %>"
+                required>
         <tr>
           <td><button class="Login-button" type="submit">Sign in</button>
             </form>
@@ -59,22 +33,16 @@
               <input type="hidden" value="empty">
               <button class="Login-button" type="submit">Sign up</button>
             </form>
-
           </td>
-
-
         </tr>
-
-        <!-- <tr>
-          <td><a class="forgot-password" href="forgot-password.html">Forgot password?</a></td>
-        </tr> -->
-
+        <% if(message.length > 0) { %>
+        <tr>
+          <div class="alert alert-primary" role="alert">
+            <%= message %>
+          </div>
+        </tr>
+        <% } %>
       </table>
-
     </div>
   </div>
-
-
-</body>
-
-</html>
+  <%- include partials/end.ejs -%>

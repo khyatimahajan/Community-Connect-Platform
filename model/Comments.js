@@ -25,7 +25,13 @@ const userSchema = new mongoose.Schema ({
     },
     love_people: {
         type: Array
-    }
+    },
+    retweet_edit_body: {
+        type: String
+    },
+    retweet_edit_count: {
+        type: Number
+    },
 });
 
 module.exports = mongoose.model('Comments', userSchema,'comments');

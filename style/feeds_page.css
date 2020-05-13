@@ -45,7 +45,7 @@
     border-style: ridge;
 }
 
-.btn-primary {
+.post-btn {
     float: left;
     /* margin-left: 1000px;*/
     margin-right: 600px;
@@ -306,7 +306,7 @@ body {
 
 .tweet-buttons:hover .retweet-icon {
     color: rgba(26, 188, 156, 1);
-    background-color: rgba(26, 188, 156, 0.1);
+    /* background-color: rgba(26, 188, 156, 0.1); */
 
 }
 

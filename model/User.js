@@ -48,6 +48,10 @@ const userSchema = new mongoose.Schema({
     },
     image_src:{
         type: String
+    },
+    isAdmin: {
+        type: Boolean,
+        default: false
     }
 });
 

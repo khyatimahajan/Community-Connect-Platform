@@ -1,0 +1,171 @@
+.block{
+	background-color: 'green';
+	display: block;
+	text-align: center;
+	padding-top: 40px;
+    padding-bottom: 25px;
+}
+
+.grid{
+	width: 95%;
+	max-width: 900px;
+	margin: 0 auto;
+}
+
+.gutter{
+	position: relative;
+	margin-left: (red / 2);
+    margin-right: (red / 2);
+}
+
+.group_details {
+    display: flex;
+    flex-direction: column;
+}
+
+.col-33{
+	width: 28.3%;
+	float: left;
+}
+.col-50{
+	width: 50%;
+	float: left;
+}
+
+.clear{
+	clear: both;
+	display: block;
+}
+.box {
+    margin: 15px;
+	box-shadow: 0 1px 4px 0 rgba(32, 33, 36, .28);
+	border-radius: 4px;
+}
+.group_name {
+    font-size: 18px;
+    font-weight: bold;
+}
+.group_member {
+    color: gray;
+    margin: 5px 0px;
+}
+.group-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.group_member_autocomplete {
+	height: 120px;
+    overflow: auto;
+}
+.trash-icon {
+	cursor: pointer;
+	position: absolute;
+    right: 15px;
+    top: 15px;
+}
+.add-group {
+	border: 1px solid #9c9a9a;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.plus-icon {
+	font-size: 18px;
+}
+
+a.group_details, a:hover {
+	text-decoration:none;
+	color: black;
+}
+
+.avatar img {
+	border-radius: 50%;
+	position: relative;
+	left: -5px;
+	margin-left: -25px;
+	z-index: 1;
+}
+
+.avatar {
+	padding-left: 8px;
+}
+
+.avatars {
+	direction: rtl;
+	padding-left: 30px;
+	padding-top: 15px;
+}
+
+
+
+.group-member-item {
+    display: flex;
+    flex-direction: row;
+    padding: 15px;
+    padding: 12px 15px;
+}
+.member-avatar {
+    width: 40px;
+    height: 40px;
+    box-shadow: 0 1px 6px 0 rgba(32, 33, 36, .28);
+}
+.member-details {
+    display: flex;
+    flex-direction: column;
+    padding: 0px 18px;
+    justify-content: center;
+}
+.member-name {
+	font-weight: bold;
+    font-size: 12px;
+}
+.member-email {
+    color: gray;
+    font-size: 10px;
+}
+.divider {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.all-users {
+	height: 95vh;
+	overflow: auto;
+	padding-left: 0;
+}
+.user_header {
+	display: flex;
+    justify-content: center;
+    align-items: center;
+	height: 45px;
+	position: fixed;
+    top: 0;
+    background: white;
+	width: 100%;
+	border-bottom: 1px solid gray;
+}
+.user_list {
+	margin-top: 38px;
+}
+.heading {
+	padding-left: 8%;
+}
+.tagify__tag-text {
+	font-size: 12px !important;
+}
+.input {
+	font-size: 13px;
+}
+
+@media all and (max-width:800px) {
+	.col-33{
+		width: 50%;
+	}
+}
+
+@media all and (max-width:600px) {
+	.col-50, .col-33{
+		width: 100%;
+		float: none;
+	}
+}

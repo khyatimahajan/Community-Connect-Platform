@@ -1,0 +1,46 @@
+.profile_image_container {
+    width: 127px;
+    height: 127px;
+}
+.profile_image {
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 1px 6px 0 rgba(32, 33, 36, .28);
+    border-radius: 50%;
+}
+.profile_header_details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0px 20px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0px 20px;
+}
+.profile_name {
+    font-size: 22px;
+    font-weight: bold;
+}
+.profile_location {
+    font-size: 13px;
+    color: darkgray;
+}
+.proflie_banner {
+    display: flex;
+    justify-content: center;
+}
+.profile_form_container {
+    margin: 50px 25px;
+}
+.password_form_container {
+    margin: 15px 25px;
+}
+.submit_btn_wrapper {
+    margin: 20px 5px;
+    justify-content: flex-end;
+}
+.submit_btn {
+    margin: 0;
+}
