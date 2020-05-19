@@ -11,25 +11,26 @@
                 </div>
                 <div class="col-md-12 custom-border middle-upper-layer py-3">
                     <% if(notifications.length > 0) { %>
-                        <% notifications.forEach(notification=> { %>
-                        <div class="notification_item">
-                            <img src="<%= notification.inconn_id.image_src %>" class="rounded float-left notification_image" alt="...">
-                            <div class="notification_item_details">
-                                <span class="notification_user"><%= notification.inconn_id.name %></span>
-                                <span class="notification_activity">
-                                    <% if(notification.comment) { %>
-                                        Comment Added
-                                    <% }else { %>
-                                        Liked your post
-                                    <% } %>
-                                </span>
-                                <span class="notification_text"><%= notification.status %></span>
-                            </div>
-                            <span class="notification_time"><%= moment(notification.timestamp).fromNow(true) %></span>
+                    <% notifications.forEach(notification=> { %>
+                    <div class="notification_item">
+                        <img src="<%= notification.inconn_id.image_src %>" class="rounded float-left notification_image"
+                            alt="...">
+                        <div class="notification_item_details">
+                            <span class="notification_user"><%= notification.inconn_id.name %></span>
+                            <span class="notification_activity">
+                                <% if(notification.comment) { %>
+                                Comment Added
+                                <% }else { %>
+                                Liked your post
+                                <% } %>
+                            </span>
+                            <span class="notification_text"><%= notification.status %></span>
                         </div>
-                        <% }) %>
+                        <span class="notification_time"><%= moment(notification.timestamp).fromNow(true) %> ago</span>
+                    </div>
+                    <% }) %>
                     <% } else { %>
-                        <%- include('partials/empty-view', { message: "No notifications", subMessage: "You don't have any notifications yet. Your notification will come up here", icon: "fa fa-bell" }) %>
+                    <%- include('partials/empty-view', { message: "No notifications", subMessage: "You don't have any notifications yet. Your notification will come up here", icon: "fa fa-bell" }) %>
                     <% } %>
                 </div>
             </div>

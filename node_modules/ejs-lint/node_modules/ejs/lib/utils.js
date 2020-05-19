@@ -51,7 +51,7 @@ var _ENCODE_HTML_RULES = {
   '"': '&#34;',
   "'": '&#39;'
 };
-var _MATCH_HTML = /[&<>\'"]/g;
+var _MATCH_HTML = /[&<>'"]/g;
 
 function encode_char(c) {
   return _ENCODE_HTML_RULES[c] || c;
@@ -95,7 +95,7 @@ exports.escapeXML = function (markup) {
   return markup == undefined
     ? ''
     : String(markup)
-        .replace(_MATCH_HTML, encode_char);
+      .replace(_MATCH_HTML, encode_char);
 };
 exports.escapeXML.toString = function () {
   return Function.prototype.toString.call(this) + ';\n' + escapeFuncStr;
@@ -157,6 +157,9 @@ exports.cache = {
   },
   get: function (key) {
     return this._data[key];
+  },
+  remove: function (key) {
+    delete this._data[key];
   },
   reset: function () {
     this._data = {};

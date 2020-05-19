@@ -72,13 +72,13 @@ module.exports.getProfile = (req, res) => {
     if (!user) {
         return res.redirect('/');
     }
-    res.render('../views/user-profile.ejs', { 
+    res.render('../views/user-profile.ejs', {
         user: user,
         pageTitle: "User Profile",
         message: req.flash('message'),
         profileMessage: req.flash('profileMessage'),
         form: data,
-        pform : req.flash('pform')
+        pform: req.flash('pform')
     })
 }
 
@@ -88,20 +88,27 @@ module.exports.updateProfile = async (req, res) => {
     const validationResult = validation.updateProfile(req.body);
     console.log(validationResult)
 
-    if(validationResult.error) {
+    if (validationResult.error) {
         req.flash('profileMessage', validationResult.error.details[0].message)
         req.flash('pform', req.body)
         return res.redirect('profile')
     }
 
-    req.user.name = name;
-    req.user.location = location;
-    req.user.bio = bio;
+    try {
+        req.user.name = name;
+        req.user.location = location;
+        req.user.bio = bio;
 
-    let response  = await req.user.save()
+        let response = await req.user.save()
 
-    req.flash('profileMessage', 'Profile updated successfully')
-    return res.redirect('/users/profile');
+        req.flash('profileMessage', 'Profile updated successfully')
+        return res.redirect('/users/profile');
+
+    } catch (err) {
+        console.log(err)
+        let error = new Error("Something went wrong");
+        next(error);
+    }
 }
 
 
@@ -111,57 +118,68 @@ module.exports.getNotifications = (req, res) => {
         return res.redirect('/');
     }
 
-    Notifications.find({ 
+    Notifications.find({
         outconn_id: user._id
     })
-    .populate('inconn_id')
-    .then(notifications =>{
+        .populate('inconn_id')
+        .then(notifications => {
 
-        console.log("Notificaitons");
-        console.log(notifications)
+            console.log("Notificaitons");
+            console.log(notifications)
 
-        res.render('../views/notifications.ejs', {
-            user: req.user,
-            notifications: notifications,
-            pageTitle: "Notifications",
-            moment
-        });
-    }).catch(err=>{
-        console.log(err);
-    })
+            res.render('../views/notifications.ejs', {
+                user: req.user,
+                notifications: notifications,
+                pageTitle: "Notifications",
+                moment
+            });
+        }).catch(err => {
+            console.log(err);
+            let error = new Error("Something went wrong");
+            next(error);
+        })
 }
 
 module.exports.getFeeds = async (req, res) => {
     let user = req.user;
 
     if (!user) return res.redirect('/');
-    currentUserData = {
-        username: user.username,
-        name: user.name,
-        bio: user.bio,
-        location: user.location,
-        connection: user.connection,
-        image_src: user.image_src
-    };
-    currentUserID = user._id;
 
-    var posts = await getAllPosts();
-    userPosts = [currentUserData].concat(posts);
+    try {
+        currentUserData = {
+            username: user.username,
+            name: user.name,
+            bio: user.bio,
+            location: user.location,
+            connection: user.connection,
+            image_src: user.image_src
+        };
+        currentUserID = user._id;
 
-    var map = new Map();
-    var connection_list = await getAllConnectionInformation();
+        var posts = await getAllPosts();
+        userPosts = [currentUserData].concat(posts);
 
-    console.log("Connections");
-    console.log(connection_list)
+        var map = new Map();
+        var connection_list = await getAllConnectionInformation();
 
-    res.render('../views/feeds_page', {
-        user: user,
-        posts: userPosts,
-        connections: connection_list,
-        suggestions: JSON.stringify(connection_list),
-        map: map,
-        user1: user,
-    });
+        console.log("Connections");
+        console.log(connection_list)
+
+        res.render('../views/feeds_page', {
+            user: user,
+            posts: userPosts,
+            connections: connection_list,
+            suggestions: JSON.stringify(connection_list),
+            map: map,
+            user1: user,
+            moment
+        });
+
+    } catch (err) {
+        console.log(err);
+        let error = new Error("Something went wrong");
+        next(error);
+    }
 }
 
 module.exports.resetPassword = async (req, res, next) => {
@@ -169,7 +187,7 @@ module.exports.resetPassword = async (req, res, next) => {
 
     const validationResult = validation.resetPassword(req.body);
 
-    if(validationResult.error) {
+    if (validationResult.error) {
         req.flash('message', validationResult.error.details[0].message)
         req.flash('form', req.body)
         return res.redirect('profile')
@@ -178,24 +196,24 @@ module.exports.resetPassword = async (req, res, next) => {
     try {
         let isMatch = await bcrypt.compare(currentPassword, req.user.password);
         console.log(isMatch)
-        if(isMatch) {
-           let salt = await bcrypt.genSalt(10);
-           const hashPassword = await bcrypt.hash(newPassword, salt);
-           req.user.password = hashPassword;
-           let result = await req.user.save();
-           req.flash('message', 'Password changed successfully')
-           res.redirect('profile')
+        if (isMatch) {
+            let salt = await bcrypt.genSalt(10);
+            const hashPassword = await bcrypt.hash(newPassword, salt);
+            req.user.password = hashPassword;
+            let result = await req.user.save();
+            req.flash('message', 'Password changed successfully')
+            res.redirect('profile')
 
         } else {
             req.flash('form', req.body)
             req.flash('message', 'Old password is wrong')
             res.redirect('profile')
         }
-    } catch(err) {
+    } catch (err) {
         console.log(err)
         req.flash('form', req.body)
         req.flash('message', 'Something has went wrong')
         res.redirect('profile')
     }
-    
+
 }

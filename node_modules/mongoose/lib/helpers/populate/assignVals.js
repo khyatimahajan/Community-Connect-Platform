@@ -1,5 +1,6 @@
 'use strict';
 
+const SkipPopulateValue = require('./SkipPopulateValue');
 const assignRawDocsToIdStructure = require('./assignRawDocsToIdStructure');
 const get = require('../get');
 const getVirtual = require('./getVirtual');
@@ -34,6 +35,9 @@ module.exports = function assignVals(o) {
   function setValue(val) {
     if (count) {
       return val;
+    }
+    if (val instanceof SkipPopulateValue) {
+      return val.val;
     }
     if (o.justOne === true && Array.isArray(val)) {
       return valueFilter(val[0], options, populateOptions);
@@ -90,13 +94,22 @@ module.exports = function assignVals(o) {
 
     const parts = o.path.split('.');
     let cur = docs[i];
+    const curPath = parts[0];
     for (let j = 0; j < parts.length - 1; ++j) {
       // If we get to an array with a dotted path, like `arr.foo`, don't set
       // `foo` on the array.
       if (Array.isArray(cur) && !utils.isArrayIndex(parts[j])) {
         break;
       }
+
       if (cur[parts[j]] == null) {
+        // If nothing to set, avoid creating an unnecessary array. Otherwise
+        // we'll end up with a single doc in the array with only defaults.
+        // See gh-8342, gh-8455
+        const schematype = originalSchema._getSchema(curPath);
+        if (valueToSet == null && schematype != null && schematype.$isMongooseArray) {
+          return;
+        }
         cur[parts[j]] = {};
       }
       cur = cur[parts[j]];

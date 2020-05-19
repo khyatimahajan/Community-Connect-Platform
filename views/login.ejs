@@ -13,7 +13,7 @@
         </tr>
         <tr>
           <td>
-            <h3>Enter your ID code and click on the 'sign in' button below.</h3>
+            <h3>Enter your User Name and click on the 'sign in' button below.</h3>
           </td>
         </tr>
         <tr>
@@ -24,7 +24,7 @@
                 id="idcode" 
                 name="idcode" 
                 placeholder="ID Code" 
-                value="<%= form.length>0 ? form[0].idcode : 'john_doe' %>"
+                value="<%= form.length>0 ? form[0].idcode : '' %>"
                 required>
         <tr>
           <td><button class="Login-button" type="submit">Sign in</button>

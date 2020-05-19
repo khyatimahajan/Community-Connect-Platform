@@ -5,6 +5,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const flash = require('connect-flash');
 const bcrypt = require('bcryptjs');
+const mongoDBStore = require('connect-mongodb-session')(session);
 
 const authRoute = require('./routes/auth');
 const postRoute = require('./routes/profRoute');
@@ -15,16 +16,27 @@ const loginSuccessRoutes = require('./routes/loginSucc');
 const userRoutes = require('./routes/user');
 const adminRoutes = require('./routes/admin');
 const User = require('./model/User');
+const errorRoutes = require('./routes/errors');
+
+const MONGODB_URI = 'mongodb://localhost/Users';
 
 const app = express();
 
-app.use(session({ secret: 'ssshhhhh', saveUninitialized: true, resave: true }));
+const store = new mongoDBStore({
+    uri: MONGODB_URI,
+    collection: 'sessions'
+})
 
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(session({
+    secret: 'ssshhhhh',
+    saveUninitialized: false,
+    resave: false,
+    store: store
+}));
+
+app.use(bodyParser.urlencoded({ extended: false }))
 
 dotenv.config();
-
-var mongoDB = 'mongodb://localhost/Users';
 
 app.use(express.json());
 app.set('view engine', '.ejs');
@@ -44,16 +56,11 @@ app.use((req, res, next) => {
                     next();
                 } else {
                     req.user = user;
-                    if ((req.originalUrl == "/admin/login" || req.originalUrl == "/login" || req.originalUrl == "/") && req.session.user.isAdmin) {
-                        return res.redirect('/admin/dashboard');
-                    } else {
-                        next();
-                    }
+                    next();
                 }
             })
             .catch(err => {
-                console.log(error);
-                next();
+                next(new Error(err));
             })
     } else {
         next();
@@ -68,9 +75,20 @@ app.use('/', loginRoutes);
 app.use('/users', userRoutes);
 app.use('/admin', adminRoutes);
 
-app.listen(5000, () => {
-    console.log("Listening at port 5000")
-    mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
+app.use(errorRoutes);
+
+app.use((err, req, res, next) => {
+    console.log(err)
+    res.render('./errors/500.ejs', {
+        pageTitle: "Something went wrong"
+    })
+});;
+
+let port = process.env.PORT || 5000;
+
+app.listen(port, () => {
+    console.log(`Listening at port ${port}`)
+    mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
         .then(async () => {
             console.log("Connected to DB");
             /* New admin creation */
@@ -82,7 +100,9 @@ app.listen(5000, () => {
                     password: hashPassword,
                     isAdmin: true
                 }).save().then(() => console.log("Admin Created"))
-                    .catch(err => console.log("Admin creation failed"))
+                    .catch(err => next(new Error(err)))
             }
+        }).catch(err => {
+            next(new Error(err));
         })
 });

@@ -24,6 +24,7 @@
 .notification_time {
     position: absolute;
     right: 35px;
+    font-size: 12px;
 }
 .notification_text{
     font-size: 13px;

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,6 +31,7 @@
         border-bottom: 2px solid rgba(236, 240, 241, 1);
     }
 </style>
+
 <body>
 
     <div class="container-fluid mh-100 main-container">
@@ -100,6 +102,16 @@
                             </tr>
                             <%}%>
                                  -->
+
+                                <% if(posts[curPost].feedNotification && posts[curPost].feedNotification.users.length >0 && posts[curPost].feedNotification.users.find(u=> JSON.stringify(u) == JSON.stringify(user._id)) ) { %>
+                                <div class="feedNotification">
+                                    <p>
+                                        <%= posts[curPost].feedNotification.userId.name %> has
+                                        <%= posts[curPost].feedNotification.userActivity == 'love' ? "liked this " : "commented on" %>
+                                        post</p>
+                                </div>
+                                <% } %>
+
                                 <% if(posts[curPost].author == posts[curPost].receiver) { %>
 
 
@@ -112,9 +124,17 @@
 
 
                                             <div class="col-md-12">
-                                                <img src=<%= posts[curPost].author_image %> class="rounded-circle mr-3"
-                                                    height="25px" width="25px" />
-                                                <b>@<%= posts[curPost].author %> Feed:</b>
+                                                <div class="row">
+                                                    <div class="col-md-10">
+                                                        <img src=<%= posts[curPost].author_image %>
+                                                            class="rounded-circle mr-3" height="25px" width="25px" />
+                                                        <b>@<%= posts[curPost].author %> Feed:</b>
+                                                    </div>
+                                                    <div class="col-md-2 postTimestamp">
+                                                        <%= moment(posts[curPost].timestamp).fromNow(true) %> ago
+                                                    </div>
+                                                </div>
+
                                             </div>
 
                                             <div class="col-md-12 p-2">
@@ -137,9 +157,16 @@
 
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <img src=<%= posts[curPost].author_image %> class="rounded-circle mr-3"
-                                                    height="25px" width="25px" />
-                                                <b>@<%= posts[curPost].author %>'s Feed: </b>
+                                                <div class="row">
+                                                    <div class="col-md-10">
+                                                        <img src=<%= posts[curPost].author_image %>
+                                                            class="rounded-circle mr-3" height="25px" width="25px" />
+                                                        <b>@<%= posts[curPost].author %> Feed:</b>
+                                                    </div>
+                                                    <div class="col-md-2 postTimestamp">
+                                                        <%= moment(posts[curPost].timestamp).fromNow(true) %> ago
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -154,11 +181,17 @@
                                 <tr class="post-row">
                                     <td class="post-content">
                                         <div class="row">
-
                                             <div class="col-md-12">
-                                                <img src=<%= posts[curPost].author_image %> class="rounded-circle mr-3"
-                                                    height="25px" width="25px" />
-                                                <b>@<%= posts[curPost].author %> Feed:</b>
+                                                <div class="row">
+                                                    <div class="col-md-10">
+                                                        <img src=<%= posts[curPost].author_image %>
+                                                            class="rounded-circle mr-3" height="25px" width="25px" />
+                                                        <b>@<%= posts[curPost].author %> Feed:</b>
+                                                    </div>
+                                                    <div class="col-md-2 postTimestamp">
+                                                        <%= moment(posts[curPost].timestamp).fromNow(true) %> ago
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <% if(posts[curPost].retweet_edit_body != "") { %>
@@ -229,6 +262,7 @@
                                                             value="<%=posts[curPost].retweetcount%>">
                                                         <input class="receiver" type="hidden" name="receiver"
                                                             id="receiver" value="<%=posts[curPost].receiver%>">
+
 
                                                         <div class="row">
 
@@ -450,6 +484,7 @@
 
                                                         </div>
 
+
                                                 </form>
 
 
@@ -586,6 +621,7 @@
 
 
                                                                         <div class="col-md-4">
+
                                                                             <div class="btn-group dropleft">
                                                                                 <button
                                                                                     class="custom-padding tweet-buttons dropright"
@@ -647,9 +683,11 @@
                                                                             </div>
                                                                         </div>
 
-                                                                        <div class="modal" id=edit<%= posts[curPost].comments[curComment]._id %>
+                                                                        <div class="modal"
+                                                                            id=edit<%= posts[curPost].comments[curComment]._id %>
                                                                             tabindex="-1" role="dialog"
-                                                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                            aria-labelledby="exampleModalLabel"
+                                                                            aria-hidden="true">
                                                                             <div class="modal-dialog" role="document">
                                                                                 <div class="modal-content">
                                                                                     <div class="modal-header">
@@ -657,36 +695,43 @@
                                                                                             id="exampleModalLabel">
                                                                                             Type your Tweet
                                                                                         </h5>
-                                                                                        <button type="button" class="close"
-                                                                                            data-dismiss="modal" aria-label="Close">
-                                                                                            <span aria-hidden="true">&times;</span>
+                                                                                        <button type="button"
+                                                                                            class="close"
+                                                                                            data-dismiss="modal"
+                                                                                            aria-label="Close">
+                                                                                            <span
+                                                                                                aria-hidden="true">&times;</span>
                                                                                         </button>
                                                                                     </div>
                                                                                     <div class="modal-body">
-                                                                                        <textarea class="input-type-dec1"
-                                                                                            type="text" rows="2" cols="60"
+
+                                                                                        <textarea
+                                                                                            class="input-type-dec1"
+                                                                                            type="text" rows="2"
+                                                                                            cols="60"
                                                                                             id="retweet_edit_body_comm"
                                                                                             name="retweet_edit_body_comm"
                                                                                             placeholder="Tweet"
                                                                                             color:black></textarea>
                                                                                         <br>
                                                                                         <br>
-            
-            
+
+
                                                                                         <div class="row">
-            
+
                                                                                             <div class="col-md-12"
                                                                                                 style="padding-left: 30px;">
-            
-                                                                                                
-            
+
+
+
                                                                                                 <img src=<%= posts[curPost].comments[curComment].author_img_src %>
                                                                                                     class="rounded-circle mr-3"
-                                                                                                    height="25px" width="25px" />
+                                                                                                    height="25px"
+                                                                                                    width="25px" />
                                                                                                 <b>@<%= posts[curPost].comments[curComment].author %></b>
-            
+
                                                                                             </div>
-            
+
                                                                                             <div class="col-md-12">
                                                                                                 <div
                                                                                                     class="comment-background p-2 pl-3 ml-5">
@@ -694,11 +739,12 @@
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
-            
-            
+
+
                                                                                         <button class="btn-comment"
                                                                                             name="retweet_edit_id_comm"
-                                                                                            id="retweet_edit_id_comm" type="submit"
+                                                                                            id="retweet_edit_id_comm"
+                                                                                            type="submit"
                                                                                             value=<%= posts[curPost].comments[curComment]._id %>>Tweet</button>
                                                                                     </div>
                                                                                     <div class="modal-footer">
@@ -722,12 +768,12 @@
 
 
 
-<!--hash code-->
+                                                                        <!--hash code-->
 
 
 
 
-                                                                        
+
                                                                         <div class="col-md-4">
                                                                             <button class="custom-padding tweet-buttons"
                                                                                 name="love_com" id="love_com"
@@ -765,7 +811,7 @@
                         <% }
                     } else { %>
                         <%- include('partials/empty-view.ejs', { "message": "No feeds", "subMessage": "You haven't posted anything yet. Post something to get started", icon: "fa fa-pencil" }) %>
-                    <% } %>
+                        <% } %>
                     </div>
                 </div>
 
@@ -804,13 +850,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
         integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
-    </script>
+        </script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
-    </script>
+        </script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
-    </script>
+        </script>
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emoji-picker/1.1.5/js/config.js"

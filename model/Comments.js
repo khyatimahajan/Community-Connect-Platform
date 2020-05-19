@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema ({
+const userSchema = new mongoose.Schema({
     feedId: {
-        type: String,
+        type: mongoose.Types.ObjectId,
+        ref: 'Feeds'
     },
     author: {
         type: String,
     },
-    author_img_src:{
+    author_img_src: {
         type: String,
     },
     body: {
@@ -34,4 +35,4 @@ const userSchema = new mongoose.Schema ({
     },
 });
 
-module.exports = mongoose.model('Comments', userSchema,'comments');
+module.exports = mongoose.model('Comments', userSchema, 'comments');

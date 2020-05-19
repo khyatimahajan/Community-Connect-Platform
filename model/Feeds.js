@@ -41,12 +41,30 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    for: [
-        {
+    feedNotification: {
+        userId :{
             type: mongoose.Types.ObjectId,
-            ref: "User"
-        }
-    ]
+            ref: "user"
+        },
+        userActivity: {
+            type: String
+        },
+        users: [
+            {
+                type: mongoose.Types.ObjectId,
+                ref: "user"
+            }
+        ]
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
 });
 
 module.exports = mongoose.model('Feeds', userSchema, 'feeds');
