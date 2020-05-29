@@ -985,4 +985,20 @@ input {
 }
 
 
+#error {
+  width: 100%;
+  text-align: center;
+}
+.error-message {
+  background: #eb5a46;
+  color: #fbedeb;
+  font-size: 14px;
+  line-height: 1.333;
+  border-radius: 4px;
+  border: 1px solid #EB5A46;
+  display: inline-block;
+  padding: .5em 1em;
+  width: 100%;
+}
+
   

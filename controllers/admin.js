@@ -74,7 +74,7 @@ module.exports.getDashboard = async (req, res, next) => {
 
 module.exports.postAddGroup = async (req, res, next) => {
 
-    var { groupName, members } = req.body;
+    var { groupName, groupDesc, members } = req.body;
 
     members = JSON.parse(members);
 
@@ -96,6 +96,7 @@ module.exports.postAddGroup = async (req, res, next) => {
         let currentUserId = users[index];
         let currentUser = await User.findById(currentUserId);
 
+
         users.map(async (user) => {
             if (user != currentUser._id) {
 
@@ -103,6 +104,7 @@ module.exports.postAddGroup = async (req, res, next) => {
                     currentUser.connection.name.push(mongoose.Types.ObjectId(user));
                     await currentUser.save();
                 }
+                console.log(itemsProcessed);
                 itemsProcessed++;
                 if (itemsProcessed === array.length) {
                     callback();
@@ -111,11 +113,16 @@ module.exports.postAddGroup = async (req, res, next) => {
         })
     });
 
+    if (users.length == 1) {
+        callback();
+    }
+
 
     function callback() {
         let group = new Group({
-            name: groupName,
-            members: users
+            group_name: groupName,
+            members: users,
+            group_desc: groupDesc
         });
         group.save()
             .then(() => {

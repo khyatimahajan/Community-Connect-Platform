@@ -26,6 +26,7 @@
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.25.1",
     "mongoose": "^5.7.1",
+    "read-excel-file": "^4.0.6",
     "uniqid": "^5.2.0"
   },
   "devDependencies": {

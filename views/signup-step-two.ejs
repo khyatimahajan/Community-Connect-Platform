@@ -106,7 +106,11 @@
                     </div>
 
                     <div class="col-md-6 offset-md-3 mt-3">
-
+                        <% if(message) { %>
+                        <div id="error" class="quick-switch">
+                            <p class="error-message"><%= message %></p>
+                        </div>
+                        <% } %>
                         <h3>Personal Information (Public)</h3>
 
 
@@ -114,7 +118,7 @@
                             <div class="form-group col">
                                 <label for="user-nm"></label>
                                 <input type="text" class="form-control" name="name" id="name" placeholder="Full Name"
-                                    required>
+                                    value="<%= name ? name: null %>" required>
                             </div>
                         </div>
 
@@ -122,7 +126,7 @@
                             <div class="form-group col-md-6">
                                 <label class="sr-only" for="user-dn">Email</label>
                                 <input type="email" class="form-control" name="email" id="email" placeholder="Email"
-                                    required>
+                                    value="<%= email ? email: null %>" required>
                             </div>
                             <div class="form-group col">
                                 <label class="sr-only" for="user-nm">Username</label>

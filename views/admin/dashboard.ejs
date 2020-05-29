@@ -35,6 +35,7 @@
                             <div class="block gutter">
                                 <a class="group_details" href="group/<%= group._id %>">
                                     <span class="group_name"><%= group.group_name %></span>
+                                    <span class="group_member"><%= group.group_desc %> </span>
                                     <span class="group_member"><%= group.members.length %> members</span>
                                     <span class="fi-trash"></span>
                                 </a>
@@ -89,6 +90,12 @@
 
                                 </div>
                                 <div class="form-group">
+                                    <label for="groupDescLabel">Group Description</label>
+                                    <input type="text" name="groupDesc" class="form-control input" id="groupDescLabel"
+                                        aria-describedby="emailHelp" placeholder="Enter group description" required>
+
+                                </div>
+                                <div class="form-group">
                                     <label for="groupMemberLabel">Group Member</label>
                                     <input name="members" type="text"
                                         class="form-control group_member_autocomplete input" id="groupMemberLabel"
@@ -140,16 +147,17 @@
             </div>
             <div class="user_list">
                 <% allusers.forEach(user=>{ %>
-                <% if(user.profile_pic) { %>
+
                 <div class="group-member-item">
-                    <img src="<%= user.profile_pic %>" class="rounded-circle member-avatar">
+                    <img src="<%= user.profile_pic ? user.profile_pic: 'https://via.placeholder.com/150' %>"
+                        class="rounded-circle member-avatar">
                     <div class="member-details">
                         <span class="member-name"><%= user.name %></span>
                         <span class="member-email"><%= user.EmailID %></span>
                     </div>
                 </div>
                 <hr class="divider">
-                <% } %>
+
                 <% }) %>
             </div>
         </div>
@@ -160,9 +168,6 @@
 <script>
     users = users.split("&#34;").join('"')
     users = JSON.parse(users);
-    users = users.filter(user => {
-        return user.profile_pic ? true : false
-    })
 </script>
 <script src="./../../assets/js/admin/dashboard.js"></script>
 

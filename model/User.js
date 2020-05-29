@@ -6,7 +6,8 @@ const userSchema = new mongoose.Schema({
     },
     username: {
         type: String,
-        min: 4
+        min: 4,
+        //unique: true
     },
     password: {
         type: String,
@@ -37,9 +38,11 @@ const userSchema = new mongoose.Schema({
     profile_pic: {
         type: String
     },
-    group_id: {
-        type: String
-    },
+    group_id: [
+        {
+            type: String
+        }
+    ],
     connection: {
         name: Array
     },

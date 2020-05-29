@@ -33,10 +33,14 @@
                     <% if(group.members.length > 0) { %>
                     <p class="member-total"><%= group.members.length  %> members</p>
                     <% group.members.forEach(member=> {  %>
-                    <% if(member.profile_pic) {%>
+
                     <div class="group-main">
                         <div class="group-member-item">
+                            <% if(member.profile_pic) { %>
                             <img src="../<%= member.profile_pic %>" class="rounded-circle member-avatar">
+                            <% } else { %>
+                            <img src="https://via.placeholder.com/150" class="rounded-circle member-avatar">
+                            <% } %>
                             <div class="member-details">
                                 <span class="member-name"><%= member.name %></span>
                                 <span class="member-email"><%= member.EmailID %></span>
@@ -49,7 +53,7 @@
                         <hr class="stiched">
                         </hr>
                     </div>
-                    <% } %>
+
                     <%  })  %>
                     <% } else { %>
                     <%- include('../partials/empty-view.ejs', { icon: "fa fa-user", message: "No members", subMessage: "You haven't added any group member yet. Start adding member by clicking on 'Add member' button" }) %>
@@ -65,16 +69,20 @@
             </div>
             <div class="user_list">
                 <% allusers.forEach(user=>{ %>
-                <% if(user.profile_pic) { %>
+
                 <div class="group-member-item">
+                    <% if(user.profile_pic) { %>
                     <img src="../<%= user.profile_pic %>" class="rounded-circle member-avatar">
+                    <% } else { %>
+                    <img src="https://via.placeholder.com/150" class="rounded-circle member-avatar">
+                    <% } %>
                     <div class="member-details">
                         <span class="member-name"><%= user.name %></span>
                         <span class="member-email"><%= user.EmailID %></span>
                     </div>
                 </div>
                 <hr class="divider">
-                <% } %>
+
                 <% }) %>
             </div>
         </div>
@@ -142,9 +150,6 @@
 <script>
     users = users.split("&#34;").join('"')
     users = JSON.parse(users);
-    users = users.filter(user => {
-        return user.profile_pic ? true : false
-    })
 </script>
 <script src="./../../assets/js/admin/dashboard.js"></script>
 <script src="./../../assets/js/admin/group.js"></script>

@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 
 const User = require('./../model/User');
+const Group = require('./../model/Group');
 
 module.exports.getSignupStepOne = (req, res, next) => {
     res.render('./../views/signup-step-one.ejs', { pageTitle: "Sign up", form: [], message: [] })
@@ -24,19 +25,22 @@ module.exports.getLogin = (req, res, next) => {
 };
 
 module.exports.getCheckUser = async (req, res, next) => {
+
     const user_id = req.body.idCode;
+    console.log(user_id)
 
     try {
         let isUserExist = await User.findOne({ user_id: user_id });
         if (!isUserExist) {
             return res.redirect('/signup');
         }
-        if (isUserExist.EmailID) {
-            return res.redirect('/signup');
-        }
+
         res.render('./../views/signup-step-two.ejs', {
             id: isUserExist._id,
-            pageTitle: "Sign Up"
+            pageTitle: "Sign Up",
+            message: null,
+            name: isUserExist.name,
+            email: isUserExist.EmailID
         });
 
     } catch (err) {
@@ -54,6 +58,16 @@ module.exports.postCreateUser = async (req, res, next) => {
     }
     const hashPassword = await bcrypt.hash(req.body.password, 12);
 
+    let usernameCheck = await User.findOne({ username: req.body.username })
+
+    if (usernameCheck) {
+        return res.render('./../views/signup-step-two.ejs', {
+            id: user._id,
+            pageTitle: "Sign Up",
+            message: "Username is already taken"
+        });
+    }
+
     user.name = req.body.name,
         user.EmailID = req.body.email,
         user.username = req.body.username,
@@ -61,6 +75,20 @@ module.exports.postCreateUser = async (req, res, next) => {
         user.password = hashPassword,
         user.bio = req.body.bio,
         user.profile_pic = req.body.image_src
+
+
+    let groups = await Group.find({ members: { "$in": [user._id] } });
+    let m = [];
+    groups.map(group => {
+
+        console.log(group.group_name);
+        console.log(group.members)
+        m.push(...group.members);
+
+    });
+    m = m.filter(m => JSON.stringify(m) != JSON.stringify(user._id));
+    user.connection.name = m;
+
 
     const savedUser = await user.save();
     return res.redirect('/');

@@ -52,7 +52,7 @@
                     </div>
                     <div class="col-md-12 custom-border middle-upper-layer py-3">
 
-                        <form method="POST" action="/user/feedPost">
+                        <form method="POST" action="/feedPost">
                             <div class="form-group mb-0">
 
                                 <div class="row">
@@ -241,7 +241,7 @@
                                             </div>
                                             <div class="col-md-12">
 
-                                                <% var a = "/user/feedPost?feedId=".concat(posts[curPost]._id) %>
+                                                <% var a = "/feedPost?feedId=".concat(posts[curPost]._id) %>
                                                 <form method="POST" , action=<%= a %>>
 
                                                     <% 
@@ -556,7 +556,7 @@
 
                                                                 <%= posts[curPost].comments[curComment].body %>
 
-                                                                <% var a = "/user/feedPost?feedId=".concat(posts[curPost].comments[curComment]._id) %>
+                                                                <% var a = "/feedPost?feedId=".concat(posts[curPost].comments[curComment]._id) %>
                                                                 <form method="POST" , action=<%= a %>>
 
 
@@ -847,8 +847,8 @@
                     <ul class="list-group">
                         <li class="list-group-item">
                             <img class="rounded-circle mr-3" height="25px" width="25px"
-                                src=<%= connections[i].image_src %> />
-                            <%=connections[i].username%>
+                                src="<%= connections[i].profile_pic ? connections[i].profile_pic : 'https://via.placeholder.com/150' %>" />
+                            <%= connections[i].name ? connections[i].name: "Unavailable" %>
                         </li>
                     </ul>
                     <% } %>

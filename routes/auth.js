@@ -47,19 +47,20 @@ async function getAllPosts(userID) {
     for (var i = 0; i < user_conn.length; i++) {
         var temp_post = await Feeds.find({
             author: user_conn[i].username,
-        }).populate('receiver_id').populate('author_id', 'name username email')
+        }).populate('author_id', 'name username email').populate('receiver_id')
 
         allPosts.push.apply(allPosts, temp_post)
     }
+
     let entireFeeds = await Feeds.find({ 'feedNotification.users': { $in: [userID] } })
         .populate('feedNotification.userId')
+        .populate('author_id', 'name username email')
 
     var temp_post = await Feeds.find({
         author: currentUserData.username
     }).populate('receiver_id').populate('author_id', 'name username email')
 
     allPosts.push.apply(allPosts, temp_post)
-
 
     var noti = await Notifications.find({})
     for (var i = 0; i < noti.length; i++) {
@@ -101,8 +102,6 @@ async function getAllPosts(userID) {
     allPosts.sort(function (a, b) {
         return b["timestamp"] - a["timestamp"]
     });
-
-
 
     return allPosts;
 }
@@ -640,7 +639,7 @@ router.post('/feedPost', async (req, res, next) => {
         }
 
         var find_image_src = await User.findById(currentUserID);
-        var author_image_src = find_image_src.image_src;
+        var author_image_src = find_image_src.profile_pic;
 
         const newFeed = new Feeds({
             author: currentUserName,
@@ -699,7 +698,7 @@ router.post('/feedPost', async (req, res, next) => {
                 }
 
                 let activity = '';
-                if (req.body.comment) activity = 'comment'; else if (req.body.retweet) activity = 'retweet'; else activity = 'retweet';
+                if (req.body.comment) activity = 'comment'; else if (req.body.retweet) activity = 'retweet'; else activity = 'love';
 
                 currentFeed.feedNotification.users.push(member);
                 currentFeed.feedNotification.userId = req.user._id;
@@ -854,6 +853,20 @@ router.post('/login', async (req, res) => {
         image_src: user.profile_pic
     };
 
+    /*let groups = await Group.find({ members: { "$in": [user._id] } });
+    let m = [];
+    groups.map(group => {
+
+        console.log(group.group_name);
+        console.log(group.members)
+        m.push(...group.members);
+
+    });
+    m = m.filter(m => JSON.stringify(m) != JSON.stringify(user._id));
+    user.connection.name = m;
+    await user.save();*/
+
+
     var map = new Map(); // only because unsued variables are part of humanity!
     var connection_list = await getAllConnectionInformation();
 
@@ -890,8 +903,11 @@ router.post('/login', async (req, res) => {
             return b["timestamp"] - a["timestamp"]
         });
 
-        console.log("ALL POSTS FIRST POST");
-        console.log(nPosts)
+        // console.log("ALL POSTS %%% FIRST POST");
+        // console.log(nPosts[1])
+
+
+
 
         res.render('../views/feeds_page', {
             posts: nPosts,
@@ -902,6 +918,7 @@ router.post('/login', async (req, res) => {
             suggestions: JSON.stringify(connection_list),
             moment
         });
+
     }
 });
 

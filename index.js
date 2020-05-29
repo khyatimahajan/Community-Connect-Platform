@@ -7,6 +7,7 @@ const flash = require('connect-flash');
 const bcrypt = require('bcryptjs');
 const mongoDBStore = require('connect-mongodb-session')(session);
 var uniqid = require('uniqid');
+const xlsxFile = require('read-excel-file/node');
 
 const authRoute = require('./routes/auth');
 //const postRoute = require('./routes/profRoute');
@@ -20,11 +21,13 @@ const User = require('./model/User');
 const Group = require('./model/Group');
 const errorRoutes = require('./routes/errors');
 
-const MONGODB_URI = 'mongodb://localhost/Users';
+const MONGODB_URI = 'mongodb://localhost/admin';
 
 const app = express();
 
 const groups = [];
+const users = [];
+let allRecords = 0
 
 const store = new mongoDBStore({
     uri: MONGODB_URI,
@@ -90,6 +93,31 @@ app.use((err, req, res, next) => {
 
 let port = process.env.PORT || 1337;
 
+xlsxFile('./Groups in Community Connect.xlsx').then((rows) => {
+    let countIndex = 1;
+    for (i in rows) {
+        if (i == 0) continue;
+        countIndex++;
+        users.push({ "name": rows[i][1], "user_id": rows[i][2], "EmailID": rows[i][3], "group": rows[i][4], "age": rows[i][5], "gender": rows[i][6] })
+        let userGroup = rows[i][4].split(',');
+        userGroup.forEach(g => {
+            let isAlreadyExist = groups.find(gr => gr == g);
+            if (!isAlreadyExist)
+                groups.push(g.trim());
+        })
+        if (countIndex == rows.length) {
+            console.log("ALL RECORDS")
+            allRecords = parseInt(rows.length) - 1;
+            all();
+        }
+    }
+});
+
+
+function all() {
+    createGroups();
+}
+
 app.listen(port, () => {
     console.log(`Listening at port ${port}`)
     mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -105,8 +133,6 @@ app.listen(port, () => {
                     isAdmin: true
                 }).save().then((admin) => {
                     console.log("Admin Created")
-                    console.log(admin)
-                    createGroups();
                 })
                     .catch(err => console.log(err))
             }
@@ -117,38 +143,70 @@ app.listen(port, () => {
 
 
 const createGroups = () => {
-
     let groupIndex = 0;
+    groups.map(async (group, index, array) => {
 
-    for (let i = 0; i < 5; i++) {
-        let group = new Group({
-            group_id: Math.random().toString(32).substring(2),
-            group_name: Math.random().toString(22).substring(10)
-        }).save()
-            .then((group) => {
-                groupIndex++;
-                groups.push(group.group_id);
-                if (groupIndex == 5) {
-                    //console.log("DONE GROUPS")
-                    createUsers();
-                }
-            })
-    }
+        let isGroupExist = await Group.findOne({ group_name: group })
+        if (!isGroupExist) {
+            let g = await new Group({
+                group_id: Math.random().toString(32).substring(2),
+                group_name: group,
+                group_desc: "Lorem Ipsum dolar sit amet"
+            }).save();
+        }
+        groupIndex++;
+        if (groupIndex === array.length) {
+            createUsers();
+        }
+    });
 }
 
 const createUsers = () => {
-    for (let i = 0; i < 25; i++) {
-        let user = new User({
-            user_id: `${uniqid('id_')}_${(Math.floor(Math.random() * 99) + 10)}_${uniqid()}`,
+
+
+    users.map(async (user, index, array) => {
+        let userGroups = user.group;
+        userGroups = userGroups.split(',');
+        let foundGroup;
+        let arrGr = [];
+        let userGroupIndex = 0;
+
+        userGroups.forEach(async (userGroup, index, array) => {
+            foundGroup = await Group.findOne({ group_name: userGroup.trim() });
+            if (foundGroup) {
+                arrGr.push(foundGroup.group_id);
+                userGroupIndex++;
+                if (array.length == userGroupIndex)
+                    isUserDone(user, arrGr);
+            }
+        });
+
+
+
+    });
+}
+let userGroupIndex = 0;
+const isUserDone = async (user, gr) => {
+    let isUserAlreadyExist = await User.findOne({ user_id: user.user_id })
+    if (!isUserAlreadyExist) {
+        let d = await new User({
+            name: user.name,
+            user_id: user.user_id,
+            EmailID: user.EmailID,
             isAdmin: false,
-            group_id: groups[Math.floor(Math.random() * (4 - 0 + 1)) + 0]
+            group_id: gr
         }).save()
             .then(user => {
-                Group.findOne({ group_id: user.group_id })
-                    .then(group => {
-                        group.members.push(user._id);
-                        group.save();
-                    });
+                userGroupIndex++;
+                user.group_id.forEach(async (gr, index, array) => {
+                    let group = await Group.findOne({ group_id: gr })
+                    group.members.push(user._id);
+                    await group.save();
+                })
             })
-    };
+        console.log(userGroupIndex + " " + allRecords)
+        if (userGroupIndex == allRecords) {
+            //connectionthing();
+        }
+    }
 }
