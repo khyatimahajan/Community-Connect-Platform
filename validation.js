@@ -33,8 +33,8 @@ const loginValidation = data => {
 const updateProfile = data => {
     const schema = Joi.object({
         name: Joi.string().min(4).required(),
-        location: Joi.string().min(6).required(),
-        bio: Joi.string().min(12).required()
+        location: Joi.string().required(),
+        bio: Joi.string().min(3).required()
     });
     return schema.validate(data);
 }

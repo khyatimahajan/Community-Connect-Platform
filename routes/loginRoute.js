@@ -5,10 +5,11 @@ const User = require('../model/User');
 const mongoose = require('mongoose');
 
 router.get('/', (req, res) => {
-    res.render('../views/login.ejs', { 
-        message: req.flash('message'), 
+    res.render('../views/login.ejs', {
+        message: null,
         form: req.flash('form'),
-        pageTitle: "Login" 
+        pageTitle: "Login",
+        input: {}
     })
 });
 

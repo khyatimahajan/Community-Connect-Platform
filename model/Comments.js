@@ -8,6 +8,11 @@ const userSchema = new mongoose.Schema({
     author: {
         type: String,
     },
+    author_id: {
+        type: mongoose.Types.ObjectId,
+        ref: 'user',
+        required: true
+    },
     author_img_src: {
         type: String,
     },

@@ -114,10 +114,6 @@ module.exports.updateProfile = async (req, res) => {
 
 module.exports.getNotifications = (req, res) => {
     let user = req.user;
-    if (!user) {
-        return res.redirect('/');
-    }
-
     Notifications.find({
         outconn_id: user._id
     })
@@ -152,7 +148,7 @@ module.exports.getFeeds = async (req, res) => {
             bio: user.bio,
             location: user.location,
             connection: user.connection,
-            image_src: user.image_src
+            image_src: user.profile_pic
         };
         currentUserID = user._id;
 

@@ -16,39 +16,43 @@
         <div class="col-md-6 middle-column">
             <div class="row">
                 <div class="col-md-12 custom-border custom-border-bottom py-3 group-action">
-                    <h5><%= group.name  %></h5>
-                    <button class="btn btn-primary plus-icon btn-sm add-member" data-toggle="modal" data-target="#memberAddModal">Add member</button>
+                    <h5><%= group.group_name  %></h5>
+                    <button class="btn btn-primary plus-icon btn-sm add-member" data-toggle="modal"
+                        data-target="#memberAddModal">Add member</button>
                 </div>
                 <div class="col-md-12 custom-border middle-upper-layer py-3">
 
                     <% if(memberMessage.length > 0) { %>
-                        <tr>
-                            <div class="alert alert-primary group-msg" role="alert">
+                    <tr>
+                        <div class="alert alert-primary group-msg" role="alert">
                             <%= memberMessage %>
-                            </div>
-                        </tr>
-                    <% } %>
-                    
-                    <% if(group.members.length > 0) { %> 
-                        <p class="member-total"><%= group.members.length  %> members</p>
-                        <% group.members.forEach(member=> {  %>
-                        <div class="group-main">
-                            
-                            <div class="group-member-item">
-                                <img src="../<%= member.image_src %>" class="rounded-circle member-avatar">
-                                <div class="member-details">
-                                    <span class="member-name"><%= member.name %></span>
-                                    <span class="member-email"><%= member.email %></span>
-                                </div>
-                                <span class="trash-icon" data-toggle="modal" data-target="#deleteMemberModal" id="<%= member._id %>">
-                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                            <hr class="stiched"></hr>
                         </div>
-                        <%  })  %>
+                    </tr>
+                    <% } %>
+
+                    <% if(group.members.length > 0) { %>
+                    <p class="member-total"><%= group.members.length  %> members</p>
+                    <% group.members.forEach(member=> {  %>
+                    <% if(member.profile_pic) {%>
+                    <div class="group-main">
+                        <div class="group-member-item">
+                            <img src="../<%= member.profile_pic %>" class="rounded-circle member-avatar">
+                            <div class="member-details">
+                                <span class="member-name"><%= member.name %></span>
+                                <span class="member-email"><%= member.EmailID %></span>
+                            </div>
+                            <span class="trash-icon" data-toggle="modal" data-target="#deleteMemberModal"
+                                id="<%= member._id %>">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        <hr class="stiched">
+                        </hr>
+                    </div>
+                    <% } %>
+                    <%  })  %>
                     <% } else { %>
-                        <%- include('../partials/empty-view.ejs', { icon: "fa fa-user", message: "No members", subMessage: "You haven't added any group member yet. Start adding member by clicking on 'Add member' button" }) %>
+                    <%- include('../partials/empty-view.ejs', { icon: "fa fa-user", message: "No members", subMessage: "You haven't added any group member yet. Start adding member by clicking on 'Add member' button" }) %>
                     <% } %>
                 </div>
             </div>
@@ -61,22 +65,24 @@
             </div>
             <div class="user_list">
                 <% allusers.forEach(user=>{ %>
-                    <div class="group-member-item">
-                        <img src="../<%= user.image_src %>" class="rounded-circle member-avatar">
-                        <div class="member-details">
-                            <span class="member-name"><%= user.name %></span>
-                            <span class="member-email"><%= user.email %></span>
-                        </div>
+                <% if(user.profile_pic) { %>
+                <div class="group-member-item">
+                    <img src="../<%= user.profile_pic %>" class="rounded-circle member-avatar">
+                    <div class="member-details">
+                        <span class="member-name"><%= user.name %></span>
+                        <span class="member-email"><%= user.EmailID %></span>
                     </div>
-                    <hr class="divider">
+                </div>
+                <hr class="divider">
+                <% } %>
                 <% }) %>
             </div>
         </div>
     </div>
 
-     <!-- member add Modal -->
+    <!-- member add Modal -->
     <div class="modal fade" id="memberAddModal" tabindex="-1" role="dialog" aria-labelledby="memberAddModalLabel"
-     aria-hidden="true">
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form method="POST" action="add-member">
@@ -89,13 +95,8 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="groupMemberLabel">Group Member</label>
-                            <input 
-                                name="members"
-                                type="text" 
-                                class="form-control group_member_autocomplete input" 
-                                id="groupMemberLabel"
-                                placeholder="Try to add persons from the list"
-                                required>
+                            <input name="members" type="text" class="form-control group_member_autocomplete input"
+                                id="groupMemberLabel" placeholder="Try to add persons from the list" required>
                         </div>
                         <input type="hidden" name="group_id" value="<%= group._id %>">
                     </div>
@@ -110,20 +111,21 @@
 
 
     <!-- Delete Modal -->
-    <div class="modal fade" id="deleteMemberModal" tabindex="-1" role="dialog" aria-labelledby="deleteMemberModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteMemberModal" tabindex="-1" role="dialog" aria-labelledby="deleteMemberModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Delete member?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                    <h5 class="modal-title" id="exampleModalLabel">Delete member?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     Do you want to delete this member?
                 </div>
                 <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
                     <form action="member/delete" method="POST">
                         <input type="hidden" name="member_id" id="f_member_id">
                         <input type="hidden" name="group_id" value="<%= group._id %>">
@@ -140,6 +142,9 @@
 <script>
     users = users.split("&#34;").join('"')
     users = JSON.parse(users);
+    users = users.filter(user => {
+        return user.profile_pic ? true : false
+    })
 </script>
 <script src="./../../assets/js/admin/dashboard.js"></script>
 <script src="./../../assets/js/admin/group.js"></script>

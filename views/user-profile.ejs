@@ -11,49 +11,38 @@
                 </div>
                 <div class="col-md-12 custom-border middle-upper-layer py-3">
                     <% if(profileMessage.length > 0) { %>
-                        <div class="alert alert-info profile-message" role="alert">
-                        <%= profileMessage %>
-                        </div>
+                    <div class="alert alert-info profile-message" role="alert">
+                        <%= profileMessage[0] %>
+                    </div>
                     <% } %>
                     <div>
                         <div class="proflie_banner">
                             <div class="profile_image_container">
-                                <img class="profile_image" src="<%= user.image_src %>" />
+                                <img class="profile_image" src="<%= user.profile_pic %>" />
                             </div>
                             <div class="profile_header_details">
                                 <span class="profile_name"><%= user.name %></span>
                                 <span class="profile_location"><%= user.location %></span>
                             </div>
                         </div>
-                        
+
                         <form action="/users/profileUpdate" method="POST">
                             <div class="profile_form_container">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="inputName">Name</label>
-                                            <input 
-                                                type="text" 
-                                                class="form-control" 
-                                                id="inputName" 
-                                                name="name"
-                                                value="<%= pform.length > 0 ? pform[0].name : user.name %>" 
-                                                aria-describedby="emailHelp"
-                                                placeholder="Enter name" />
+                                            <input type="text" class="form-control" id="inputName" name="name"
+                                                value="<%= pform.length > 0 ? pform[0].name : user.name %>"
+                                                aria-describedby="emailHelp" placeholder="Enter name" />
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="inputUsername">Username</label>
-                                            <input 
-                                                type="text" 
-                                                class="form-control" 
-                                                id="inputUsername" 
-                                                name="username"
-                                                value="<%= user.username %>" 
-                                                aria-describedby="emailHelp"
-                                                placeholder="Enter username"
-                                                disabled />
+                                            <input type="text" class="form-control" id="inputUsername" name="username"
+                                                value="<%= user.username %>" aria-describedby="emailHelp"
+                                                placeholder="Enter username" disabled />
                                         </div>
                                     </div>
                                 </div>
@@ -62,28 +51,17 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="inputEmail">Email address</label>
-                                            <input 
-                                                type="email" 
-                                                class="form-control" 
-                                                id="inputEmail" 
-                                                name="email"
-                                                value="<%= user.email %>" 
-                                                aria-describedby="emailHelp"
-                                                placeholder="Enter email"
-                                                disabled />
+                                            <input type="email" class="form-control" id="inputEmail" name="email"
+                                                value="<%= user.EmailID %>" aria-describedby="emailHelp"
+                                                placeholder="Enter email" disabled />
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="inputLocation">Location</label>
-                                            <input 
-                                                type="text" 
-                                                class="form-control" 
-                                                id="inputLocation" 
-                                                name="location"
-                                                value="<%= pform.length > 0 ? pform[0].location : user.location %>" 
-                                                aria-describedby="emailHelp"
-                                                placeholder="Enter location" />
+                                            <input type="text" class="form-control" id="inputLocation" name="location"
+                                                value="<%= pform.length > 0 ? pform[0].location : user.location %>"
+                                                aria-describedby="emailHelp" placeholder="Enter location" />
                                         </div>
                                     </div>
                                 </div>
@@ -92,11 +70,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="inputBio">Bio</label>
-                                            <textarea 
-                                                type="text" 
-                                                class="form-control" 
-                                                id="inputBio" 
-                                                name="bio"
+                                            <textarea type="text" class="form-control" id="inputBio" name="bio"
                                                 aria-describedby="emailHelp"
                                                 placeholder="Enter bio"><%= pform.length > 0 ? pform[0].bio : user.bio  %></textarea>
                                         </div>
@@ -117,9 +91,9 @@
                 <div class="col-md-12 custom-border middle-upper-layer py-3">
                     <div>
                         <% if(message.length > 0) { %>
-                            <div class="alert alert-info password-message" role="alert">
+                        <div class="alert alert-info password-message" role="alert">
                             <%= message %>
-                            </div>
+                        </div>
                         <% } %>
                         <form action="/users/password-reset" method="POST">
                             <div class="password_form_container">
@@ -127,14 +101,10 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="inputName">Current Password</label>
-                                            <input 
-                                                type="password" 
-                                                class="form-control" 
-                                                id="current-password" 
+                                            <input type="password" class="form-control" id="current-password"
                                                 name="currentPassword"
                                                 value="<%= form.length >0 ? form[0].currentPassword : '' %>"
-                                                aria-describedby="emailHelp"
-                                                placeholder="Enter current password" />
+                                                aria-describedby="emailHelp" placeholder="Enter current password" />
                                         </div>
                                     </div>
                                 </div>
@@ -143,27 +113,19 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="inputEmail">New Password</label>
-                                            <input 
-                                                type="password" 
-                                                class="form-control" 
-                                                id="new-password" 
+                                            <input type="password" class="form-control" id="new-password"
                                                 name="newPassword"
                                                 value="<%= form.length >0 ? form[0].newPassword : '' %>"
-                                                aria-describedby="emailHelp"
-                                                placeholder="Enter new password" />
+                                                aria-describedby="emailHelp" placeholder="Enter new password" />
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="inputLocation">Confirm New Password</label>
-                                            <input 
-                                                type="password" 
-                                                class="form-control" 
-                                                id="cnew-password" 
+                                            <input type="password" class="form-control" id="cnew-password"
                                                 name="cnewPassword"
                                                 value="<%= form.length >0 ? form[0].cnewPassword : '' %>"
-                                                aria-describedby="emailHelp"
-                                                placeholder="Renter new password" />
+                                                aria-describedby="emailHelp" placeholder="Renter new password" />
                                         </div>
                                     </div>
                                 </div>

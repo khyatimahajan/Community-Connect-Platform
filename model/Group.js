@@ -3,11 +3,17 @@ const mongoose = require('mongoose');
 let schema = mongoose.Schema;
 
 let groupSchema = new schema({
-    name: {
+    group_name: {
         type: String,
         required: true
     },
-    members : [
+    group_id: {
+        type: String
+    },
+    group_desc: {
+        type: String,
+    },
+    members: [
         {
             type: mongoose.Types.ObjectId,
             ref: "user"

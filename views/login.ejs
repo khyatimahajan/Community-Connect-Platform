@@ -1,48 +1,30 @@
 <%- include partials/head.ejs -%>
-<link rel="stylesheet" href="../style/first_login.css" type="text/css">
+<link rel="stylesheet" href="../style/login.css" type="text/css">
 </head>
 
 <body>
-  <div class="login-card">
-    <div class="card-container">
-      <table class="login-form">
-        <tr>
-          <td>
-            <h2>Community Connect</h2>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <h3>Enter your User Name and click on the 'sign in' button below.</h3>
-          </td>
-        </tr>
-        <tr>
-          <form id="login-form" method="POST" action="/user/idlogin">
-            <td>
-              <input 
-                type="text" 
-                id="idcode" 
-                name="idcode" 
-                placeholder="ID Code" 
-                value="<%= form.length>0 ? form[0].idcode : '' %>"
-                required>
-        <tr>
-          <td><button class="Login-button" type="submit">Sign in</button>
-            </form>
-            <form id="login-form" action="/profile">
-              <input type="hidden" value="empty">
-              <button class="Login-button" type="submit">Sign up</button>
-            </form>
-          </td>
-        </tr>
-        <% if(message.length > 0) { %>
-        <tr>
-          <div class="alert alert-primary" role="alert">
-            <%= message %>
-          </div>
-        </tr>
+    <div class="login-card">
+        <% if(message) { %>
+        <div id="error" class="quick-switch">
+            <p class="error-message"><%= message %></p>
+        </div>
         <% } %>
-      </table>
+        <div class="card-container">
+            <h1>Login to Community Connect</h1>
+            <form action="/login" method="POST" novalidate>
+                <input type="email" id="email" name="email" placeholder="Enter email"
+                    value="<%= input ? input.email: '' %>" class="form-control form-control-sm" required />
+                <input type="password" id="password" name="password" class="form-control form-control-sm"
+                    placeholder="Enter password" required />
+                <button class="btn btn-primary btn-sm signin w-100">Sign In</button>
+            </form>
+            <hr>
+            <ul class="bottom-form-link">
+                <li><a href="/forgot">Can't log
+                        in?</a></li>
+                <li><a href="/signup">Sign up for an
+                        account</a></li>
+            </ul>
+        </div>
     </div>
-  </div>
-  <%- include partials/end.ejs -%>
+    <%- include partials/end.ejs -%>

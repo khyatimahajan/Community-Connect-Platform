@@ -4,8 +4,17 @@ const userSchema = new mongoose.Schema({
     author: {
         type: String,
     },
+    author_id: {
+        type: mongoose.Types.ObjectId,
+        ref: 'user',
+        required: true
+    },
     author_image: {
         type: String
+    },
+    receiver_id: {
+        type: mongoose.Types.ObjectId,
+        ref: 'user',
     },
     receiver: {
         type: String,
@@ -42,7 +51,7 @@ const userSchema = new mongoose.Schema({
         default: Date.now
     },
     feedNotification: {
-        userId :{
+        userId: {
             type: mongoose.Types.ObjectId,
             ref: "user"
         },
@@ -56,15 +65,6 @@ const userSchema = new mongoose.Schema({
             }
         ]
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
 });
 
 module.exports = mongoose.model('Feeds', userSchema, 'feeds');

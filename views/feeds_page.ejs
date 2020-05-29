@@ -57,7 +57,7 @@
 
                                 <div class="row">
                                     <div class="col-md-1">
-                                        <img src=<%= posts[0].image_src %> class="rounded-circle mr-3" height="60px"
+                                        <img src="<%= posts[0].image_src %>" class="rounded-circle mr-3" height="60px"
                                             width="60px" />
                                     </div>
 
@@ -75,8 +75,8 @@
                                         <button class="btn btn-primary post-btn btn-sm float-right float-bottom ml-auto"
                                             style="margin-top: -1px; margin-right: 20px;" type="submit"
                                             value="Post">Post</button>
-                                        <input class="receiver float-right mr-2 mt-0" type="text" name="receiver"
-                                            id="receiver" placeholder="Receiver's ID">
+                                        <!-- <input class="receiver float-right mr-2 mt-0" type="text" name="receiver"
+                                            id="receiver" placeholder="Receiver's ID"> -->
                                     </div>
                                 </div>
 
@@ -114,14 +114,11 @@
 
                                 <% if(posts[curPost].author == posts[curPost].receiver) { %>
 
-
-
                                 <tr class="post-row">
                                     <td class="post-content">
 
                                         <% if(posts[curPost].retweet_edit_body != "") { %>
                                         <div class="row">
-
 
                                             <div class="col-md-12">
                                                 <div class="row">
@@ -146,8 +143,8 @@
                                             <div class="col-md-12" style="padding-left: 30px;">
                                                 <img src=<%= posts[curPost].author_image %> class="rounded-circle mr-3"
                                                     height="25px" width="25px" />
-                                                <b>@<%= posts[curPost].author %>'s Feed: </b>
-                                                </b>
+                                                <b>@<%= posts[curPost].author %>'s Feed:</b>
+
                                             </div>
 
 
@@ -161,7 +158,10 @@
                                                     <div class="col-md-10">
                                                         <img src=<%= posts[curPost].author_image %>
                                                             class="rounded-circle mr-3" height="25px" width="25px" />
-                                                        <b>@<%= posts[curPost].author %> Feed:</b>
+                                                        <!-- <b>@<%= posts[curPost].author %> Feed:</b> -->
+                                                        <b><%= posts[curPost].author_id.name %></b>
+                                                        <span class="tag_username">-
+                                                            @<%= posts[curPost].author_id.username %></span>
                                                     </div>
                                                     <div class="col-md-2 postTimestamp">
                                                         <%= moment(posts[curPost].timestamp).fromNow(true) %> ago
@@ -186,7 +186,10 @@
                                                     <div class="col-md-10">
                                                         <img src=<%= posts[curPost].author_image %>
                                                             class="rounded-circle mr-3" height="25px" width="25px" />
-                                                        <b>@<%= posts[curPost].author %> Feed:</b>
+                                                        <!-- <b>@<%= posts[curPost].author %> Feed:</b> -->
+                                                        <b><%= posts[curPost].author_id.name %></b>
+                                                        <span class="tag_username">-
+                                                            @<%= posts[curPost].author_id.username %></span>
                                                     </div>
                                                     <div class="col-md-2 postTimestamp">
                                                         <%= moment(posts[curPost].timestamp).fromNow(true) %> ago
@@ -204,12 +207,16 @@
 
                                             <% } %>
 
+                                            <% if(posts[curPost].receiver_id) { %>
                                             <div class="col-md-12 mt-2 ml-5">
                                                 <img src=<%= posts[curPost].receiver_image %>
                                                     class="rounded-circle mr-3" height="25px" width="25px" />
-                                                <b>@<%= posts[curPost].receiver %>
-                                                </b>
+
+                                                <b><%= posts[curPost].receiver_id.name %></b>
+                                                <span class="tag_username">-
+                                                    @<%= posts[curPost].receiver_id.username %></span>
                                             </div>
+                                            <% } %>
 
                                         </div>
 
@@ -223,7 +230,7 @@
                                             <div class="col-md-12 p-1">
 
                                                 <% if(posts[curPost].author != posts[curPost].receiver) { %>
-                                                <div class="comment-background" style="margin-left:105px;">
+                                                <div class="comment-background" style="margin-left:58px;">
                                                     <%= posts[curPost].body %>
                                                 </div>
                                                 <% } else {%>
@@ -536,9 +543,16 @@
 
 
 
-                                                                <b class="mr-2">@<%= posts[curPost].comments[curComment].author %>
+                                                                <!-- <b class="mr-2">@<%= posts[curPost].comments[curComment].author %>
                                                                     :
-                                                                </b>
+                                                                </b> -->
+
+                                                                <div class="mr-2">
+                                                                    <b><%= posts[curPost].comments[curComment].author_id.name %></b>
+                                                                    <span class="tag_username">-
+                                                                        @<%= posts[curPost].comments[curComment].author_id.username %></span>
+                                                                </div>
+
 
                                                                 <%= posts[curPost].comments[curComment].body %>
 

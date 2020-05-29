@@ -12,7 +12,7 @@
                     </a>
                 </div>
             </li>
-            
+
             <% } %>
 
             <% if(!user.isAdmin) { %>
@@ -29,7 +29,7 @@
                 <div class="on-hover-show">
                     <a href="/users/feeds" class=" py-3 px-4">
                         <img class="rounded-circle mr-3" height="25px" width="25px"
-                            src=<%= user.image_src %> /><%=user.username%>
+                            src=<%= user.profile_pic %> /><%=user.username%>
                     </a>
                 </div>
             </li>
@@ -83,14 +83,14 @@
 
             <li class="list-group-item">
                 <div class="on-hover-show">
-                    <a href="/user/logout" class=" py-3 px-4">
+                    <a href="/logout" class=" py-3 px-4">
                         <i class="fa fa-sign-in fa-lg mr-3" aria-hidden="true"></i>Logout
                     </a>
                 </div>
             </li>
 
             <% } %>
-           
+
         </ul>
     </div>
 

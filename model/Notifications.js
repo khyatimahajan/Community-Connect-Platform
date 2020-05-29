@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const notificationSchema = new mongoose.Schema({
-    inconn_id:{
+    inconn_id: {
         type: mongoose.Types.ObjectId,
         ref: "user"
     },
-    outconn_id:{
+    outconn_id: {
         type: mongoose.Types.ObjectId,
         ref: "user"
     },
@@ -19,8 +19,8 @@ const notificationSchema = new mongoose.Schema({
     like: {
         type: Boolean
     },
-    status:{
-        type:String
+    status: {
+        type: String
     },
     timestamp: {
         type: Date,

@@ -178,3 +178,7 @@ body{
     position: relative;
     float: inherit;;
 }
+.content-center {
+  text-align: center;
+  margin: 12px 0px;
+}

@@ -22,7 +22,7 @@ module.exports.postLogin = async (req, res, next) => {
         req.flash('form', req.body)
         return res.redirect('login')
     }
-    let user = await User.findOne({ email: email });
+    let user = await User.findOne({ EmailID: email });
     if (!user) {
         req.flash('message', "Invalid credentials")
         req.flash('form', req.body)
@@ -51,7 +51,7 @@ module.exports.getDashboard = async (req, res, next) => {
 
         let users = []
         allusers.map(user => {
-            users.push({ 'id': user._id, 'value': user.name });
+            users.push({ 'id': user._id, 'value': user.name, 'profile_pic': user.profile_pic });
         });
 
         let groups = await Group.find().populate('members');
@@ -145,24 +145,25 @@ module.exports.getGroup = async (req, res, next) => {
         group.members.map(member => {
             let res = false;
             users = users.filter(user => {
-                if (user._id.toString() != member._id.toString()) {
+                if ((user._id.toString() != member._id.toString())) {
                     res = true;
                 } else {
                     res = false;
                 }
                 return res;
             });
+            return res;
         });
 
         let nonGroupUser = []
 
         users.map(user => {
-            nonGroupUser.push({ 'id': user._id, 'value': user.name });
+            nonGroupUser.push({ 'id': user._id, 'value': user.name, 'profile_pic': user.profile_pic });
         });
 
         res.render('./../views/admin/group', {
             group,
-            pageTitle: `${group.name} Group | Group`,
+            pageTitle: `${group.group_name} | Group`,
             user: req.user,
             allusers,
             users: JSON.stringify(nonGroupUser),

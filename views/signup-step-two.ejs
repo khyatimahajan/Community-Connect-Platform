@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:200" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+        </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="js/emojionearea.min.js"></script>
+    <link rel="stylesheet" href="../style/profile.css">
+
+    <title>Profile</title>
+</head>
+
+<style>
+    .cursorPointer {
+        cursor: pointer;
+    }
+
+    .profile-container {
+        border: 1px solid rgba(29, 161, 242, 0.1);
+    }
+
+    .card {
+        margin: 0 auto;
+        float: none;
+        margin-bottom: 10px;
+        border: 0px solid transparent;
+
+    }
+
+    .card-body {
+        background-color: rgba(29, 161, 242, 0.1);
+    }
+</style>
+
+<body>
+    <div class="container-fluid p-4">
+        <div class="row  text-center">
+            <div class="col-12">
+                <form method="POST" action="create-user">
+                    <div class="col-12">
+                        <h3><a href="feeds_page.ejs">Community Connect</a></h3>
+                    </div>
+                    <div class="col-12 mt-5">
+                        <div class="card" style="width: 280px">
+                            <img id="theImage" width="280px" height="280px" class="profile_image"
+                                src="http://placehold.it/140x140" />
+                            <div class="card-body">
+                                <h6 class="card-title">Choose between these images</h6>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <img id="image-1" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(1)">
+                                        <img id="image-2" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(2)">
+                                        <img id="image-3" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(3)">
+                                        <img id="image-4" width="45" height="45" alt="..."
+                                            class="img-thumbnail cursorPointer" onclick="pictureChange(4)">
+                                    </div>
+
+                                    <div class="col-md-12 mt-2">
+                                        <img id="image-5" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(5)">
+                                        <img id="image-6" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(6)">
+                                        <img id="image-7" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(7)">
+                                        <img id="image-8" width="45" height="45" alt="..."
+                                            class="img-thumbnail cursorPointer" onclick="pictureChange(8)">
+                                    </div>
+
+                                    <div class="col-md-12 mt-2">
+                                        <img id="image-9" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(9)">
+                                        <img id="image-10" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(10)">
+                                        <img id="image-11" width="45" height="45" alt="..."
+                                            class="img-thumbnail mr-2 cursorPointer" onclick="pictureChange(11)">
+                                        <img id="image-12" width="45" height="45" alt="..."
+                                            class="img-thumbnail cursorPointer" onclick="pictureChange(12)">
+
+                                    </div>
+
+                                    <input type="hidden" name="image_src" id="image_src"
+                                        value="http://placehold.it/140X140">
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6 offset-md-3 mt-3">
+
+                        <h3>Personal Information (Public)</h3>
+
+
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label for="user-nm"></label>
+                                <input type="text" class="form-control" name="name" id="name" placeholder="Full Name"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label class="sr-only" for="user-dn">Email</label>
+                                <input type="email" class="form-control" name="email" id="email" placeholder="Email"
+                                    required>
+                            </div>
+                            <div class="form-group col">
+                                <label class="sr-only" for="user-nm">Username</label>
+                                <div class="input-group mb-2">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">@</div>
+                                    </div>
+                                    <input type="text" class="form-control" name="username" id="username"
+                                        placeholder="User Name" required>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label class="sr-only" for="user-ln">City</label>
+                                <input type="text" class="form-control" name="location" id="location"
+                                    placeholder="Location" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label class="sr-only" for="myTextarea"></label>
+                                <textarea type="text" class="form-control" name="bio" id="bio" maxlength="120" rows="5"
+                                    placeholder="Bio" style="margin-left:0px" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label class="sr-only" for="passwd">Password</label>
+                                <input type="password" class="form-control" name="password" id="user-pass"
+                                    placeholder="Password" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="sr-only" for="conf-passwd">Confirm Password</label>
+                                <input type="password" class="form-control" name="password_conf" id="conf-passwd"
+                                    placeholder="Confirm password" required>
+                            </div>
+                        </div>
+                        <input type="hidden" name="id" value="<%= id %>" />
+
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    <script src="js/emojiPicker.js"></script>
+
+    <script>
+        var image_1 = "../assets/lib/img/1.png";
+        var image_2 = "../assets/lib/img/2.png";
+        var image_3 = "../assets/lib/img/3.png";
+        var image_4 = "../assets/lib/img/4.png";
+        var image_5 = "../assets/lib/img/5.png";
+        var image_6 = "../assets/lib/img/6.png";
+        var image_7 = "../assets/lib/img/7.png";
+        var image_8 = "../assets/lib/img/8.png";
+        var image_9 = "../assets/lib/img/9.png";
+        var image_10 = "../assets/lib/img/10.png";
+        var image_11 = "../assets/lib/img/11.png";
+        var image_12 = "../assets/lib/img/12.png";
+
+
+
+        document.getElementById('image-1').src = "../assets/lib/img/1.png";
+        document.getElementById('image-2').src = image_2;
+        document.getElementById('image-3').src = image_3;
+        document.getElementById('image-4').src = image_4;
+
+        // ----------------------------CHANGE REQUIRED-----------------------------
+
+        document.getElementById('image-5').src = image_5;
+        document.getElementById('image-6').src = image_6;
+        document.getElementById('image-7').src = image_7;
+        document.getElementById('image-8').src = image_8;
+
+        document.getElementById('image-9').src = image_9;
+        document.getElementById('image-10').src = image_10;
+        document.getElementById('image-11').src = image_11;
+        document.getElementById('image-12').src = image_12;
+
+
+        function pictureChange(int_v) {
+            if (int_v == 1) {
+                document.getElementById('theImage').src = image_1;
+                document.getElementById('image_src').value = image_1;
+            } else if (int_v == 2) {
+                document.getElementById('theImage').src = image_2;
+                document.getElementById('image_src').value = image_2;
+            } else if (int_v == 3) {
+                document.getElementById('theImage').src = image_3;
+                document.getElementById('image_src').value = image_3;
+            } else if (int_v == 4) {
+                document.getElementById('theImage').src = image_4;
+                document.getElementById('image_src').value = image_4;
+            } else if (int_v == 5) {
+                document.getElementById('theImage').src = image_5;
+                document.getElementById('image_src').value = image_5;
+            } else if (int_v == 6) {
+                document.getElementById('theImage').src = image_6;
+                document.getElementById('image_src').value = image_6;
+            } else if (int_v == 7) {
+                document.getElementById('theImage').src = image_7;
+                document.getElementById('image_src').value = image_7;
+            } else if (int_v == 8) {
+                document.getElementById('theImage').src = image_8;
+                document.getElementById('image_src').value = image_8;
+            } else if (int_v == 9) {
+                document.getElementById('theImage').src = image_9;
+                document.getElementById('image_src').value = image_9;
+            } else if (int_v == 10) {
+                document.getElementById('theImage').src = image_10;
+                document.getElementById('image_src').value = image_10;
+            } else if (int_v == 11) {
+                document.getElementById('theImage').src = image_11;
+                document.getElementById('image_src').value = image_11;
+            } else if (int_v == 12) {
+                document.getElementById('theImage').src = image_12;
+                document.getElementById('image_src').value = image_12;
+            } else {
+                document.getElementById('theImage').src = "http://placehold.it/140X140"
+            }
+
+        }
+    </script>
+
+
+</body>
+
+</html>
