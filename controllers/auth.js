@@ -4,7 +4,7 @@ const User = require('./../model/User');
 const Group = require('./../model/Group');
 
 module.exports.getSignupStepOne = (req, res, next) => {
-    res.render('./../views/signup-step-one.ejs', { pageTitle: "Sign up", form: [], message: [] })
+    res.render('./../views/signup-step-one.ejs', { pageTitle: "Sign up", form: [], message: [], error: false })
 };
 
 module.exports.getSignupStepTwo = async (req, res, next) => {
@@ -31,8 +31,14 @@ module.exports.getCheckUser = async (req, res, next) => {
 
     try {
         let isUserExist = await User.findOne({ user_id: user_id });
+
+
+
+        if (isUserExist && isUserExist.username) {
+            return res.render('./../views/signup-step-one.ejs', { pageTitle: "Sign up", form: [], message: [], error: "This account already exists. Please sign in instead using the email you provided for the study and the password you set for this account" })
+        }
         if (!isUserExist) {
-            return res.redirect('/signup');
+            return res.render('./../views/signup-step-one.ejs', { pageTitle: "Sign up", form: [], message: [], error: "No account found" })
         }
 
         res.render('./../views/signup-step-two.ejs', {
@@ -64,7 +70,9 @@ module.exports.postCreateUser = async (req, res, next) => {
         return res.render('./../views/signup-step-two.ejs', {
             id: user._id,
             pageTitle: "Sign Up",
-            message: "Username is already taken"
+            message: "Username is already taken",
+            name: user.name,
+            email: user.EmailID
         });
     }
 

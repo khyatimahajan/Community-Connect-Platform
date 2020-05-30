@@ -5,6 +5,11 @@
 <body>
   <div class="login-card">
     <div class="card-container">
+      <% if(error) { %>
+      <div id="error" class="quick-switch">
+        <p class="error-message"><%= error %></p>
+      </div>
+      <% } %>
       <h1>Sign up for your account</h1>
       <form action="sign-up" method="POST">
         <input type="text" id="idCode" name="idCode" placeholder="Enter Id Code" class="form-control form-control-sm"

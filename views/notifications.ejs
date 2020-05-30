@@ -13,8 +13,8 @@
                     <% if(notifications.length > 0) { %>
                     <% notifications.forEach(notification=> { %>
                     <div class="notification_item">
-                        <img src="<%= notification.inconn_id.image_src %>" class="rounded float-left notification_image"
-                            alt="...">
+                        <img src="<%= notification.inconn_id.profile_pic %>"
+                            class="rounded float-left notification_image" alt="...">
                         <div class="notification_item_details">
                             <span class="notification_user"><%= notification.inconn_id.name %></span>
                             <span class="notification_activity">

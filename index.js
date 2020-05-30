@@ -21,7 +21,7 @@ const User = require('./model/User');
 const Group = require('./model/Group');
 const errorRoutes = require('./routes/errors');
 
-const MONGODB_URI = 'mongodb://localhost/admin';
+const MONGODB_URI = 'mongodb://localhost/Users';
 
 const app = express();
 
@@ -106,7 +106,6 @@ xlsxFile('./Groups in Community Connect.xlsx').then((rows) => {
                 groups.push(g.trim());
         })
         if (countIndex == rows.length) {
-            console.log("ALL RECORDS")
             allRecords = parseInt(rows.length) - 1;
             all();
         }
@@ -204,9 +203,5 @@ const isUserDone = async (user, gr) => {
                     await group.save();
                 })
             })
-        console.log(userGroupIndex + " " + allRecords)
-        if (userGroupIndex == allRecords) {
-            //connectionthing();
-        }
     }
 }

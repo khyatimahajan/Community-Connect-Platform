@@ -388,7 +388,7 @@
                                                                         <div class="modal-header">
                                                                             <h5 class="modal-title"
                                                                                 id="exampleModalLabel">
-                                                                                Type your Tweet
+                                                                                Type your Tweetxxx
                                                                             </h5>
                                                                             <button type="button" class="close"
                                                                                 data-dismiss="modal" aria-label="Close">
@@ -413,6 +413,8 @@
 
                                                                                     <% if(posts[curPost].author == posts[curPost].receiver) { %>
 
+
+
                                                                                     <img src=<%= posts[curPost].author_image %>
                                                                                         class="rounded-circle mr-3"
                                                                                         height="25px" width="25px" />
@@ -424,11 +426,13 @@
                                         
                                                                                                                         <% if(posts[curPost].author != posts[curPost].receiver) { %>
 
-                                                                                    <img src=<%= posts[curPost].receiver_image %>
+                                                                                    <img src=<%= posts[curPost].author_image %>
                                                                                         class="rounded-circle mr-3"
                                                                                         height="25px" width="25px" />
-                                                                                    <b>@<%= posts[curPost].receiver %>
+                                                                                    <b>@<%= posts[curPost].author %>
                                                                                     </b>
+
+
 
                                                                                     <% } %>
 
@@ -525,6 +529,7 @@
 
 
                                 <% if (posts[curPost].comments && posts[curPost].comments.length) { %>
+
                                 <% for(var curComment=0; curComment<posts[curPost].comments.length; curComment++) { %>
                                 <tr>
                                     <td>

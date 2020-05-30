@@ -310,6 +310,7 @@ router.post('/feedPost', async (req, res, next) => {
         if (req.body.comment) {
 
             currentFeed = await Feeds.findById(feedId);
+            currentFeed.timestamp = +new Date();
             currentFeed.com_count++;
             await currentFeed.save();
 
@@ -325,7 +326,7 @@ router.post('/feedPost', async (req, res, next) => {
                 count: 0,
                 love_count: 0,
                 love_people: [],
-                author_img_src: req.user ? req.user.image_src : "",
+                author_img_src: req.user ? req.user.profile_pic : "",
                 retweet_edit_body: "",
                 retweet_edit_count: 0
             });
@@ -362,7 +363,7 @@ router.post('/feedPost', async (req, res, next) => {
 
             var receiverName = currentUserName;
             var find_image_src = await User.findById(currentUserID);
-            var receiver_image_src = find_image_src.image_src;
+            var receiver_image_src = find_image_src.profile_pic;
 
             let recieverUser;
 
@@ -405,7 +406,7 @@ router.post('/feedPost', async (req, res, next) => {
             var receiverName = currentUserName;
 
             var find_image_src = await User.findById(currentUserID);
-            var author_image_src = find_image_src.image_src;
+            var author_image_src = find_image_src.profile_pic;
             var receiver_image_src = author_image_src;
 
             let recieverUser;
@@ -416,7 +417,7 @@ router.post('/feedPost', async (req, res, next) => {
                 });
                 if (!user) return res.status(400).send('Receiver not found!');
                 receiverName = user.username;
-                receiver_image_src = user.image_src;
+                receiver_image_src = user.profile_pic;
                 recieverUser = user;
             }
 
@@ -464,7 +465,7 @@ router.post('/feedPost', async (req, res, next) => {
             console.log("This is America", req.body.retweet_com, currentUserID);
 
             var find_image_src = await User.findById(currentUserID);
-            var author_image_src = find_image_src.image_src;
+            var author_image_src = find_image_src.profile_pic;
             var receiver_image_src = author_image_src;
 
             let recieverUser;
@@ -473,7 +474,7 @@ router.post('/feedPost', async (req, res, next) => {
                 username: req.body.retweet_com
             });
             receiverName = user.username;
-            receiver_image_src = user.image_src;
+            receiver_image_src = user.profile_pic;
             recieverUser = user;
 
             currentFeed = await Comments.findById(req.body.post_id);
@@ -508,11 +509,15 @@ router.post('/feedPost', async (req, res, next) => {
 
         //RETWEET POST
         if (req.body.retweet) {
+
             console.log("retweet clicked");
+
+            console.log(req.body)
+
             var receiverName = currentUserName;
 
             var find_image_src = await User.findById(currentUserID);
-            var author_image_src = find_image_src.image_src;
+            var author_image_src = find_image_src.profile_pic;
             var receiver_image_src = author_image_src;
 
             let recieverUser;
@@ -522,8 +527,12 @@ router.post('/feedPost', async (req, res, next) => {
                     username: req.body.receiver
                 });
                 if (!user) return res.status(400).send('Receiver not found!');
+
+                console.log("RECEIVER");
+                console.log(user);
+
                 receiverName = user.username;
-                receiver_image_src = user.image_src;
+                receiver_image_src = user.profile_pic;
                 recieverUser = user;
             }
 
@@ -746,13 +755,14 @@ router.post('/feedPost', async (req, res, next) => {
         nPosts.sort(function (a, b) {
             return b["timestamp"] - a["timestamp"]
         });
-        res.render('../views/feeds_page', {
-            posts: nPosts,
-            connections: connection_list,
-            user: req.session.user,
-            suggestions: JSON.stringify(connection_list),
-            moment
-        });
+        // res.render('../views/feeds_page', {
+        //     posts: nPosts,
+        //     connections: connection_list,
+        //     user: req.session.user,
+        //     suggestions: JSON.stringify(connection_list),
+        //     moment
+        // });
+        res.redirect('users/feeds');
     }
 });
 
@@ -853,20 +863,6 @@ router.post('/login', async (req, res) => {
         image_src: user.profile_pic
     };
 
-    /*let groups = await Group.find({ members: { "$in": [user._id] } });
-    let m = [];
-    groups.map(group => {
-
-        console.log(group.group_name);
-        console.log(group.members)
-        m.push(...group.members);
-
-    });
-    m = m.filter(m => JSON.stringify(m) != JSON.stringify(user._id));
-    user.connection.name = m;
-    await user.save();*/
-
-
     var map = new Map(); // only because unsued variables are part of humanity!
     var connection_list = await getAllConnectionInformation();
 
@@ -902,23 +898,16 @@ router.post('/login', async (req, res) => {
         nPosts.sort(function (a, b) {
             return b["timestamp"] - a["timestamp"]
         });
-
-        // console.log("ALL POSTS %%% FIRST POST");
-        // console.log(nPosts[1])
-
-
-
-
-        res.render('../views/feeds_page', {
-            posts: nPosts,
-            connections: connection_list,
-            map: map,
-            user1: user,
-            user: user,
-            suggestions: JSON.stringify(connection_list),
-            moment
-        });
-
+        // res.render('../views/feeds_page', {
+        //     posts: nPosts,
+        //     connections: connection_list,
+        //     map: map,
+        //     user1: user,
+        //     user: user,
+        //     suggestions: JSON.stringify(connection_list),
+        //     moment
+        // });
+        res.redirect('users/feeds');
     }
 });
 

@@ -4,24 +4,34 @@ const bcrypt = require('bcryptjs');
 const User = require('../model/User');
 const Feeds = require('../model/Feeds');
 const Notifications = require('../model/Notifications');
+const Comments = require('../model/Comments');
 
 const validation = require('../validation');
 
 var currentUserID;
 
-async function getAllPosts() {
+async function getAllPosts(userID) {
+
     var allPosts = []
+    var feedNotifications = [];
+
     var user_conn = await getAllConnectionInformation()
     for (var i = 0; i < user_conn.length; i++) {
         var temp_post = await Feeds.find({
-            author: user_conn[i].username
-        })
+            author: user_conn[i].username,
+        }).populate('author_id', 'name username email').populate('receiver_id')
+
         allPosts.push.apply(allPosts, temp_post)
     }
 
+    let entireFeeds = await Feeds.find({ 'feedNotification.users': { $in: [userID] } })
+        .populate('feedNotification.userId')
+        .populate('author_id', 'name username email')
+
     var temp_post = await Feeds.find({
         author: currentUserData.username
-    })
+    }).populate('receiver_id').populate('author_id', 'name username email')
+
     allPosts.push.apply(allPosts, temp_post)
 
     var noti = await Notifications.find({})
@@ -35,14 +45,16 @@ async function getAllPosts() {
         }
     }
 
-    allPosts.sort(function (a, b) {
-        return b["timestamp"] - a["timestamp"]
-    });
-
     for (var curPost = 0; curPost < allPosts.length; curPost++) {
         var feedComments = await (allPosts[curPost]["_id"]);
         allPosts[curPost].comments = feedComments;
     }
+
+    allPosts = allPosts.concat(entireFeeds);
+
+    allPosts.sort(function (a, b) {
+        return b["timestamp"] - a["timestamp"]
+    });
 
     return allPosts;
 }
@@ -152,24 +164,54 @@ module.exports.getFeeds = async (req, res) => {
         };
         currentUserID = user._id;
 
-        var posts = await getAllPosts();
+        var posts = await getAllPosts(user._id);
         userPosts = [currentUserData].concat(posts);
 
         var map = new Map();
         var connection_list = await getAllConnectionInformation();
 
-        console.log("Connections");
-        console.log(connection_list)
+        var itemsProcessed = 0;
+        let nPosts = [];
 
-        res.render('../views/feeds_page', {
-            user: user,
-            posts: userPosts,
-            connections: connection_list,
-            suggestions: JSON.stringify(connection_list),
-            map: map,
-            user1: user,
-            moment
+        userPosts = userPosts.map((post, index, array) => {
+            if (post._id) {
+                Comments.find({
+                    feedId: post._id
+                }).populate('author_id').exec().then(comments => {
+                    nPosts.push({ ...post._doc, comments })
+                    itemsProcessed++;
+                    if (itemsProcessed === array.length) {
+                        callback();
+                    }
+                })
+            } else {
+                nPosts.push({ ...post, comments: [] })
+                itemsProcessed++;
+                if (itemsProcessed === array.length) {
+                    callback();
+                }
+            }
         });
+
+        function callback() {
+
+            nPosts.sort(function (a, b) {
+                return b["timestamp"] - a["timestamp"]
+            });
+
+            res.render('../views/feeds_page', {
+                user: user,
+                posts: nPosts,
+                connections: connection_list,
+                suggestions: JSON.stringify(connection_list),
+                map: map,
+                user1: user,
+                moment
+            });
+
+
+
+        }
 
     } catch (err) {
         console.log(err);
