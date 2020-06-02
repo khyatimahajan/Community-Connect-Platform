@@ -693,6 +693,7 @@ router.post('/feedPost', async (req, res, next) => {
     if (userGroups.length > 0) {
 
         var feedNotificationProcessed = 0;
+        let notificationUsers = [];
 
         userGroups.forEach(async (userGroup, index, array) => {
             let group = await Group.findOne({ group_id: userGroup });
@@ -712,17 +713,28 @@ router.post('/feedPost', async (req, res, next) => {
                     return true;
                 }
 
-                let activity = '';
-                if (req.body.comment) activity = 'comment'; else if (req.body.retweet) activity = 'retweet'; else activity = 'love';
-                currentFeed.feedNotification.users.push(member);
-                currentFeed.feedNotification.userId = req.user._id;
-                currentFeed.feedNotification.userActivity = activity;
-                currentFeed.timestamp = req.body.comment ? Date.now() : currentFeed.timestamp;
-                await currentFeed.save();
+
+                notificationUsers.push(member);
             });
 
             feedNotificationProcessed++;
             if (feedNotificationProcessed === array.length) {
+
+                let currentUser = await User.findById(currentUserID);
+
+                let found = currentFeed.feedNotification.users.includes(currentUser._id.toString());
+
+                if (!found) {
+
+                    let activity = '';
+                    if (req.body.comment) activity = 'comment'; else if (req.body.retweet) activity = 'retweet'; else activity = 'love';
+                    currentFeed.feedNotification.users = notificationUsers;
+                    currentFeed.feedNotification.userId = req.user._id;
+                    currentFeed.feedNotification.userActivity = activity;
+                    currentFeed.timestamp = req.body.comment ? Date.now() : currentFeed.timestamp;
+                    await currentFeed.save();
+                }
+
                 addComments();
             }
 
@@ -765,6 +777,7 @@ router.post('/feedPost', async (req, res, next) => {
     }
 
     function addComments() {
+
         var commentItemProcessed = 0;
 
         userPosts = userPosts.map((post, index, array) => {
@@ -787,6 +800,16 @@ router.post('/feedPost', async (req, res, next) => {
                 }
             }
         });
+    }
+
+    function removeDuplicates(arr) {
+        const uniqueArray = arr.filter((thing, index) => {
+            const _thing = JSON.stringify(thing);
+            return index === arr.findIndex(obj => {
+                return JSON.stringify(obj) === _thing;
+            });
+        });
+        return uniqueArray;
     }
 
     function callback() {
