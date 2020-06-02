@@ -59,22 +59,38 @@ async function getAllPosts(userID) {
     return allPosts;
 }
 
-async function getAllConnectionInformation() {
-    const user = await User.findOne({
-        _id: currentUserID
-    });
-
-    user_dict = []
-    connection_list = user.connection.name;
-
-    for (var i = 0; i < connection_list.length; i++) {
-        var user_conn = await User.findOne({
-            _id: connection_list[i]
+function getAllConnectionInformation() {
+    function removeDuplicates(arr) {
+        const uniqueArray = arr.filter((thing, index) => {
+            const _thing = JSON.stringify(thing);
+            return index === arr.findIndex(obj => {
+                return JSON.stringify(obj) === _thing;
+            });
         });
-        user_dict.push(user_conn)
-
+        return uniqueArray;
     }
-    return user_dict
+
+    return new Promise(async (res, rej) => {
+        let allConnections = [];
+        let itemsProcessed = 0;
+        const user = await User.findById(currentUserID);
+        let group_ids = user.group_id;
+
+        group_ids.forEach(async (group_id, index, array) => {
+            let group_users = await User.find({ "group_id": { $in: [group_id] } }).exec();
+            group_users = group_users.filter(u => JSON.stringify(u._id) != JSON.stringify(user._id));
+            allConnections.push(...group_users);
+            itemsProcessed++;
+            if (itemsProcessed == array.length) {
+                callback();
+            }
+        });
+
+        function callback() {
+            allConnections = removeDuplicates(allConnections);
+            res(allConnections);
+        }
+    });
 }
 
 module.exports.getProfile = (req, res) => {
@@ -98,7 +114,6 @@ module.exports.updateProfile = async (req, res) => {
     const { name, username, email, location, bio } = req.body;
 
     const validationResult = validation.updateProfile(req.body);
-    console.log(validationResult)
 
     if (validationResult.error) {
         req.flash('profileMessage', validationResult.error.details[0].message)
@@ -131,9 +146,6 @@ module.exports.getNotifications = (req, res) => {
     })
         .populate('inconn_id')
         .then(notifications => {
-
-            console.log("Notificaitons");
-            console.log(notifications)
 
             res.render('../views/notifications.ejs', {
                 user: req.user,

@@ -42,9 +42,9 @@ const userSchema = new mongoose.Schema({
             type: String
         }
     ],
-    connection: {
+    /*connection: {
         name: Array
-    },
+    },*/
     isAdmin: {
         type: Boolean,
         default: false

@@ -30,7 +30,7 @@ module.exports.postLogin = async (req, res, next) => {
 
     }
     let isMatch = await bcrypt.compare(password, user.password);
-    console.log(isMatch)
+
     if (isMatch) {
         req.session.user = user;
         req.session.isLoggedIn = true;
@@ -50,20 +50,37 @@ module.exports.getDashboard = async (req, res, next) => {
         });
 
         let users = []
+        let groups = [];
         allusers.map(user => {
             users.push({ 'id': user._id, 'value': user.name, 'profile_pic': user.profile_pic });
         });
 
-        let groups = await Group.find().populate('members');
+        let allGroups = await Group.find();
+        let groupIndex = 0;
 
-        return res.render('./../views/admin/dashboard', {
-            pageTitle: "Admin Dashboard",
-            user: req.user,
-            groups,
-            users: JSON.stringify(users),
-            allusers,
-            groupMessage: req.flash('groupMessage')
-        });
+        if (allGroups.length == 0) callback();
+
+        allGroups.forEach(async (group, index, array) => {
+            let group_users = await User.find({ "group_id": { $in: [group.group_id] } }).exec();
+
+            groups.push({ ...group._doc, members: group_users });
+            groupIndex++;
+
+            if (groupIndex == array.length) {
+                callback();
+            }
+        })
+
+        function callback() {
+            return res.render('./../views/admin/dashboard', {
+                pageTitle: "Admin Dashboard",
+                user: req.user,
+                groups,
+                users: JSON.stringify(users),
+                allusers,
+                groupMessage: req.flash('groupMessage')
+            })
+        }
 
     } catch (err) {
         console.log(err);
@@ -80,60 +97,33 @@ module.exports.postAddGroup = async (req, res, next) => {
 
     var users = [];
 
-    members.forEach((member, index, array) => {
-
-        let currentUser = User.findById(member.id)
-        if (member._id != currentUser._id) {
-            currentUser.connection.name.push(member._id);
-        }
-
-        users.push(member.id);
-    })
+    let group = await new Group({
+        group_id: Math.random().toString(32).substring(2),
+        group_name: groupName,
+        members: users,
+        group_desc: groupDesc
+    }).save();
 
     var itemsProcessed = 0;
 
-    const promises = users.map(async (user, index, array) => {
-        let currentUserId = users[index];
-        let currentUser = await User.findById(currentUserId);
+    members.forEach(async (member, index, array) => {
 
-
-        users.map(async (user) => {
-            if (user != currentUser._id) {
-
-                if (!currentUser.connection.name.includes(mongoose.Types.ObjectId(user))) {
-                    currentUser.connection.name.push(mongoose.Types.ObjectId(user));
-                    await currentUser.save();
-                }
-                console.log(itemsProcessed);
-                itemsProcessed++;
-                if (itemsProcessed === array.length) {
-                    callback();
-                }
-            }
-        })
-    });
-
-    if (users.length == 1) {
-        callback();
-    }
-
+        let currentUser = await User.findById(member.id)
+        let groups = currentUser.group_id;
+        groups.push(group.group_id);
+        currentUser.group_id = groups;
+        await currentUser.save();
+        itemsProcessed++;
+        if (itemsProcessed == array.length) {
+            callback();
+        }
+    })
 
     function callback() {
-        let group = new Group({
-            group_name: groupName,
-            members: users,
-            group_desc: groupDesc
-        });
-        group.save()
-            .then(() => {
-                req.flash('groupMessage', "Group added successfully");
-                return res.redirect('dashboard');
-            })
-            .catch(err => {
-                req.flash('groupMessage', "Something has went wrong");
-                return res.redirect('dashboard');
-            })
+        req.flash('groupMessage', "Group added successfully");
+        return res.redirect('dashboard');
     }
+
 }
 
 module.exports.getGroup = async (req, res, next) => {
@@ -147,9 +137,10 @@ module.exports.getGroup = async (req, res, next) => {
             isAdmin: false
         });
 
-        let group = await Group.findById(id).populate('members');
+        let group = await Group.findById(id);
+        let group_members = await User.find({ "group_id": { $in: [group.group_id] } }).exec();
 
-        group.members.map(member => {
+        group_members.map(member => {
             let res = false;
             users = users.filter(user => {
                 if ((user._id.toString() != member._id.toString())) {
@@ -170,6 +161,7 @@ module.exports.getGroup = async (req, res, next) => {
 
         res.render('./../views/admin/group', {
             group,
+            group_members,
             pageTitle: `${group.group_name} | Group`,
             user: req.user,
             allusers,
@@ -190,46 +182,24 @@ module.exports.addGroupMember = async (req, res, next) => {
 
     let group = await Group.findById(group_id)
 
-    var users = group.members;
-
-    members.forEach((member, index, array) => {
-        users.push(member.id);
-    });
-
     var itemsProcessed = 0;
 
-    users.map(async (user, index, array) => {
-        let currentUserId = users[index];
-        let currentUser = await User.findById(currentUserId);
+    members.forEach(async (member, index, array) => {
+        let currentUser = await User.findById(member.id)
+        let groups = currentUser.group_id;
+        groups.push(group.group_id);
+        currentUser.group_id = groups;
+        await currentUser.save();
 
-        users.map(async (user) => {
-            if (user != currentUser._id) {
-                if ((!currentUser.connection.name.includes(user))) {
-
-                    if (JSON.stringify(user) != JSON.stringify(currentUser._id)) {
-                        currentUser.connection.name.push(mongoose.Types.ObjectId(user));
-                        await currentUser.save();
-                    }
-                }
-                itemsProcessed++;
-                if (itemsProcessed === array.length) {
-                    callback();
-                }
-            }
-        })
+        itemsProcessed++;
+        if (itemsProcessed == array.length) {
+            callback();
+        }
     });
 
     function callback() {
-        group.members = users;
-        group.save()
-            .then(() => {
-                req.flash('memberMessage', "Group member added successfully");
-                return res.redirect(`/admin/group/${group_id}`);
-            })
-            .catch(err => {
-                req.flash('memberMessage', "Something has went wrong");
-                return res.redirect(`/admin/group/${group_id}`);
-            })
+        req.flash('memberMessage', "Group member added successfully");
+        return res.redirect(`/admin/group/${group_id}`);
     }
 }
 
@@ -238,32 +208,36 @@ module.exports.postGroupDelete = async (req, res, next) => {
     let groupId = req.body.group_id;
 
     try {
-        let group = await Group.findByIdAndDelete(groupId);
-
-        let users = group.members;
+        let group = await Group.findById(groupId);
 
         var itemsProcessed = 0;
 
-        users.map(async (user, index, array) => {
-            let currentUserId = users[index];
-            let currentUser = await User.findById(currentUserId);
+        let group_members = await User.find({ "group_id": { $in: [group.group_id] } }).exec();
 
-            users.map(async (user) => {
-                if (user != currentUser._id) {
-                    let userIndex = currentUser.connection.name.findIndex(conn => {
-                        JSON.stringify(conn) != JSON.stringify(user)
-                    })
-                    currentUser.connection.name.splice(userIndex, 1);
-                    await currentUser.save();
-                    itemsProcessed++;
-                    if (itemsProcessed === array.length) {
-                        callback();
-                    }
+        if (group_members.length == 0) {
+            try {
+                await group.remove();
+                return res.redirect('/admin/dashboard');
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        if (group_members.length > 0) {
+            group_members.forEach(async (member, index, array) => {
+
+                let groups = member.group_id.filter(grp => grp != group.group_id);
+                member.group_id = groups;
+                await member.save();
+                itemsProcessed++;
+                if (itemsProcessed == array.length) {
+                    callback();
                 }
-            })
-        });
+            });
+        }
 
-        function callback() {
+        async function callback() {
+            await group.remove();
             req.flash('groupMessage', "Group deleted successfully");
             return res.redirect('/admin/dashboard');
         }
@@ -280,26 +254,16 @@ module.exports.postGroupMemberDelete = async (req, res, next) => {
 
     try {
         let group = await Group.findById(group_id);
-        var itemsProcessed = 0;
-        group.members.map(async (member, index, array) => {
-            let currentUser = await User.findById(member);
-            let userIndex = currentUser.connection.name.findIndex(conn => {
-                JSON.stringify(conn) == JSON.stringify(member_id)
-            })
-            currentUser.connection.name.splice(userIndex, 1);
-            await currentUser.save();
-            itemsProcessed++;
-            if (itemsProcessed === array.length) {
-                callback();
-            }
-        });
+        let user = await User.findById(member_id);
 
-        async function callback() {
-            let members = group.members.filter(member => {
-                return member._id != member_id;
-            });
-            group.members = members;
-            await group.save();
+        let userGroups = user.group_id.filter(grp => grp != group.group_id);
+
+        user.group_id = userGroups;
+        await user.save();
+
+        callback();
+
+        function callback() {
             req.flash('memberMessage', "Member deleted successfully from this group");
             return res.redirect(`/admin/group/${group_id}`);
         }
@@ -309,7 +273,6 @@ module.exports.postGroupMemberDelete = async (req, res, next) => {
         req.flash('memberMessage', "Something has went wrong");
         return res.redirect(`/admin/group/${group_id}`);
     }
-
 }
 
 module.exports.getLogout = (req, res, next) => {

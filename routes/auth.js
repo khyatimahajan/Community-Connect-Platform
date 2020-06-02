@@ -112,14 +112,14 @@ async function getAllConnectionInformation() {
     });
 
     user_dict = []
-    connection_list = user.connection.name
+    /*connection_list = user.connection.name
     for (var i = 0; i < connection_list.length; i++) {
         var user_conn = await User.findOne({
             _id: connection_list[i],
         });
         user_dict.push(user_conn)
 
-    }
+    }*/
     return user_dict
 }
 
@@ -686,6 +686,124 @@ router.post('/feedPost', async (req, res, next) => {
         user = await User.findOne({
             username: currentFeed.author
         });
+        let u = await User.findById(currentUserID);
+        userGroups = u.group_id;
+    }
+
+    if (userGroups.length > 0) {
+
+        var feedNotificationProcessed = 0;
+
+        userGroups.forEach(async (userGroup, index, array) => {
+            let group = await Group.findOne({ group_id: userGroup });
+            let group_users = await User.find({ "group_id": { $in: [group.group_id] }, user_id: { $ne: user.user_id } }).exec();
+
+            group_users = group_users.filter(member => {
+                return JSON.stringify(member._id) != JSON.stringify(req.user._id);
+            });
+
+            group_users.forEach(async (member) => {
+
+                if (JSON.stringify(member) == JSON.stringify(user._id)) {
+                    feedNotificationProcessed++;
+                    if (feedNotificationProcessed === array.length) {
+                        addComments();
+                    }
+                    return true;
+                }
+
+                let activity = '';
+                if (req.body.comment) activity = 'comment'; else if (req.body.retweet) activity = 'retweet'; else activity = 'love';
+                currentFeed.feedNotification.users.push(member);
+                currentFeed.feedNotification.userId = req.user._id;
+                currentFeed.feedNotification.userActivity = activity;
+                currentFeed.timestamp = req.body.comment ? Date.now() : currentFeed.timestamp;
+                await currentFeed.save();
+            });
+
+            feedNotificationProcessed++;
+            if (feedNotificationProcessed === array.length) {
+                addComments();
+            }
+
+        });
+
+
+
+        /********************** */
+        /*userGroups.forEach((userGroup, index, array) => {
+            let group = userGroups[index].members.filter(member => {
+                return JSON.stringify(member) != JSON.stringify(req.user._id);
+            });
+            group.forEach(async (member, index) => {
+                if (JSON.stringify(member) == JSON.stringify(user._id)) {
+                    feedNotificationProcessed++;
+                    if (feedNotificationProcessed === array.length) {
+                        addComments();
+                    }
+                    return true;
+                }
+
+                let activity = '';
+                if (req.body.comment) activity = 'comment'; else if (req.body.retweet) activity = 'retweet'; else activity = 'love';
+
+                currentFeed.feedNotification.users.push(member);
+                currentFeed.feedNotification.userId = req.user._id;
+                currentFeed.feedNotification.userActivity = activity;
+                currentFeed.timestamp = req.body.comment ? Date.now() : currentFeed.timestamp;
+                await currentFeed.save();
+            });
+
+            feedNotificationProcessed++;
+            if (feedNotificationProcessed === array.length) {
+                addComments();
+            }
+        });*/
+
+    } else {
+        addComments()
+    }
+
+    function addComments() {
+        var commentItemProcessed = 0;
+
+        userPosts = userPosts.map((post, index, array) => {
+            if (post._id) {
+                Comments.find({
+                    feedId: post._id
+                }).populate('author_id').exec().then(comments => {
+                    nPosts.push({ ...post._doc, comments })
+                    commentItemProcessed++;
+                    console.log(commentItemProcessed + "   " + array.length)
+                    if (commentItemProcessed === array.length) {
+                        callback();
+                    }
+                })
+            } else {
+                nPosts.push({ ...post, comments: [] })
+                commentItemProcessed++;
+                if (commentItemProcessed === array.length) {
+                    callback();
+                }
+            }
+        });
+    }
+
+    function callback() {
+        nPosts.sort(function (a, b) {
+            return b["timestamp"] - a["timestamp"]
+        });
+        res.redirect('users/feeds');
+    }
+
+
+
+
+    /*if (feedId && (req.body.comment || req.body.love)) {
+        currentFeed = await Feeds.findById(feedId);
+        user = await User.findOne({
+            username: currentFeed.author
+        });
         userGroups = await Group.find({ 'members': req.user._id, 'members': { $nin: [user._id] } });
     }
 
@@ -755,15 +873,8 @@ router.post('/feedPost', async (req, res, next) => {
         nPosts.sort(function (a, b) {
             return b["timestamp"] - a["timestamp"]
         });
-        // res.render('../views/feeds_page', {
-        //     posts: nPosts,
-        //     connections: connection_list,
-        //     user: req.session.user,
-        //     suggestions: JSON.stringify(connection_list),
-        //     moment
-        // });
         res.redirect('users/feeds');
-    }
+    }*/
 });
 
 
@@ -864,7 +975,7 @@ router.post('/login', async (req, res) => {
     };
 
     var map = new Map(); // only because unsued variables are part of humanity!
-    var connection_list = await getAllConnectionInformation();
+    var connection_list = []; //await getAllConnectionInformation();
 
     var posts = await getAllPosts(user._id);
     userPosts = [currentUserData].concat(posts);

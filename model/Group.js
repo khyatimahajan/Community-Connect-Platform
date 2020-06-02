@@ -12,13 +12,7 @@ let groupSchema = new schema({
     },
     group_desc: {
         type: String,
-    },
-    members: [
-        {
-            type: mongoose.Types.ObjectId,
-            ref: "user"
-        }
-    ]
+    }
 })
 
 module.exports = mongoose.model("Group", groupSchema);

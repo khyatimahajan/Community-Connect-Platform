@@ -54,7 +54,6 @@ app.use('/js', express.static('js'));
 
 app.use(flash());
 
-
 app.use((req, res, next) => {
     if (req.session.user) {
         User.findById(req.session.user._id)
@@ -112,7 +111,6 @@ xlsxFile('./Groups in Community Connect.xlsx').then((rows) => {
     }
 });
 
-
 function all() {
     createGroups();
 }
@@ -140,7 +138,6 @@ app.listen(port, () => {
         })
 });
 
-
 const createGroups = () => {
     let groupIndex = 0;
     groups.map(async (group, index, array) => {
@@ -161,8 +158,6 @@ const createGroups = () => {
 }
 
 const createUsers = () => {
-
-
     users.map(async (user, index, array) => {
         let userGroups = user.group;
         userGroups = userGroups.split(',');
@@ -179,12 +174,9 @@ const createUsers = () => {
                     isUserDone(user, arrGr);
             }
         });
-
-
-
     });
 }
-let userGroupIndex = 0;
+
 const isUserDone = async (user, gr) => {
     let isUserAlreadyExist = await User.findOne({ user_id: user.user_id })
     if (!isUserAlreadyExist) {
@@ -195,13 +187,5 @@ const isUserDone = async (user, gr) => {
             isAdmin: false,
             group_id: gr
         }).save()
-            .then(user => {
-                userGroupIndex++;
-                user.group_id.forEach(async (gr, index, array) => {
-                    let group = await Group.findOne({ group_id: gr })
-                    group.members.push(user._id);
-                    await group.save();
-                })
-            })
     }
 }

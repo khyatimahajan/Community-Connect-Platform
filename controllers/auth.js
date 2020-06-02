@@ -27,13 +27,9 @@ module.exports.getLogin = (req, res, next) => {
 module.exports.getCheckUser = async (req, res, next) => {
 
     const user_id = req.body.idCode;
-    console.log(user_id)
 
     try {
         let isUserExist = await User.findOne({ user_id: user_id });
-
-
-
         if (isUserExist && isUserExist.username) {
             return res.render('./../views/signup-step-one.ejs', { pageTitle: "Sign up", form: [], message: [], error: "This account already exists. Please sign in instead using the email you provided for the study and the password you set for this account" })
         }
@@ -85,18 +81,17 @@ module.exports.postCreateUser = async (req, res, next) => {
         user.profile_pic = req.body.image_src
 
 
-    let groups = await Group.find({ members: { "$in": [user._id] } });
-    let m = [];
-    groups.map(group => {
+    // let groups = await Group.find({ members: { "$in": [user._id] } });
+    // let m = [];
+    // groups.map(group => {
 
-        console.log(group.group_name);
-        console.log(group.members)
-        m.push(...group.members);
+    //     console.log(group.group_name);
+    //     console.log(group.members)
+    //     m.push(...group.members);
 
-    });
-    m = m.filter(m => JSON.stringify(m) != JSON.stringify(user._id));
-    user.connection.name = m;
-
+    // });
+    // m = m.filter(m => JSON.stringify(m) != JSON.stringify(user._id));
+    // user.connection.name = m;
 
     const savedUser = await user.save();
     return res.redirect('/');
