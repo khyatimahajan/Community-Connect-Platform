@@ -6,7 +6,6 @@ const userSchema = new mongoose.Schema({
     },
     username: {
         type: String,
-        min: 4
     },
     password: {
         type: String,
@@ -42,13 +41,41 @@ const userSchema = new mongoose.Schema({
             type: String
         }
     ],
-    /*connection: {
-        name: Array
-    },*/
     isAdmin: {
         type: Boolean,
         default: false
     }
 });
+
+userSchema.methods.getUserGroupMembers = async (currentUserID, cb) => {
+    let currentUser = await mongoose.model("user").findById(currentUserID);
+    let userGroups = currentUser.group_id;
+
+    let notificationUsers = [];
+    if (userGroups.length > 0) {
+        var feedNotificationProcessed = 0;
+        userGroups.forEach(async (userGroup, index, array) => {
+            let group = await mongoose.model("Group").findOne({ group_id: userGroup });
+            let group_users = await mongoose.model("user").find({ "group_id": { $in: [group.group_id] }, user_id: { $ne: currentUser.user_id } }).exec();
+            group_users = group_users.filter(member => {
+                return JSON.stringify(member._id) != JSON.stringify(currentUser._id);
+            });
+            group_users.forEach(async (member) => {
+                if (JSON.stringify(member) == JSON.stringify(currentUser._id)) {
+                    feedNotificationProcessed++;
+                    if (feedNotificationProcessed === array.length) {
+                        cb(notificationUsers)
+                    }
+                    return true;
+                }
+                notificationUsers.push(member);
+            });
+            feedNotificationProcessed++;
+            if (feedNotificationProcessed === array.length) {
+                cb(notificationUsers)
+            }
+        });
+    }
+}
 
 module.exports = mongoose.model('user', userSchema);

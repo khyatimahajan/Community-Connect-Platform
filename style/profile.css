@@ -984,6 +984,56 @@ input {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMAQMAAABsu86kAAAABlBMVEUAAAC/v79T5hyIAAAAAXRSTlMAQObYZgAAABNJREFUCNdjYGNgQEb/P4AQqiAASiUEG6Vit44AAAAASUVORK5CYII=) !important;
 }
 
+.cursorPointer {
+  cursor: pointer;
+}
+
+.profile-container {
+  border: 1px solid rgba(29, 161, 242, 0.1);
+}
+
+.card {
+  margin: 0 auto;
+  float: none;
+  margin-bottom: 10px;
+  border: 0px solid transparent;
+
+}
+
+.card-body {
+  background-color: rgba(29, 161, 242, 0.1);
+}
+
+.bottom-form-link {
+  text-align: center;
+  font-size: 14px;
+  display: block;
+  padding: 0;
+}
+
+ul.bottom-form-link li {
+  display: inline-block;
+  list-style: none;
+  text-align: center;
+  font-size: 14px;
+  margin: 0px 4px;
+}
+
+ul.bottom-form-link li a:hover {
+  color: #0052CC;
+  text-decoration: underline;
+}
+
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid hsl(0, 0%, 80%);
+  margin: 1em 0;
+  padding: 0;
+  margin-top: 25px;
+}
+
 
 #error {
   width: 100%;

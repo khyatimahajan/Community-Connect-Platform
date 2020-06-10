@@ -6,13 +6,10 @@ const bodyParser = require('body-parser');
 const flash = require('connect-flash');
 const bcrypt = require('bcryptjs');
 const mongoDBStore = require('connect-mongodb-session')(session);
-var uniqid = require('uniqid');
 const xlsxFile = require('read-excel-file/node');
 
 const authRoute = require('./routes/auth');
-//const postRoute = require('./routes/profRoute');
 const feedPost = require('./routes/feedPost');
-//const profRoute = require('./routes/profRoute');
 const loginRoutes = require('./routes/loginRoute');
 const loginSuccessRoutes = require('./routes/loginSucc');
 const userRoutes = require('./routes/user');
@@ -90,7 +87,7 @@ app.use((err, req, res, next) => {
     })
 });;
 
-let port = process.env.PORT || 5000;
+let port = process.env.PORT || 1337;
 
 xlsxFile('./Groups in Community Connect.xlsx').then((rows) => {
     let countIndex = 1;

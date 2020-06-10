@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const User = require('./../model/User');
@@ -30,7 +29,6 @@ module.exports.postLogin = async (req, res, next) => {
 
     }
     let isMatch = await bcrypt.compare(password, user.password);
-
     if (isMatch) {
         req.session.user = user;
         req.session.isLoggedIn = true;
@@ -43,7 +41,6 @@ module.exports.postLogin = async (req, res, next) => {
 }
 
 module.exports.getDashboard = async (req, res, next) => {
-
     try {
         let allusers = await User.find({
             isAdmin: false
@@ -57,9 +54,7 @@ module.exports.getDashboard = async (req, res, next) => {
 
         let allGroups = await Group.find();
         let groupIndex = 0;
-
         if (allGroups.length == 0) callback();
-
         allGroups.forEach(async (group, index, array) => {
             let group_users = await User.find({ "group_id": { $in: [group.group_id] } }).exec();
 
@@ -70,7 +65,6 @@ module.exports.getDashboard = async (req, res, next) => {
                 callback();
             }
         })
-
         function callback() {
             return res.render('./../views/admin/dashboard', {
                 pageTitle: "Admin Dashboard",
@@ -90,11 +84,8 @@ module.exports.getDashboard = async (req, res, next) => {
 }
 
 module.exports.postAddGroup = async (req, res, next) => {
-
     var { groupName, groupDesc, members } = req.body;
-
     members = JSON.parse(members);
-
     var users = [];
 
     let group = await new Group({
@@ -103,9 +94,7 @@ module.exports.postAddGroup = async (req, res, next) => {
         members: users,
         group_desc: groupDesc
     }).save();
-
     var itemsProcessed = 0;
-
     members.forEach(async (member, index, array) => {
 
         let currentUser = await User.findById(member.id)
@@ -123,7 +112,6 @@ module.exports.postAddGroup = async (req, res, next) => {
         req.flash('groupMessage', "Group added successfully");
         return res.redirect('dashboard');
     }
-
 }
 
 module.exports.getGroup = async (req, res, next) => {
@@ -132,11 +120,9 @@ module.exports.getGroup = async (req, res, next) => {
         let users = await User.find({
             isAdmin: false
         });
-
         let allusers = await User.find({
             isAdmin: false
         });
-
         let group = await Group.findById(id);
         let group_members = await User.find({ "group_id": { $in: [group.group_id] } }).exec();
 
@@ -154,7 +140,6 @@ module.exports.getGroup = async (req, res, next) => {
         });
 
         let nonGroupUser = []
-
         users.map(user => {
             nonGroupUser.push({ 'id': user._id, 'value': user.name, 'profile_pic': user.profile_pic });
         });
@@ -177,11 +162,8 @@ module.exports.getGroup = async (req, res, next) => {
 
 module.exports.addGroupMember = async (req, res, next) => {
     let { group_id, members } = req.body;
-
     members = JSON.parse(members);
-
     let group = await Group.findById(group_id)
-
     var itemsProcessed = 0;
 
     members.forEach(async (member, index, array) => {
@@ -204,14 +186,10 @@ module.exports.addGroupMember = async (req, res, next) => {
 }
 
 module.exports.postGroupDelete = async (req, res, next) => {
-
     let groupId = req.body.group_id;
-
     try {
         let group = await Group.findById(groupId);
-
         var itemsProcessed = 0;
-
         let group_members = await User.find({ "group_id": { $in: [group.group_id] } }).exec();
 
         if (group_members.length == 0) {
@@ -222,7 +200,6 @@ module.exports.postGroupDelete = async (req, res, next) => {
                 console.log(error)
             }
         }
-
         if (group_members.length > 0) {
             group_members.forEach(async (member, index, array) => {
 
@@ -235,7 +212,6 @@ module.exports.postGroupDelete = async (req, res, next) => {
                 }
             });
         }
-
         async function callback() {
             await group.remove();
             req.flash('groupMessage', "Group deleted successfully");
@@ -251,23 +227,18 @@ module.exports.postGroupDelete = async (req, res, next) => {
 
 module.exports.postGroupMemberDelete = async (req, res, next) => {
     let { member_id, group_id } = req.body;
-
     try {
         let group = await Group.findById(group_id);
         let user = await User.findById(member_id);
-
         let userGroups = user.group_id.filter(grp => grp != group.group_id);
 
         user.group_id = userGroups;
         await user.save();
-
         callback();
-
         function callback() {
             req.flash('memberMessage', "Member deleted successfully from this group");
             return res.redirect(`/admin/group/${group_id}`);
         }
-
     } catch (error) {
         console.log(error);
         req.flash('memberMessage', "Something has went wrong");

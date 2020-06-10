@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="../style/feeds_page.css">
     <link rel="stylesheet" href="../style/main.css">
     <!-- <script src="../assets/emojionearea.min.js"></script> -->
-    <title>User Feed</title>
+    <title>Home</title>
 </head>
 <style>
     .all-posts {
@@ -75,8 +75,8 @@
                                         <button class="btn btn-primary post-btn btn-sm float-right float-bottom ml-auto"
                                             style="margin-top: -1px; margin-right: 20px;" type="submit"
                                             value="Post">Post</button>
-                                        <!-- <input class="receiver float-right mr-2 mt-0" type="text" name="receiver"
-                                            id="receiver" placeholder="Receiver's ID"> -->
+                                        <input class="receiver float-right mr-2 mt-0" type="hidden" name="receiver"
+                                            id="receiver" placeholder="Receiver's ID">
                                     </div>
                                 </div>
 
@@ -103,11 +103,16 @@
                             <%}%>
                                  -->
 
-                                <% if(posts[curPost].feedNotification && posts[curPost].feedNotification.users.length >0 && posts[curPost].feedNotification.users.find(u=> JSON.stringify(u) == JSON.stringify(user._id)) ) { %>
+                                <% if(
+                                    posts[curPost].visible_to && 
+                                    posts[curPost].visible_to.userActivity && 
+                                    posts[curPost].visible_to.users.length >0 && posts[curPost].visible_to.users.find(u=> JSON.stringify(u) == JSON.stringify(user.user_id)) &&
+                                    (JSON.stringify(user.user_id) != JSON.stringify(posts[curPost].user_id.user_id))
+                                ) { %>
                                 <div class="feedNotification">
                                     <p>
-                                        <%= posts[curPost].feedNotification.userId.name %> has
-                                        <%= posts[curPost].feedNotification.userActivity == 'love' ? "liked this " : "commented on" %>
+                                        <%= posts[curPost].visible_to.userId.name %> has
+                                        <%= posts[curPost].visible_to.userActivity == 'love' ? "liked this " : "commented on" %>
                                         post</p>
                                 </div>
                                 <% } %>
@@ -117,35 +122,39 @@
                                 <tr class="post-row">
                                     <td class="post-content">
 
-                                        <% if(posts[curPost].retweet_edit_body != "") { %>
+                                        <% if(posts[curPost].post_type == "retweet" || posts[curPost].post_type == "quote") { %>
+
                                         <div class="row">
 
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <div class="col-md-10">
-                                                        <img src=<%= posts[curPost].author_image %>
+                                                        <img src=<%= posts[curPost].user_id.profile_pic %>
                                                             class="rounded-circle mr-3" height="25px" width="25px" />
-                                                        <b>@<%= posts[curPost].author %> Feed:</b>
+                                                        <b>@<%= posts[curPost].user_id.username %> Feed:</b>
                                                     </div>
                                                     <div class="col-md-2 postTimestamp">
-                                                        <%= moment(posts[curPost].timestamp).fromNow(true) %> ago
+                                                        <%= moment(posts[curPost].created_at).fromNow(true) %> ago
                                                     </div>
                                                 </div>
 
                                             </div>
 
+                                            <% if(posts[curPost].post_type == "quote") { %>
                                             <div class="col-md-12 p-2">
                                                 <div class="comment-background pl-4">
-                                                    <%= posts[curPost].retweet_edit_body %>
+                                                    <%= posts[curPost].body %>
                                                 </div>
                                             </div>
+                                            <% } %>
 
                                             <div class="col-md-12" style="padding-left: 30px;">
-                                                <img src=<%= posts[curPost].author_image %> class="rounded-circle mr-3"
-                                                    height="25px" width="25px" />
-                                                <b>@<%= posts[curPost].author %>'s Feed:</b>
+                                                <img src=<%= posts[curPost].parent_id.user_id.profile_pic %>
+                                                    class="rounded-circle mr-3" height="25px" width="25px" />
+                                                <b>@<%= posts[curPost].parent_id.user_id.username %>'s Feed:</b>
 
                                             </div>
+
 
 
                                         </div>
@@ -156,15 +165,15 @@
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <div class="col-md-10">
-                                                        <img src=<%= posts[curPost].author_image %>
+                                                        <img src=<%= posts[curPost].user_id.profile_pic %>
                                                             class="rounded-circle mr-3" height="25px" width="25px" />
                                                         <!-- <b>@<%= posts[curPost].author %> Feed:</b> -->
-                                                        <b><%= posts[curPost].author_id.name %></b>
+                                                        <b><%= posts[curPost].user_id.name %></b>
                                                         <span class="tag_username">-
-                                                            @<%= posts[curPost].author_id.username %></span>
+                                                            @<%= posts[curPost].user_id.username %></span>
                                                     </div>
                                                     <div class="col-md-2 postTimestamp">
-                                                        <%= moment(posts[curPost].timestamp).fromNow(true) %> ago
+                                                        <%= moment(posts[curPost].created_at).fromNow(true) %> ago
                                                     </div>
                                                 </div>
                                             </div>
@@ -178,21 +187,22 @@
                                 <%}%>
                                         
                             <% if(posts[curPost].author != posts[curPost].receiver) { %>
+
                                 <tr class="post-row">
                                     <td class="post-content">
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="row">
                                                     <div class="col-md-10">
-                                                        <img src=<%= posts[curPost].author_image %>
+                                                        <img src=<%= posts[curPost].user_id.profile_pic %>
                                                             class="rounded-circle mr-3" height="25px" width="25px" />
                                                         <!-- <b>@<%= posts[curPost].author %> Feed:</b> -->
-                                                        <b><%= posts[curPost].author_id.name %></b>
+                                                        <b><%= posts[curPost].user_id.name %></b>
                                                         <span class="tag_username">-
-                                                            @<%= posts[curPost].author_id.username %></span>
+                                                            @<%= posts[curPost].user_id.username %></span>
                                                     </div>
                                                     <div class="col-md-2 postTimestamp">
-                                                        <%= moment(posts[curPost].timestamp).fromNow(true) %> ago
+                                                        <%= moment(posts[curPost].created_at).fromNow(true) %> ago
                                                     </div>
                                                 </div>
                                             </div>
@@ -235,7 +245,12 @@
                                                 </div>
                                                 <% } else {%>
                                                 <div class="comment-background" style="margin-left:58px;">
-                                                    <%= posts[curPost].body %>
+
+                                                    <% if(posts[curPost].post_type == "tweet") { %>
+                                                    <p><%= posts[curPost].body %></p>
+                                                    <% } else { %>
+                                                    <p><%= posts[curPost].parent_id.body %></p>
+                                                    <% } %>
                                                 </div>
                                                 <% } %>
                                             </div>
@@ -281,7 +296,7 @@
                                                                     type="button">
                                                                     <div class="comment-icon">
                                                                         <i class="fa fa-comment" aria-hidden="true"></i>
-                                                                        <%= posts[curPost].com_count %>
+                                                                        <%= posts[curPost].reply_count %>
                                                                     </div>
                                                                 </button>
 
@@ -349,7 +364,7 @@
                                                                                     style="padding: 0; background-color: transparent;">
                                                                                     <i class="fa fa-retweet"
                                                                                         aria-hidden="true"></i>
-                                                                                    <%= posts[curPost].count %>
+                                                                                    <%= posts[curPost].retweet_count %>
                                                                                 </div>
 
 
@@ -369,7 +384,7 @@
                                                                                     style="padding: 0; background-color: transparent;">
                                                                                     <i class="fa fa-share"
                                                                                         aria-hidden="true"></i>
-                                                                                    <%= posts[curPost].retweet_edit_count %>
+                                                                                    <%= posts[curPost].quote_count %>
 
 
                                                                                 </div>
@@ -388,7 +403,7 @@
                                                                         <div class="modal-header">
                                                                             <h5 class="modal-title"
                                                                                 id="exampleModalLabel">
-                                                                                Type your Tweetxxx
+                                                                                Type your Tweet
                                                                             </h5>
                                                                             <button type="button" class="close"
                                                                                 data-dismiss="modal" aria-label="Close">
@@ -405,23 +420,18 @@
                                                                             <br>
                                                                             <br>
 
-
                                                                             <div class="row">
 
                                                                                 <div class="col-md-12"
                                                                                     style="padding-left: 30px;">
 
                                                                                     <% if(posts[curPost].author == posts[curPost].receiver) { %>
-
-
-
-                                                                                    <img src=<%= posts[curPost].author_image %>
+                                                                                    <img src=<%= posts[curPost].user_id.profile_pic %>
                                                                                         class="rounded-circle mr-3"
                                                                                         height="25px" width="25px" />
-                                                                                    <b>@<%= posts[curPost].author %>'s
+                                                                                    <b>@<%= posts[curPost].user_id.username %>'s
                                                                                         Feed:
                                                                                     </b>
-
                                                                                     <%}%>
                                         
                                                                                                                         <% if(posts[curPost].author != posts[curPost].receiver) { %>
@@ -486,7 +496,7 @@
                                                                     <div class="love-icon">
                                                                         <i class="fa fa-heart-o"
                                                                             aria-hidden="true"></i></a>
-                                                                        <%= posts[curPost].love_count %>
+                                                                        <%= posts[curPost].like_count %>
                                                                     </div>
                                                                 </button>
                                                             </div>
@@ -541,7 +551,7 @@
                                                             <div class="col-md-1">
                                                                 <img class="rounded-circle mr-3" height="40px"
                                                                     width="40px"
-                                                                    src=<%= posts[curPost].comments[curComment].author_img_src %> />
+                                                                    src=<%= posts[curPost].comments[curComment].user_id.profile_pic %> />
                                                             </div>
                                                             <div class="col-md-11">
 
@@ -553,11 +563,12 @@
                                                                 </b> -->
 
                                                                 <div class="mr-2">
-                                                                    <b><%= posts[curPost].comments[curComment].author_id.name %></b>
-                                                                    <span class="tag_username">-
-                                                                        @<%= posts[curPost].comments[curComment].author_id.username %></span>
-                                                                </div>
 
+                                                                    <b><%= posts[curPost].comments[curComment].user_id.name %></b>
+                                                                    <span class="tag_username">-
+                                                                        @<%= posts[curPost].comments[curComment].user_id.username %></span>
+
+                                                                </div>
 
                                                                 <%= posts[curPost].comments[curComment].body %>
 
@@ -672,7 +683,7 @@
                                                                                                 <i class="fa fa-retweet"
                                                                                                     aria-hidden="true"></i>
 
-                                                                                                <%= posts[curPost].comments[curComment].count %>
+                                                                                                <%= posts[curPost].comments[curComment].retweet_count %>
 
                                                                                         </button>
                                                                                     </a>
@@ -692,7 +703,7 @@
                                                                                                 style="padding: 0; background-color: transparent;">
                                                                                                 <i class="fa fa-share"
                                                                                                     aria-hidden="true"></i>
-                                                                                                <%= posts[curPost].comments[curComment].retweet_edit_count %>
+                                                                                                <%= posts[curPost].comments[curComment].quote_count %>
 
 
                                                                                             </div>
@@ -801,7 +812,7 @@
                                                                                 <div class="love-icon">
                                                                                     <i class="fa fa-heart-o"
                                                                                         aria-hidden="true"></i></a>
-                                                                                    <%= posts[curPost].comments[curComment].love_count %>
+                                                                                    <%= posts[curPost].comments[curComment].like_count %>
                                                                                 </div>
                                                                             </button>
                                                                         </div>
