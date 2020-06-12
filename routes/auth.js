@@ -68,7 +68,6 @@ async function getAllPosts(userID) {
             currentFeed = await Feeds.findById(noti.post_id)
             currentFeed.timestamp = noti.timestamp
             currentFeed.notification = noti.status
-            console.log(currentFeed)
             allPosts.push.apply(allPosts, currentFeed)
         }
     }
@@ -322,7 +321,7 @@ router.post('/feedPost', async (req, res, next) => {
         if (req.body.comment) {
 
             currentFeed = await Feeds.findById(feedId);
-            currentFeed.timestamp = +new Date();
+            currentFeed.created_at = +new Date();
             currentFeed.com_count++;
             currentFeed.reply_count++;
             await currentFeed.save();
@@ -366,8 +365,7 @@ router.post('/feedPost', async (req, res, next) => {
                 inconn_id: currentUserID,
                 outconn_id: user._id,
                 post_id: feedId,
-                comment: true,
-                like: false,
+                activity: "comment",
                 status: status
             })
             await notify.save();
@@ -578,6 +576,10 @@ router.post('/feedPost', async (req, res, next) => {
             currentFeed.count++;
             await currentFeed.save();
 
+            const user = await User.findOne({
+                user_id: currentFeed.user_id
+            });
+
             const newFeed = new Feeds({
                 user_id: req.user.user_id,
                 body: req.body.body,
@@ -609,8 +611,19 @@ router.post('/feedPost', async (req, res, next) => {
             });
 
 
+            var status = currentUserName + " retweeted " + user.username + "'s post."
+
+            const notify = new Notifications({
+                inconn_id: currentUserID,
+                outconn_id: user._id,
+                post_id: feedId,
+                activity: "retweet",
+                status: status
+            })
+
             try {
                 await newFeed.save();
+                await notify.save();
             } catch (err) {
                 console.log(err);
                 let error = new Error("Something went wrong");
@@ -628,12 +641,8 @@ router.post('/feedPost', async (req, res, next) => {
 
             if (!currentFeed.liked_by.includes(currentUserID)) {
                 currentFeed.like_count++;
-                currentFeed.liked_by.push(currentUserID),
-
-                    //     currentFeed.like_count++;
-                    // currentFeed.liked_by.push(currentUserID),
-
-                    await currentFeed.save();
+                currentFeed.liked_by.push(currentUserData.username);
+                await currentFeed.save();
             }
 
             var status = currentUserName + " liked " + user.username + "'s post."
@@ -642,8 +651,7 @@ router.post('/feedPost', async (req, res, next) => {
                 inconn_id: currentUserID,
                 outconn_id: user._id,
                 post_id: feedId,
-                comment: false,
-                like: true,
+                activity: "like",
                 status: status
             })
             try {
@@ -678,8 +686,7 @@ router.post('/feedPost', async (req, res, next) => {
                 inconn_id: currentUserID,
                 outconn_id: user._id,
                 post_id: feedId,
-                comment: true,
-                like: true,
+                activity: "like",
                 status: status
             })
             try {
@@ -695,7 +702,6 @@ router.post('/feedPost', async (req, res, next) => {
     } else {
         var receiverName = currentUserName;
 
-
         if (req.body.receiver != "") {
             const user = await User.findOne({
                 username: req.body.receiver
@@ -707,37 +713,16 @@ router.post('/feedPost', async (req, res, next) => {
         var find_image_src = await User.findById(currentUserID);
         var author_image_src = find_image_src.profile_pic;
 
-        /*let user_mentions = []
-        let user_ids = [];
-        let processedMentions = 0;
-
+        //GET USER MENTIONS FROM POST BODY
+        let user_mentions = []
         let post_body_parts = req.body.body.split(" ");
         post_body_parts.forEach(part => {
             if (part.startsWith("@")) {
                 part = part.split("");
                 part.shift();
-                user_mentions.push(part.join("").trim();
+                user_mentions.push(part.join("").trim());
             }
         });
-
-        console.log("MENtions");
-        console.log(user_mentions)
-
-        if (user_mentions.length > 0) {
-            user_mentions.forEach((mention, index, array) => {
-                processedMentions++;
-                //if (user) user_ids.push(user.user_id);
-                if (processedMentions == array.length) {
-                    console.log("Mentions");
-                    console.log(user_ids);
-                }
-            });
-
-        } else {
-            console.log("Mentions empty");
-        }*/
-
-
 
         req.user.getUserGroupMembers(currentUserID, async (groupUsers) => {
             groupUsers = groupUsers.map(user => user.user_id);
@@ -754,7 +739,7 @@ router.post('/feedPost', async (req, res, next) => {
                 post_type: "tweet",
                 parent_id: null,
                 conversation_id: null,
-                mentions: null,
+                mentions: [...new Set(user_mentions)],
                 visible_to: { users: groupUsers },
 
 
@@ -830,9 +815,6 @@ router.post('/feedPost', async (req, res, next) => {
             if (feedNotificationProcessed === array.length) {
                 let currentUser = await User.findById(currentUserID);
                 let found = currentFeed.visible_to.users.includes(currentUser._id.toString());
-
-                console.log(JSON.stringify(currentUser._id) + " ===== " + JSON.stringify(user._id));
-
                 if (!found && (JSON.stringify(currentUser._id) != JSON.stringify(user._id))) {
                     let activity = '';
                     if (req.body.comment) activity = 'comment'; else if (req.body.retweet) activity = 'retweet'; else activity = 'love';
@@ -1071,6 +1053,7 @@ router.post('/login', async (req, res) => {
     currentUserID = user._id;
     req.session.user = user;
     req.session.isLoggedIn = true;
+    req.session.notificationViewed = false;
     const salt = user.salt;
     currentUserName = user.username;
 
@@ -1128,9 +1111,6 @@ router.post('/login', async (req, res) => {
         //     suggestions: JSON.stringify(connection_list),
         //     moment
         // });
-
-        console.log("REDIRECTING -------");
-
         res.redirect('users/feeds');
     }
 });

@@ -131,9 +131,14 @@ function getAllConnectionInformation() {
     });
 }
 
-module.exports.getProfile = (req, res) => {
+module.exports.getProfile = async (req, res) => {
     let user = req.user;
     let data = [];
+
+    let notificationCount = await Notifications.find({
+        outconn_id: user._id
+    }).countDocuments();
+
     data = req.flash('form');
     if (!user) {
         return res.redirect('/');
@@ -144,6 +149,8 @@ module.exports.getProfile = (req, res) => {
         message: req.flash('message'),
         profileMessage: req.flash('profileMessage'),
         form: data,
+        notificationCount,
+        notificationViewed: req.session.notificationViewed,
         pform: req.flash('pform')
     })
 }
@@ -175,8 +182,17 @@ module.exports.updateProfile = async (req, res) => {
     }
 }
 
-module.exports.getNotifications = (req, res) => {
+module.exports.getNotifications = async (req, res) => {
+
+    console.log("NOTIFICATION VIEWED --- ");
+    req.session.notificationViewed = true;
+
     let user = req.user;
+
+    let notificationCount = await Notifications.find({
+        outconn_id: user._id
+    }).countDocuments();
+
     Notifications.find({
         outconn_id: user._id
     })
@@ -187,7 +203,9 @@ module.exports.getNotifications = (req, res) => {
                 user: req.user,
                 notifications: notifications,
                 pageTitle: "Notifications",
-                moment
+                moment,
+                notificationCount,
+                notificationViewed: req.session.notificationViewed,
             });
         }).catch(err => {
             console.log(err);
@@ -211,6 +229,11 @@ module.exports.getFeeds = async (req, res) => {
             user_id: user.user_id
         };
         currentUserID = user._id;
+
+        //Notification Count
+        let notificationCount = await Notifications.find({
+            outconn_id: user._id
+        }).countDocuments();
 
         var posts = await getAllPosts(user._id);
 
@@ -333,19 +356,28 @@ module.exports.getFeeds = async (req, res) => {
             return newArray;
         }
 
-
         function renderScreen(uPosts) {
             uPosts.sort(function (a, b) {
                 return b["created_at"] - a["created_at"]
             });
 
+            // bonsole("TSEt");
+            // bonsole(uPosts);
+
+            // let first = uPosts[0];
+            // uPosts = uPosts.filter(post => {
+            //     return post.comments.length > 0;
+            // });
+            // uPosts.unshift(first);
             res.render('../views/feeds_page', {
                 user: user,
-                posts: removeDups(uPosts, "_id"),
+                posts: uPosts,
                 connections: connection_list,
                 suggestions: JSON.stringify(connection_list),
                 map: map,
                 user1: user,
+                notificationCount,
+                notificationViewed: req.session.notificationViewed,
                 moment
             });
         }

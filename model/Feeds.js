@@ -13,7 +13,7 @@ const feedSchema = new mongoose.Schema({
     },
     liked_by: [
         {
-            type: mongoose.Types.ObjectId
+            type: String
         }
     ],
     like_count: {

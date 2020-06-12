@@ -54,7 +54,12 @@
                 <div class="on-hover-show">
                     <a href="/users/notifications" class=" py-3 px-4">
                         <i class="fa fa-bell mr-3" aria-hidden="true"></i>
-                        Notifications
+                        Notifications &nbsp;
+                        <% if(!notificationViewed) { %>
+                        <span class="badge badge-primary"><%= notificationCount %></span>
+                        <% } else { %>
+                        <span class="badge badge-primary">0</span>
+                        <% } %>
                     </a>
                 </div>
             </li>

@@ -20,6 +20,13 @@
     <link rel="stylesheet" href="../style/main.css">
     <!-- <script src="../assets/emojionearea.min.js"></script> -->
     <title>Home</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
 </head>
 <style>
     .all-posts {
@@ -102,12 +109,21 @@
                             </tr>
                             <%}%>
                                  -->
+                                <!-- <p><%= (JSON.stringify(user.user_id) +" "+ JSON.stringify(posts[curPost].user_id.user_id)) %>
+                                </p>
+
+                                <p><%= JSON.stringify(user.group_id) %>
+                                </p>
+
+                                <p><%= JSON.stringify(posts[curPost].user_id.group_id) %>
+                                </p> -->
 
                                 <% if(
                                     posts[curPost].visible_to && 
                                     posts[curPost].visible_to.userActivity && 
                                     posts[curPost].visible_to.users.length >0 && posts[curPost].visible_to.users.find(u=> JSON.stringify(u) == JSON.stringify(user.user_id)) &&
                                     (JSON.stringify(user.user_id) != JSON.stringify(posts[curPost].user_id.user_id))
+                                    && !user.group_id.some(r=> posts[curPost].user_id.group_id.indexOf(r) >= 0)
                                 ) { %>
                                 <div class="feedNotification">
                                     <p>
@@ -148,7 +164,7 @@
                                             </div>
                                             <% } %>
 
-                                            <div class="col-md-12" style="padding-left: 30px;">
+                                            <div class="col-md-12" style="padding-left: 30px; margin-top: 12px;">
                                                 <img src=<%= posts[curPost].parent_id.user_id.profile_pic %>
                                                     class="rounded-circle mr-3" height="25px" width="25px" />
                                                 <b>@<%= posts[curPost].parent_id.user_id.username %>'s Feed:</b>

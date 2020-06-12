@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 
 const User = require('./../model/User');
+const validator = require('./../validation');
 
 module.exports.getSignupStepOne = (req, res, next) => {
     res.render('./../views/signup-step-one.ejs', { pageTitle: "Sign up", form: [], message: [], error: false })
@@ -16,7 +17,7 @@ module.exports.getSignupStepTwo = async (req, res, next) => {
     } catch (err) {
         return res.redirect('/signup');
     }
-    res.render('./../views/signup-step-two.ejs', { pageTitle: "Sign up", form: [], message: [] })
+    res.render('./../views/signup-step-two.ejs', { pageTitle: "Sign up", form: [], message: [], body: {} })
 };
 
 module.exports.getLogin = (req, res, next) => {
@@ -38,8 +39,7 @@ module.exports.getCheckUser = async (req, res, next) => {
             id: isUserExist._id,
             pageTitle: "Sign Up",
             message: null,
-            name: isUserExist.name,
-            email: isUserExist.EmailID
+            body: { name: isUserExist.name, email: isUserExist.EmailID }
         });
 
     } catch (err) {
@@ -53,19 +53,43 @@ module.exports.postCreateUser = async (req, res, next) => {
     if (!user) {
         return res.redirect('/signup');
     }
+
+    //General Validation
+    let { error } = validator.registerValidation(req.body);
+    if (error) {
+        return res.render('./../views/signup-step-two.ejs', {
+            id: user._id,
+            pageTitle: "Sign Up",
+            message: error.details[0].message,
+            body: req.body
+        });
+    }
+
+    //Password check
+    if (req.body.password != req.body.password_conf) {
+        return res.render('./../views/signup-step-two.ejs', {
+            id: user._id,
+            pageTitle: "Sign Up",
+            message: "Passwords are not matching",
+            body: req.body
+        });
+    }
+
+    //Password hash making
     const hashPassword = await bcrypt.hash(req.body.password, 12);
     let usernameCheck = await User.findOne({ username: req.body.username })
 
+    // Username duplication check
     if (usernameCheck) {
         return res.render('./../views/signup-step-two.ejs', {
             id: user._id,
             pageTitle: "Sign Up",
             message: "Username is already taken",
-            name: user.name,
-            email: user.EmailID
+            body: req.body
         });
     }
 
+    //User creation
     user.name = req.body.name,
         user.EmailID = req.body.email,
         user.username = req.body.username,

@@ -18,10 +18,12 @@
                         <div class="notification_item_details">
                             <span class="notification_user"><%= notification.inconn_id.name %></span>
                             <span class="notification_activity">
-                                <% if(notification.comment) { %>
+                                <% if(notification.activity == "comment") { %>
                                 Comment Added
-                                <% }else { %>
+                                <% }else if(notification.activity == "like") { %>
                                 Liked your post
+                                <% } else { %>
+                                Retweeted your post
                                 <% } %>
                             </span>
                             <span class="notification_text"><%= notification.status %></span>
