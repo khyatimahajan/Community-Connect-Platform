@@ -34,7 +34,7 @@
                                             <label for="inputName">Name</label>
                                             <input type="text" class="form-control" id="inputName" name="name"
                                                 value="<%= pform.length > 0 ? pform[0].name : user.name %>"
-                                                aria-describedby="emailHelp" placeholder="Enter name" />
+                                                aria-describedby="emailHelp" placeholder="Enter name" disabled />
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -61,7 +61,7 @@
                                             <label for="inputLocation">Location</label>
                                             <input type="text" class="form-control" id="inputLocation" name="location"
                                                 value="<%= pform.length > 0 ? pform[0].location : user.location %>"
-                                                aria-describedby="emailHelp" placeholder="Enter location" />
+                                                aria-describedby="emailHelp" placeholder="Enter location" disabled />
                                         </div>
                                     </div>
                                 </div>
@@ -71,14 +71,14 @@
                                         <div class="form-group">
                                             <label for="inputBio">Bio</label>
                                             <textarea type="text" class="form-control" id="inputBio" name="bio"
-                                                aria-describedby="emailHelp"
-                                                placeholder="Enter bio"><%= pform.length > 0 ? pform[0].bio : user.bio  %></textarea>
+                                                aria-describedby="emailHelp" placeholder="Enter bio"
+                                                disabled><%= pform.length > 0 ? pform[0].bio : user.bio  %></textarea>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row submit_btn_wrapper">
+                                <!-- <div class="row submit_btn_wrapper">
                                     <button class="btn btn-primary submit_btn" type="submit">Save Changes</button>
-                                </div>
+                                </div> -->
                             </div>
                         </form>
                     </div>

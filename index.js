@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
@@ -7,9 +8,12 @@ const flash = require('connect-flash');
 const bcrypt = require('bcryptjs');
 const mongoDBStore = require('connect-mongodb-session')(session);
 const xlsxFile = require('read-excel-file/node');
+const AWS = require('aws-sdk');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+
 
 const authRoute = require('./routes/auth');
-const feedPost = require('./routes/feedPost');
 const loginRoutes = require('./routes/loginRoute');
 const loginSuccessRoutes = require('./routes/loginSucc');
 const userRoutes = require('./routes/user');
@@ -18,9 +22,12 @@ const User = require('./model/User');
 const Group = require('./model/Group');
 const errorRoutes = require('./routes/errors');
 
-const MONGODB_URI = 'mongodb://localhost/Users';
+dotenv.config();
+
+const MONGODB_URI = process.env.MONGO_DB
 
 const app = express();
+const server = require('http').Server(app);
 
 const groups = [];
 const users = [];
@@ -32,7 +39,7 @@ const store = new mongoDBStore({
 })
 
 app.use(session({
-    secret: 'ssshhhhh',
+    secret: process.env.SESSION_SECRET_KEY,
     saveUninitialized: false,
     resave: false,
     store: store
@@ -40,16 +47,50 @@ app.use(session({
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
-dotenv.config();
-
 app.use(express.json());
 app.set('view engine', '.ejs');
 app.use('/style', express.static('style'));
 app.use('/assets', express.static('assets'));
 app.use('/lib', express.static('lib'));
 app.use('/js', express.static('js'));
+app.use('/uploads', express.static('uploads'));
 
 app.use(flash());
+
+//configure multer
+
+// AWS.config.update({
+//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+//     region: process.env.AWS_REGION
+// });
+// const s3 = new AWS.S3();
+// var upload = multer({
+//     storage: multerS3({
+//         s3: s3,
+//         bucket: process.env.AWS_BUCKET_NAME,
+//         //acl: 'public-read',
+//         key: function (req, file, cb) {
+
+//             console.log(file);
+//             cb(null, Date.now() + path.extname(file.originalname));
+//         }
+//     })
+// });
+
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads')
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname))
+    }
+})
+
+var upload = multer({ storage: storage })
+
+app.use(upload.single('post-image'));
 
 app.use((req, res, next) => {
     if (req.session.user) {
@@ -68,16 +109,13 @@ app.use((req, res, next) => {
     } else {
         next();
     }
-})
+});
+
 app.use('/', authRoute);
-//app.use('/user', authRoute);
-//app.use('/profile', profRoute);
 app.use('/login', loginRoutes);
 app.use('/login_s', loginSuccessRoutes);
-// app.use('/', loginRoutes);
 app.use('/users', userRoutes);
 app.use('/admin', adminRoutes);
-
 app.use(errorRoutes);
 
 app.use((err, req, res, next) => {

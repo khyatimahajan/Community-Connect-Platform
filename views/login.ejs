@@ -10,7 +10,8 @@
         </div>
         <% } %>
         <div class="card-container">
-            <h1>Login to Community Connect</h1>
+            <h1 class="heading">Community Connect</h1>
+            <h1 class="subheading">Login to Your Account!</h1>
             <form action="/login" method="POST" novalidate>
                 <input type="email" id="email" name="email" placeholder="Enter email"
                     value="<%= input ? input.email: '' %>" class="form-control form-control-sm" required />
@@ -20,8 +21,8 @@
             </form>
             <hr>
             <ul class="bottom-form-link">
-                <li><a href="#">Can't log
-                        in?</a></li>
+                <!-- <li><a href="#">Can't log
+                        in?</a></li> -->
                 <li><a href="/signup">Sign up for an
                         account</a></li>
             </ul>

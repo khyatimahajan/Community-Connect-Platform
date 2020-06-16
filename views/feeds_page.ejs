@@ -54,12 +54,10 @@
                 <div class="row">
                     <div class="col-md-12 custom-border custom-border-bottom py-3">
                         <h5>HOME</h5>
-
-
                     </div>
                     <div class="col-md-12 custom-border middle-upper-layer py-3">
 
-                        <form method="POST" action="/feedPost">
+                        <form method="POST" action="/feedPost" enctype="multipart/form-data">
                             <div class="form-group mb-0">
 
                                 <div class="row">
@@ -68,20 +66,36 @@
                                             width="60px" />
                                     </div>
 
-                                    <div class="col-md-11">
+                                    <input type="file" name="post-image" id="post-image" style="display: none;"
+                                        accept="image/x-png,image/gif,image/jpeg" />
+
+                                    <div class=" col-md-11">
                                         <p class="lead emoji-picker-container mb-2">
                                             <textarea class="form-control textarea-control input-type-dec"
-                                                maxlength="140" rows="3" column=10 id="body" name="body"
-                                                placeholder="What's on your mind?" data-emojiable="true"
+                                                maxlength="280" rows="3" column=10 id="body" name="body"
+                                                placeholder="What's on your mind?" data-emojiable="true" maxlength="280"
                                                 data-emoji-input="unicode"></textarea>
+
                                         </p>
+
+
+
                                     </div>
-                                    <div class="col-md-12 mt-2">
-                                        <div class="text">
+                                    <div class="col-md-12 mt-2 controls">
+                                        <div class="image-upload">
+                                            <!-- <i class="fa fa-picture-o" aria-hidden="true"></i> -->
+                                            <svg viewBox="0 0 24 24" class="icon">
+                                                <g>
+                                                    <path
+                                                        d="M19.75 2H4.25C3.01 2 2 3.01 2 4.25v15.5C2 20.99 3.01 22 4.25 22h15.5c1.24 0 2.25-1.01 2.25-2.25V4.25C22 3.01 20.99 2 19.75 2zM4.25 3.5h15.5c.413 0 .75.337.75.75v9.676l-3.858-3.858c-.14-.14-.33-.22-.53-.22h-.003c-.2 0-.393.08-.532.224l-4.317 4.384-1.813-1.806c-.14-.14-.33-.22-.53-.22-.193-.03-.395.08-.535.227L3.5 17.642V4.25c0-.413.337-.75.75-.75zm-.744 16.28l5.418-5.534 6.282 6.254H4.25c-.402 0-.727-.322-.744-.72zm16.244.72h-2.42l-5.007-4.987 3.792-3.85 4.385 4.384v3.703c0 .413-.337.75-.75.75z">
+                                                    </path>
+                                                    <circle cx="8.868" cy="8.309" r="1.542"></circle>
+                                                </g>
+                                            </svg>
                                         </div>
-                                        <button class="btn btn-primary post-btn btn-sm float-right float-bottom ml-auto"
+                                        <button class="btn btn-primary post-btn btn-sm float-bottom"
                                             style="margin-top: -1px; margin-right: 20px;" type="submit"
-                                            value="Post">Post</button>
+                                            value="Post">Tweet</button>
                                         <input class="receiver float-right mr-2 mt-0" type="hidden" name="receiver"
                                             id="receiver" placeholder="Receiver's ID">
                                     </div>
@@ -94,6 +108,15 @@
                         </form>
 
                     </div>
+
+                    <div class="image-previews">
+                        <div class="image-wrapper">
+                            <span class="image-pre">
+                                <span class="img-close"><i class="fa fa-times-circle" aria-hidden="true"></i></span>
+                            </span>
+                        </div>
+                    </div>
+
                     <div class="col-md-12 all-posts custom-border">
                         <% if (posts.length > 1) { %>
                         <% for(var curPost=1; curPost<posts.length; curPost++) { %>
@@ -147,7 +170,10 @@
                                                     <div class="col-md-10">
                                                         <img src=<%= posts[curPost].user_id.profile_pic %>
                                                             class="rounded-circle mr-3" height="25px" width="25px" />
-                                                        <b>@<%= posts[curPost].user_id.username %> Feed:</b>
+                                                        <!-- <b>@<%= posts[curPost].user_id.username %> Feed:</b> -->
+                                                        <b><%= posts[curPost].user_id.name %></b>
+                                                        <span class="tag_username">-
+                                                            @<%= posts[curPost].user_id.username %></span>
                                                     </div>
                                                     <div class="col-md-2 postTimestamp">
                                                         <%= moment(posts[curPost].created_at).fromNow(true) %> ago
@@ -164,10 +190,13 @@
                                             </div>
                                             <% } %>
 
-                                            <div class="col-md-12" style="padding-left: 30px; margin-top: 12px;">
+                                            <div class="col-md-12" style="padding-left: 30px; margin-top: 14px;">
                                                 <img src=<%= posts[curPost].parent_id.user_id.profile_pic %>
                                                     class="rounded-circle mr-3" height="25px" width="25px" />
-                                                <b>@<%= posts[curPost].parent_id.user_id.username %>'s Feed:</b>
+                                                <!-- <b>@<%= posts[curPost].parent_id.user_id.username %>'s Feed:</b> -->
+                                                <b><%= posts[curPost].parent_id.user_id.name %></b>
+                                                <span class="tag_username">-
+                                                    @<%= posts[curPost].parent_id.user_id.username %></span>
 
                                             </div>
 
@@ -258,12 +287,22 @@
                                                 <% if(posts[curPost].author != posts[curPost].receiver) { %>
                                                 <div class="comment-background" style="margin-left:58px;">
                                                     <%= posts[curPost].body %>
+
                                                 </div>
+
                                                 <% } else {%>
                                                 <div class="comment-background" style="margin-left:58px;">
 
                                                     <% if(posts[curPost].post_type == "tweet") { %>
                                                     <p><%= posts[curPost].body %></p>
+
+                                                    <% if(posts[curPost].image !="null") { %>
+                                                    <div class="post-img-wrapper">
+                                                        <span class="post-image"
+                                                            style="background-image: url('../<%= posts[curPost].image %>')"></span>
+                                                    </div>
+                                                    <% } %>
+
                                                     <% } else { %>
                                                     <p><%= posts[curPost].parent_id.body %></p>
                                                     <% } %>
@@ -335,11 +374,15 @@
                                                                                 </button>
                                                                             </div>
                                                                             <div class="modal-body">
-                                                                                <textarea class="input-type-dec1"
-                                                                                    type="text" rows="2" cols="60"
-                                                                                    id="comment" name="comment"
-                                                                                    placeholder="Comment"
-                                                                                    color:black></textarea>
+                                                                                <p class="lead emoji-picker-container">
+                                                                                    <textarea
+                                                                                        class="input-type-dec1 form-control textarea-control"
+                                                                                        type="text" rows="3"
+                                                                                        id="comment" name="comment"
+                                                                                        placeholder="Comment"
+                                                                                        data-emojiable="true"
+                                                                                        data-emoji-input="unicode"></textarea>
+                                                                                </p>
                                                                                 <br>
                                                                                 <button class="btn-comment"
                                                                                     type="submit">Comment</button>
@@ -427,12 +470,16 @@
                                                                             </button>
                                                                         </div>
                                                                         <div class="modal-body">
-                                                                            <textarea class="input-type-dec1"
-                                                                                type="text" rows="2" cols="60"
-                                                                                id="retweet_edit_body"
-                                                                                name="retweet_edit_body"
-                                                                                placeholder="Tweet"
-                                                                                color:black></textarea>
+                                                                            <p class="lead emoji-picker-container">
+                                                                                <textarea class="input-type-dec1"
+                                                                                    type="text" rows="2" cols="60"
+                                                                                    id="retweet_edit_body"
+                                                                                    name="retweet_edit_body"
+                                                                                    placeholder="Tweet"
+                                                                                    data-emojiable="true"
+                                                                                    data-emoji-input="unicode"
+                                                                                    color:black></textarea>
+                                                                            </p>
                                                                             <br>
                                                                             <br>
 
@@ -445,9 +492,12 @@
                                                                                     <img src=<%= posts[curPost].user_id.profile_pic %>
                                                                                         class="rounded-circle mr-3"
                                                                                         height="25px" width="25px" />
-                                                                                    <b>@<%= posts[curPost].user_id.username %>'s
+                                                                                    <!-- <b>@<%= posts[curPost].user_id.username %>'s
                                                                                         Feed:
-                                                                                    </b>
+                                                                                    </b> -->
+                                                                                    <b><%= posts[curPost].user_id.name %></b>
+                                                                                    <span class="tag_username">-
+                                                                                        @<%= posts[curPost].user_id.username %></span>
                                                                                     <%}%>
                                         
                                                                                                                         <% if(posts[curPost].author != posts[curPost].receiver) { %>
@@ -694,11 +744,11 @@
                                                                                             type="submit"
                                                                                             title="Retweet"
                                                                                             style="width: 100%"
-                                                                                            value=<%= posts[curPost].comments[curComment].author %>>
+                                                                                            value="<%= posts[curPost].comments[curComment].user_id.username %>">
                                                                                             <div class="retweet-icon">
                                                                                                 <i class="fa fa-retweet"
                                                                                                     aria-hidden="true"></i>
-
+                                                                                                <!-- value=<%= posts[curPost].comments[curComment].author %> -->
                                                                                                 <%= posts[curPost].comments[curComment].retweet_count %>
 
                                                                                         </button>
@@ -750,15 +800,19 @@
                                                                                         </button>
                                                                                     </div>
                                                                                     <div class="modal-body">
-
-                                                                                        <textarea
-                                                                                            class="input-type-dec1"
-                                                                                            type="text" rows="2"
-                                                                                            cols="60"
-                                                                                            id="retweet_edit_body_comm"
-                                                                                            name="retweet_edit_body_comm"
-                                                                                            placeholder="Tweet"
-                                                                                            color:black></textarea>
+                                                                                        <p
+                                                                                            class="lead emoji-picker-container">
+                                                                                            <textarea
+                                                                                                class="input-type-dec1"
+                                                                                                type="text" rows="2"
+                                                                                                cols="60"
+                                                                                                id="retweet_edit_body_comm"
+                                                                                                name="retweet_edit_body_comm"
+                                                                                                placeholder="Tweet"
+                                                                                                data-emojiable="true"
+                                                                                                data-emoji-input="unicode"
+                                                                                                color:black></textarea>
+                                                                                        </p>
                                                                                         <br>
                                                                                         <br>
 
@@ -768,13 +822,18 @@
                                                                                             <div class="col-md-12"
                                                                                                 style="padding-left: 30px;">
 
+                                                                                                <!-- <p><%= JSON.stringify(posts[curPost].comments[curComment].user_id) %>
+                                                                                                </p> -->
 
-
-                                                                                                <img src=<%= posts[curPost].comments[curComment].author_img_src %>
+                                                                                                <img src=<%= posts[curPost].comments[curComment].user_id.profile_pic %>
                                                                                                     class="rounded-circle mr-3"
                                                                                                     height="25px"
                                                                                                     width="25px" />
-                                                                                                <b>@<%= posts[curPost].comments[curComment].author %></b>
+                                                                                                <!-- <b>@<%= posts[curPost].comments[curComment].author %></b> -->
+                                                                                                <b><%= posts[curPost].comments[curComment].user_id.name %></b>
+                                                                                                <span
+                                                                                                    class="tag_username">-
+                                                                                                    @<%= posts[curPost].comments[curComment].user_id.username %></span>
 
                                                                                             </div>
 

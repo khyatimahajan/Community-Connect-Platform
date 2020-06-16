@@ -17,8 +17,13 @@
             <div class="row">
                 <div class="col-md-12 custom-border custom-border-bottom py-3 group-action">
                     <h5><%= group.group_name  %></h5>
-                    <button class="btn btn-primary plus-icon btn-sm add-member" data-toggle="modal"
-                        data-target="#memberAddModal">Add member</button>
+                    <div>
+                        <button class="btn btn-primary plus-icon btn-sm add-description" data-toggle="modal"
+                            data-target="#addDescriptionModal">Add Description</button>
+                        &nbsp;
+                        <button class="btn btn-primary plus-icon btn-sm add-member" data-toggle="modal"
+                            data-target="#memberAddModal">Add member</button>
+                    </div>
                 </div>
                 <div class="col-md-12 custom-border middle-upper-layer py-3">
 
@@ -84,6 +89,35 @@
                 <hr class="divider">
 
                 <% }) %>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- add description Modal -->
+    <div class="modal fade" id="addDescriptionModal" tabindex="-1" role="dialog" aria-labelledby="addDescriptionModal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="POST" action="add-description">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add Description</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <textarea name="description" type="text" class="form-control input" id="descriptionLabel"
+                                placeholder="Enter Description" required></textarea>
+                        </div>
+                        <input type="hidden" name="group_id" value="<%= group._id %>">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

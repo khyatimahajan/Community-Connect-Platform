@@ -55,9 +55,9 @@ async function getAllPosts(userID) {
             allPosts[curPost].comments = feedComments;
         }
 
-
-
         allPosts = allPosts.concat(entireFeeds);
+
+        allPosts = removeDups(allPosts, "_id");
 
         allPosts.sort(function (a, b) {
             return b["created_at"] - a["created_at"]
@@ -95,6 +95,20 @@ async function getAllPosts(userID) {
         });
         return uniqueArray;
     }
+}
+
+function removeDups(originalArray, prop) {
+    var newArray = [];
+    var lookupObject = {};
+
+    for (var i in originalArray) {
+        lookupObject[originalArray[i][prop]] = originalArray[i];
+    }
+
+    for (i in lookupObject) {
+        newArray.push(lookupObject[i]);
+    }
+    return newArray;
 }
 
 function getAllConnectionInformation() {
@@ -136,7 +150,8 @@ module.exports.getProfile = async (req, res) => {
     let data = [];
 
     let notificationCount = await Notifications.find({
-        outconn_id: user._id
+        outconn_id: user._id,
+        seen: false
     }).countDocuments();
 
     data = req.flash('form');
@@ -151,7 +166,8 @@ module.exports.getProfile = async (req, res) => {
         form: data,
         notificationCount,
         notificationViewed: req.session.notificationViewed,
-        pform: req.flash('pform')
+        pform: req.flash('pform'),
+        path: "users/profile"
     })
 }
 
@@ -183,38 +199,39 @@ module.exports.updateProfile = async (req, res) => {
 }
 
 module.exports.getNotifications = async (req, res) => {
-
-    console.log("NOTIFICATION VIEWED --- ");
     req.session.notificationViewed = true;
 
     let user = req.user;
 
-    let notificationCount = await Notifications.find({
-        outconn_id: user._id
-    }).countDocuments();
+    try {
+        let notifications = await Notifications.find({
+            outconn_id: user._id
+        }).populate('inconn_id').sort({ timestamp: -1 });
 
-    Notifications.find({
-        outconn_id: user._id
-    })
-        .populate('inconn_id')
-        .then(notifications => {
+        //Update Notification to seen
+        notifications.forEach(notification => {
+            notification.seen = true;
+            notification.save();
+        });
 
-            res.render('../views/notifications.ejs', {
-                user: req.user,
-                notifications: notifications,
-                pageTitle: "Notifications",
-                moment,
-                notificationCount,
-                notificationViewed: req.session.notificationViewed,
-            });
-        }).catch(err => {
-            console.log(err);
-            let error = new Error("Something went wrong");
-            next(error);
-        })
+        return res.render('../views/notifications.ejs', {
+            user: req.user,
+            notifications: notifications,
+            pageTitle: "Notifications",
+            moment,
+            notificationCount: notifications.length,
+            notificationViewed: req.session.notificationViewed,
+            path: "users/notifications"
+        });
+
+    } catch (err) {
+        console.log(err);
+        let error = new Error("Something went wrong");
+        next(error);
+    }
 }
 
-module.exports.getFeeds = async (req, res) => {
+module.exports.getFeeds = async (req, res, next, path = null) => {
     let user = req.user;
     if (!user) return res.redirect('/');
 
@@ -232,10 +249,17 @@ module.exports.getFeeds = async (req, res) => {
 
         //Notification Count
         let notificationCount = await Notifications.find({
-            outconn_id: user._id
+            outconn_id: user._id,
+            seen: false
         }).countDocuments();
 
         var posts = await getAllPosts(user._id);
+
+
+
+        // posts = removeDups(posts, "_id");
+
+
 
         userPosts = [currentUserData].concat(posts);
 
@@ -294,6 +318,7 @@ module.exports.getFeeds = async (req, res) => {
 
         function callback() {
 
+
             replys.forEach(reply => {
                 let post = nPosts.filter(post => {
                     return JSON.stringify(post._id) == JSON.stringify(reply.parent_id._id)
@@ -321,10 +346,17 @@ module.exports.getFeeds = async (req, res) => {
             nPosts.forEach(async (post, index, array) => {
                 if (post.parent_id) {
 
-                    let user = await User.findOne({ user_id: post.parent_id.user_id, isAdmin: "false" })
+                    let p = await Feeds.findById(post.parent_id);
+                    let user = await User.findOne({ user_id: p.user_id })
+
+
+
+                    /* old let user = await User.findOne({ user_id: post.parent_id.user_id, isAdmin: "false" }) */
                     if (user) {
-                        // uPosts.push({ ...post, parent_id: user });
-                        uPosts.push({ ...post, parent_id: { ...post.parent_id._doc, user_id: user } });
+
+                        // old uPosts.push({ ...post, parent_id: { ...post.parent_id._doc, user_id: user } });
+                        uPosts.push({ ...post, parent_id: { ...p._doc, user_id: user } });
+
                     }
 
                     finalPostProcessed++;
@@ -342,27 +374,17 @@ module.exports.getFeeds = async (req, res) => {
             });
         }
 
-        function removeDups(originalArray, prop) {
-            var newArray = [];
-            var lookupObject = {};
 
-            for (var i in originalArray) {
-                lookupObject[originalArray[i][prop]] = originalArray[i];
-            }
-
-            for (i in lookupObject) {
-                newArray.push(lookupObject[i]);
-            }
-            return newArray;
-        }
 
         function renderScreen(uPosts) {
             uPosts.sort(function (a, b) {
                 return b["created_at"] - a["created_at"]
             });
 
-            // bonsole("TSEt");
-            // bonsole(uPosts);
+            if (req.session.newCommentFeed) {
+                let index = uPosts.findIndex(i => i._id == req.session.newCommentFeed);
+                arraymove(uPosts, index, 1);
+            }
 
             // let first = uPosts[0];
             // uPosts = uPosts.filter(post => {
@@ -378,7 +400,8 @@ module.exports.getFeeds = async (req, res) => {
                 user1: user,
                 notificationCount,
                 notificationViewed: req.session.notificationViewed,
-                moment
+                moment,
+                path: path ? path : "users/feeds"
             });
         }
 
@@ -387,6 +410,17 @@ module.exports.getFeeds = async (req, res) => {
         let error = new Error("Something went wrong");
         next(error);
     }
+
+
+    function arraymove(arr, fromIndex, toIndex) {
+        var element = arr[fromIndex];
+        arr.splice(fromIndex, 1);
+        arr.splice(toIndex, 0, element);
+    }
+}
+
+module.exports.getHome = (req, res, next) => {
+    this.getFeeds(req, res, next, "users/home");
 }
 
 module.exports.resetPassword = async (req, res, next) => {

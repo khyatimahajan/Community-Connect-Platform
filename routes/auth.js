@@ -11,6 +11,8 @@ const Comments = require('../model/Comments');
 const Notifications = require('../model/Notifications');
 const Group = require('./../model/Group');
 const authController = require('./../controllers/auth');
+const Logger = require('./../model/Logger');
+const utils = require('./../utils');
 
 const {
     firstLoginValidation,
@@ -18,6 +20,7 @@ const {
     loginValidation
 } = require('../validation');
 const session = require('express-session');
+const { func } = require('@hapi/joi');
 
 var currentUserName = "admin"; // default [temporary]
 var currentUserData;
@@ -37,6 +40,7 @@ router.use(bodyParser.urlencoded({
 
 // var cart = [{postBody: req.body.myTextarea}];
 var sess;
+let newComment = null;
 
 async function getAllPosts(userID) {
 
@@ -293,6 +297,8 @@ router.post('/idlogin', async (req, res) => {
 
 router.post('/feedPost', async (req, res, next) => {
 
+    console.log(req.file, req.body)
+
     let {
         feedId
     } = req.query;
@@ -321,7 +327,8 @@ router.post('/feedPost', async (req, res, next) => {
         if (req.body.comment) {
 
             currentFeed = await Feeds.findById(feedId);
-            currentFeed.created_at = +new Date();
+            req.session.newCommentFeed = feedId;
+            //currentFeed.created_at = +new Date();
             currentFeed.com_count++;
             currentFeed.reply_count++;
             await currentFeed.save();
@@ -366,6 +373,7 @@ router.post('/feedPost', async (req, res, next) => {
                 outconn_id: user._id,
                 post_id: feedId,
                 activity: "comment",
+                seen: false,
                 status: status
             })
             await notify.save();
@@ -373,7 +381,6 @@ router.post('/feedPost', async (req, res, next) => {
             try {
                 await newFeed.save();
             } catch (err) {
-                console.log(err);
                 let error = new Error("Something went wrong");
                 next(error);
             }
@@ -381,12 +388,11 @@ router.post('/feedPost', async (req, res, next) => {
 
         // RETWEET COMMENT WITH TEXT
         if (req.body.retweet_edit_body_comm) {
-            console.log("This is Sparta", req.body.retweet_edit_id_comm)
-            comment_grp = await Comments.findById(req.body.retweet_edit_id_comm);
-            comment_grp.retweet_edit_count++;
-            var author_user = comment_grp.author;
-            var author_image_src = comment_grp.author_img_src;
-            await comment_grp.save();
+            currentFeed = await Feeds.findById(req.body.retweet_edit_id_comm);
+            currentFeed.quote_count++;
+            var author_user = currentFeed.author;
+            var author_image_src = currentFeed.author_img_src;
+            await currentFeed.save();
 
             var receiverName = currentUserName;
             var find_image_src = await User.findById(currentUserID);
@@ -394,20 +400,35 @@ router.post('/feedPost', async (req, res, next) => {
 
             let recieverUser;
 
-            const user = await User.findOne({
+            /*const user = await User.findOne({
                 username: author_user
             });
             if (!user) return res.status(400).send('Receiver not found!');
-            recieverUser = user;
+            recieverUser = user;*/
 
             const newFeed = new Feeds({
+
+                user_id: req.user.user_id,
+                body: req.body.retweet_edit_body_comm,
+                created_at: Date.now(),
+                liked_by: currentFeed.liked_by,
+                like_count: currentFeed.like_count,
+                retweet_count: currentFeed.retweet_count,
+                reply_count: currentFeed.reply_count,
+                quote_count: currentFeed.quote_count,
+                post_type: "quote",
+                parent_id: currentFeed._id,
+                conversation_id: currentFeed.conversation_id,
+                mentions: currentFeed.mentions,
+                visible_to: currentFeed.visible_to,
+
                 author: receiverName,
                 author_image: receiver_image_src,
                 author_id: req.user,
                 receiver: author_user,
                 receiver_id: recieverUser,
                 receiver_image: author_image_src,
-                body: req.body.body,
+                // body: req.body.body,
                 count: 0,
                 com_count: 0,
                 love_count: 0,
@@ -420,16 +441,15 @@ router.post('/feedPost', async (req, res, next) => {
             try {
                 await newFeed.save();
             } catch (err) {
-                console.log(err);
                 let error = new Error("Something went wrong");
                 next(error);
             }
         }
 
+
+
         //RETWEET WITH TEXT
         if (req.body.retweet_edit_body) {
-            console.log("This is India", req.body.retweet_edit_id)
-
             var receiverName = currentUserName;
 
             var find_image_src = await User.findById(currentUserID);
@@ -455,7 +475,6 @@ router.post('/feedPost', async (req, res, next) => {
             try {
                 await currentFeed.save();
             } catch (err) {
-                console.log(err);
                 let error = new Error("Something went wrong");
                 next(error);
             }
@@ -496,7 +515,6 @@ router.post('/feedPost', async (req, res, next) => {
             try {
                 await newFeed.save();
             } catch (err) {
-                console.log(err);
                 let error = new Error("Something went wrong");
                 next(error);
             }
@@ -504,7 +522,6 @@ router.post('/feedPost', async (req, res, next) => {
 
         //COMMENT RETWEET 
         if (req.body.retweet_com) {
-            console.log("This is America", req.body.retweet_com, currentUserID);
 
             var find_image_src = await User.findById(currentUserID);
             var author_image_src = find_image_src.profile_pic;
@@ -513,17 +530,32 @@ router.post('/feedPost', async (req, res, next) => {
             let recieverUser;
 
             const user = await User.findOne({
-                //username: req.body.retweet_com
+                username: req.body.retweet_com
             });
             receiverName = user.username;
             receiver_image_src = user.profile_pic;
             recieverUser = user;
 
-            currentFeed = await Comments.findById(req.body.post_id);
-            currentFeed.count++;
+            currentFeed = await Feeds.findById(req.body.post_id);
+            currentFeed.retweet_count++;
             await currentFeed.save();
 
             const newFeed = new Feeds({
+                user_id: req.user.user_id,
+                body: req.body.body,
+                created_at: Date.now(),
+                liked_by: currentFeed.liked_by,
+                like_count: currentFeed.like_count,
+                retweet_count: currentFeed.retweet_count,
+                reply_count: currentFeed.reply_count,
+                quote_count: currentFeed.quote_count,
+                post_type: "retweet",
+                parent_id: currentFeed._id,
+                conversation_id: currentFeed.conversation_id,
+                mentions: currentFeed.mentions,
+                visible_to: currentFeed.visible_to,
+
+
                 author: currentUserName,
                 author_image: author_image_src,
                 author_id: req.user,
@@ -543,7 +575,6 @@ router.post('/feedPost', async (req, res, next) => {
             try {
                 await newFeed.save();
             } catch (err) {
-                console.log(err);
                 let error = new Error("Something went wrong");
                 next(error);
             }
@@ -579,6 +610,10 @@ router.post('/feedPost', async (req, res, next) => {
             const user = await User.findOne({
                 user_id: currentFeed.user_id
             });
+
+            if (currentFeed.parent_id) {
+                currentFeed = await Feeds.findById(currentFeed.parent_id);
+            }
 
             const newFeed = new Feeds({
                 user_id: req.user.user_id,
@@ -618,6 +653,7 @@ router.post('/feedPost', async (req, res, next) => {
                 outconn_id: user._id,
                 post_id: feedId,
                 activity: "retweet",
+                seen: false,
                 status: status
             })
 
@@ -625,7 +661,6 @@ router.post('/feedPost', async (req, res, next) => {
                 await newFeed.save();
                 await notify.save();
             } catch (err) {
-                console.log(err);
                 let error = new Error("Something went wrong");
                 next(error);
             }
@@ -652,12 +687,12 @@ router.post('/feedPost', async (req, res, next) => {
                 outconn_id: user._id,
                 post_id: feedId,
                 activity: "like",
+                seen: false,
                 status: status
             })
             try {
                 await notify.save();
             } catch (err) {
-                console.log(err);
                 let error = new Error("Something went wrong");
                 next(error);
             }
@@ -666,7 +701,6 @@ router.post('/feedPost', async (req, res, next) => {
 
         //LIKE COMMENT ON POST
         if (req.body.love_com) {
-            console.log("This is America", req.body.love_com);
 
             currentFeed = await Comments.findById(req.body.love_com);
 
@@ -687,12 +721,12 @@ router.post('/feedPost', async (req, res, next) => {
                 outconn_id: user._id,
                 post_id: feedId,
                 activity: "like",
+                seen: false,
                 status: status
             })
             try {
                 await notify.save();
             } catch (err) {
-                console.log(err);
                 let error = new Error("Something went wrong");
                 next(error);
             }
@@ -724,7 +758,7 @@ router.post('/feedPost', async (req, res, next) => {
             }
         });
 
-        req.user.getUserGroupMembers(currentUserID, async (groupUsers) => {
+        req.user.getUserGroupMembers(currentUserID, async (groupUsers, groups) => {
             groupUsers = groupUsers.map(user => user.user_id);
 
             const newFeed = new Feeds({
@@ -740,7 +774,8 @@ router.post('/feedPost', async (req, res, next) => {
                 parent_id: null,
                 conversation_id: null,
                 mentions: [...new Set(user_mentions)],
-                visible_to: { users: groupUsers },
+                visible_to: { users: groupUsers, groups },
+                image: req.file ? req.file.path.replace(/\\/g, "/") : "null",
 
 
                 author: currentUserName,
@@ -764,7 +799,6 @@ router.post('/feedPost', async (req, res, next) => {
                 feed.conversation_id = feed._id;
                 await feed.save();
             } catch (err) {
-                console.log(err);
                 let error = new Error("Something went wrong");
                 next(error);
             }
@@ -815,16 +849,40 @@ router.post('/feedPost', async (req, res, next) => {
             if (feedNotificationProcessed === array.length) {
                 let currentUser = await User.findById(currentUserID);
                 let found = currentFeed.visible_to.users.includes(currentUser._id.toString());
-                if (!found && (JSON.stringify(currentUser._id) != JSON.stringify(user._id))) {
-                    let activity = '';
-                    if (req.body.comment) activity = 'comment'; else if (req.body.retweet) activity = 'retweet'; else activity = 'love';
-                    currentFeed.visible_to.users = notificationUsers.map(user => user.user_id);
-                    currentFeed.visible_to.userId = req.user._id;
-                    currentFeed.visible_to.userActivity = activity;
-                    currentFeed.timestamp = req.body.comment ? Date.now() : currentFeed.timestamp;
-                    await currentFeed.save();
+                let currentUserGroups = currentUser.group_id;
+                let otherGroups = [];
+                let groupProccessed = 0;
+                currentUserGroups.forEach(async (grp, index, array) => {
+                    let g = await Group.findOne({ group_id: grp })
+                    otherGroups.push(g.group_name);
+                    groupProccessed++;
+                    if (groupProccessed == array.length) {
+                        groupDOne();
+                    }
+                });
+
+                notificationUsers = currentFeed.visible_to.users.concat(notificationUsers.map(user => user.user_id));
+
+                //check if user is from different group
+                let isFromSame = utils.isHavingSameItems(req.user.group_id, user.group_id);
+
+                async function groupDOne() {
+                    otherGroups = otherGroups.concat(currentFeed.visible_to.groups)
+
+                    if (!found && (JSON.stringify(currentUser._id) != JSON.stringify(user._id))) {
+                        let activity = '';
+                        if (req.body.comment) activity = 'comment'; else if (req.body.retweet) activity = 'retweet'; else activity = 'love';
+                        currentFeed.visible_to.users = [...new Set(notificationUsers)];
+                        currentFeed.visible_to.groups = [...new Set(otherGroups)];
+                        if (isFromSame) {
+                            currentFeed.visible_to.userId = req.user._id;
+                            currentFeed.visible_to.userActivity = activity;
+                            currentFeed.timestamp = req.body.comment ? Date.now() : currentFeed.timestamp;
+                        }
+                        await currentFeed.save();
+                    }
+                    addComments();
                 }
-                addComments();
             }
         });
 
@@ -862,6 +920,8 @@ router.post('/feedPost', async (req, res, next) => {
     } else {
         addComments()
     }
+
+
 
     function addComments() {
         var commentItemProcessed = 0;
@@ -989,10 +1049,8 @@ router.post('/profile', async (req, res, next) => {
     if (emailExists) return res.status(400).send('Email already exists! Please signup with different Email address');
 
     //HASH PASSWORD
-    console.log('Hash Pass');
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(sess.body.password, salt);
-    console.log("iiii", req.body);
 
     //CREATE A NEW USER
     const user = new User({
@@ -1008,7 +1066,6 @@ router.post('/profile', async (req, res, next) => {
         const savedUser = await user.save();
         res.render('../views/login_succ');
     } catch (err) {
-        console.log(err);
         let error = new Error("Something went wrong");
         next(error);
     }
@@ -1048,6 +1105,25 @@ router.post('/login', async (req, res) => {
                 message: "Invalid email address or password",
                 input: { email: req.body.email }
             });
+    }
+
+    //Logger for user login time
+    let log = await Logger.findOne({ 'user.id': user._id });
+    if (log) {
+        log.loggedInAt = new Date();
+        log.loggedOutAt = null;
+        log.save();
+
+    } else {
+        let log = new Logger({
+            user: {
+                id: user._id,
+                username: user.username,
+                name: user.name
+            },
+            loggedInAt: new Date()
+        });
+        log.save();
     }
 
     currentUserID = user._id;
@@ -1111,17 +1187,22 @@ router.post('/login', async (req, res) => {
         //     suggestions: JSON.stringify(connection_list),
         //     moment
         // });
-        res.redirect('users/feeds');
+        res.redirect('users/home');
     }
 });
 
+router.get('/logout', async (req, res, next) => {
+    //Logger for user logout time
+    let log = await Logger.findOne({ 'user.id': req.user._id });
+    if (log) {
+        log.loggedOutAt = new Date();
+        log.save();
+    }
 
-router.get('/logout', function logout(req, res) {
     req.session.destroy((err) => {
         res.redirect('/')
     })
-});
-
+})
 
 router.post('/profile', async (req, res, next) => {
     //VALIDATE BEFORE CREATE
@@ -1166,7 +1247,6 @@ router.post('/profile', async (req, res, next) => {
         });
 
     } catch (err) {
-        console.log(err);
         let error = new Error("Something went wrong");
         next(error);
     }

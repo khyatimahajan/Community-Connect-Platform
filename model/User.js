@@ -52,10 +52,12 @@ userSchema.methods.getUserGroupMembers = async (currentUserID, cb) => {
     let userGroups = currentUser.group_id;
 
     let notificationUsers = [];
+    let groups = [];
     if (userGroups.length > 0) {
         var feedNotificationProcessed = 0;
         userGroups.forEach(async (userGroup, index, array) => {
             let group = await mongoose.model("Group").findOne({ group_id: userGroup });
+            if (group) groups.push(group.group_name);
             let group_users = await mongoose.model("user").find({ "group_id": { $in: [group.group_id] }, user_id: { $ne: currentUser.user_id } }).exec();
             group_users = group_users.filter(member => {
                 return JSON.stringify(member._id) != JSON.stringify(currentUser._id);
@@ -72,7 +74,7 @@ userSchema.methods.getUserGroupMembers = async (currentUserID, cb) => {
             });
             feedNotificationProcessed++;
             if (feedNotificationProcessed === array.length) {
-                cb(notificationUsers)
+                cb(notificationUsers, groups)
             }
         });
     }

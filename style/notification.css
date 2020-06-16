@@ -29,3 +29,6 @@
 .notification_text{
     font-size: 13px;
 }
+.left-column {
+   height: 100vh;
+}

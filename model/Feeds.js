@@ -31,6 +31,9 @@ const feedSchema = new mongoose.Schema({
     post_type: {
         type: String
     },
+    image: {
+        type: String
+    },
     parent_id: {
         type: mongoose.Types.ObjectId,
         ref: "Feeds"
@@ -55,6 +58,11 @@ const feedSchema = new mongoose.Schema({
         users: [
             {
                 type: String,
+            }
+        ],
+        groups: [
+            {
+                type: String
             }
         ]
     },

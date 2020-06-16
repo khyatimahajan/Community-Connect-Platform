@@ -37,15 +37,22 @@ body{
     margin-top: 16px;
     font-weight: bold;
 }
-h1 {
+.heading {
     text-align: center;
-    color: #5E6C84;
-    font-size: 16px;
+    font-size: 14px;
     letter-spacing: -0.01em;
-    line-height: 28px;
-    margin-top: 10px;
-    margin-bottom: 25px;
+    line-height: 29px;
+    font-size: 20px;
+    font-weight: bold;
 }
+
+.subheading {
+    text-align: center;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    line-height: 29px;
+}
+
 .bottom-form-link{
     text-align: center;
     font-size: 14px;

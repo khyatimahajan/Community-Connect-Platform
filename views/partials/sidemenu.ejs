@@ -1,31 +1,24 @@
 <div class="col-md-3 left-column ">
     <div class="position-fixed">
         <ul class="list-group py-3 dropdown-list">
-
             <% if(user.isAdmin) { %>
-
-
-            <li class="list-group-item">
+            <li class="list-group-item <%= path == 'admin/dashboard' ? 'active' : null %>">
                 <div class="on-hover-show">
                     <a href="/admin/dashboard" class=" py-3 px-4">
                         <i class="fa fa-home fa-lg mr-3" aria-hidden="true"></i>Home
                     </a>
                 </div>
             </li>
-
             <% } %>
-
             <% if(!user.isAdmin) { %>
-
-            <li class="list-group-item">
+            <li class="list-group-item <%= path == 'users/home' ? 'active' : null %>">
                 <div class="on-hover-show">
-                    <a href="/users/feeds" class=" py-3 px-4">
+                    <a href="/users/home" class=" py-3 px-4">
                         <i class="fa fa-home fa-lg mr-3" aria-hidden="true"></i>Home
                     </a>
                 </div>
             </li>
-
-            <li class="list-group-item">
+            <li class="list-group-item <%= path == 'users/feeds' ? 'active' : null %>">
                 <div class="on-hover-show">
                     <a href="/users/feeds" class=" py-3 px-4">
                         <img class="rounded-circle mr-3" height="25px" width="25px"
@@ -33,15 +26,13 @@
                     </a>
                 </div>
             </li>
-
-            <li class="list-group-item">
+            <li class="list-group-item <%= path == 'users/profile' ? 'active' : null %>">
                 <div class="on-hover-show">
                     <a href="/users/profile" class=" py-3 px-4">
                         <i class="fa fa-user fa-lg mr-3" aria-hidden="true"></i><%=user.name%>
                     </a>
                 </div>
             </li>
-
             <li class="list-group-item">
                 <div class="on-hover-show">
                     <a href="#" class=" py-3 px-4">
@@ -49,21 +40,21 @@
                     </a>
                 </div>
             </li>
-
-            <li class="list-group-item">
+            <li class="list-group-item <%= path == 'users/notifications' ? 'active' : null %>">
                 <div class="on-hover-show">
                     <a href="/users/notifications" class=" py-3 px-4">
                         <i class="fa fa-bell mr-3" aria-hidden="true"></i>
                         Notifications &nbsp;
                         <% if(!notificationViewed) { %>
-                        <span class="badge badge-primary"><%= notificationCount %></span>
+                        <span
+                            class="badge <%= path == 'users/notifications' ? 'badge-light' : 'badge-primary' %> "><%= notificationCount %></span>
                         <% } else { %>
-                        <span class="badge badge-primary">0</span>
+                        <span
+                            class="badge <%= path == 'users/notifications' ? 'badge-light' : 'badge-primary' %>">0</span>
                         <% } %>
                     </a>
                 </div>
             </li>
-
             <li class="list-group-item">
                 <div class="on-hover-show">
                     <a href="#" class=" py-3 px-4">
@@ -71,11 +62,8 @@
                     </a>
                 </div>
             </li>
-
             <% } %>
-
             <% if(user.isAdmin) { %>
-
             <li class="list-group-item">
                 <div class="on-hover-show">
                     <a href="/admin/logout" class=" py-3 px-4">
@@ -83,9 +71,7 @@
                     </a>
                 </div>
             </li>
-
             <% } else { %>
-
             <li class="list-group-item">
                 <div class="on-hover-show">
                     <a href="/logout" class=" py-3 px-4">
@@ -93,10 +79,7 @@
                     </a>
                 </div>
             </li>
-
             <% } %>
-
         </ul>
     </div>
-
 </div>

@@ -19,6 +19,8 @@ route.post('/group/delete', isAuth, adminController.postGroupDelete);
 
 route.get('/group/:id', isAuth, adminController.getGroup);
 
+route.post('/group/add-description', isAuth, adminController.addDescription);
+
 route.post('/group/add-member', isAuth, adminController.addGroupMember);
 
 route.post('/group/member/delete', isAuth, adminController.postGroupMemberDelete);

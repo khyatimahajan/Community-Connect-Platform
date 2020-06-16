@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const User = require('./../model/User');
 const Group = require('./../model/Group');
 const validation = require('./../validation');
+const { model } = require('./../model/User');
 
 module.exports.getLogin = (req, res, next) => {
     res.render('../views/admin/login', {
@@ -40,6 +41,17 @@ module.exports.postLogin = async (req, res, next) => {
     }
 }
 
+module.exports.addDescription = async (req, res, next) => {
+    let { group_id, description } = req.body;
+
+    let group = await Group.findById(group_id)
+    group.group_desc = description;
+    await group.save();
+
+    req.flash('memberMessage', "Group saved successfully");
+    return res.redirect(`/admin/group/${group_id}`);
+}
+
 module.exports.getDashboard = async (req, res, next) => {
     try {
         let allusers = await User.find({
@@ -72,6 +84,7 @@ module.exports.getDashboard = async (req, res, next) => {
                 groups,
                 users: JSON.stringify(users),
                 allusers,
+                path: 'admin/dashboard',
                 groupMessage: req.flash('groupMessage')
             })
         }
@@ -151,6 +164,7 @@ module.exports.getGroup = async (req, res, next) => {
             user: req.user,
             allusers,
             users: JSON.stringify(nonGroupUser),
+            path: 'admin/dashboard',
             memberMessage: req.flash('memberMessage')
         });
 
