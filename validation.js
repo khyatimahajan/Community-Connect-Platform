@@ -18,7 +18,7 @@ const registerValidation = data => {
         email: Joi.string().required().email(),
         username: Joi.string().min(3).required(),
         location: Joi.string().required(),
-        bio: Joi.string().required(),
+        bio: Joi.string().max(50).required(),
         password: Joi.string().required(),
         password_conf: Joi.string().required(),
         id: Joi.string()

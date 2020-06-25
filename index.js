@@ -11,6 +11,9 @@ const xlsxFile = require('read-excel-file/node');
 const AWS = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
+const http = require('http');
+
+
 
 
 const authRoute = require('./routes/auth');
@@ -27,7 +30,10 @@ dotenv.config();
 const MONGODB_URI = process.env.MONGO_DB
 
 const app = express();
-const server = require('http').Server(app);
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+
+app.set('socketio', io)
 
 const groups = [];
 const users = [];
@@ -58,37 +64,25 @@ app.use('/uploads', express.static('uploads'));
 app.use(flash());
 
 //configure multer
+AWS.config.update({
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    region: process.env.AWS_REGION
+});
+const s3 = new AWS.S3();
+var upload = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: process.env.AWS_BUCKET_NAME,
+        acl: 'public-read',
+        key: function (req, file, cb) {
+            if (file !== undefined) {
+                cb(null, Date.now() + path.extname(file.originalname));
+            }
 
-// AWS.config.update({
-//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-//     region: process.env.AWS_REGION
-// });
-// const s3 = new AWS.S3();
-// var upload = multer({
-//     storage: multerS3({
-//         s3: s3,
-//         bucket: process.env.AWS_BUCKET_NAME,
-//         //acl: 'public-read',
-//         key: function (req, file, cb) {
-
-//             console.log(file);
-//             cb(null, Date.now() + path.extname(file.originalname));
-//         }
-//     })
-// });
-
-
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads')
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname))
-    }
-})
-
-var upload = multer({ storage: storage })
+        }
+    })
+});
 
 app.use(upload.single('post-image'));
 
@@ -150,7 +144,7 @@ function all() {
     createGroups();
 }
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Listening at port ${port}`)
     mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
         .then(async () => {
@@ -172,6 +166,11 @@ app.listen(port, () => {
             console.log(err)
         })
 });
+
+var nsp = io.of('/feeds');
+global.nsp = nsp;
+
+
 
 const createGroups = () => {
     let groupIndex = 0;

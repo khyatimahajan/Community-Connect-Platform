@@ -102,3 +102,7 @@ hr {
     padding: .5em 1em;
     width: 100%;
 }
+.signup-title {
+    font-size: 15px;
+    text-align: center;
+}

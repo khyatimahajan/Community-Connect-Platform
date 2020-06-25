@@ -44,21 +44,23 @@
 }
 .dropdown-list .list-group-item {
     border-bottom: 0.5px solid rgb(193, 193, 193) !important;
-    padding: 20px 12px;
     font-size: 15px !important;
+    padding: 8px 10px;
 }
-
+li.list-group-item a {
+    display: block
+}
 li.list-group-item a:hover {
     background: #d3e4f0 !important;
     color: #1DA1F2 !important;
 }
 li.list-group-item.active a {
-    /* color: white !important; */
     color: #1DA1F2 !important;
     font-weight: bold;
 }
 .mh-100 .left-column {
-    /* height: 100vh !important; */
-    /* height: 100%; */
     min-height: 100vh;
+}
+.emoji-wysiwyg-editor {
+    border: none !important;
 }

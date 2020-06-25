@@ -159,8 +159,6 @@ feedSchema.methods.getUserMentions = (body) => {
             }
         });
 
-    } else {
-        console.log("Mentions empty");
     }
 }
 

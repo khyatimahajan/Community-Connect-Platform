@@ -1,8 +1,6 @@
-const mongoose = require('mongoose');
 const router = require('express').Router();
 const bodyParser = require("body-parser");
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const moment = require('moment');
 
 const User = require('../model/User');
@@ -16,11 +14,9 @@ const utils = require('./../utils');
 
 const {
     firstLoginValidation,
-    registerValidation,
     loginValidation
 } = require('../validation');
 const session = require('express-session');
-const { func } = require('@hapi/joi');
 
 var currentUserName = "admin"; // default [temporary]
 var currentUserData;
@@ -225,7 +221,7 @@ router.post('/idlogin', async (req, res) => {
     // var users_connected = ['Khyati_10']
     // for (var emp = 0; emp < users_connected.length; emp++) {
     //     var emp_full = users_connected[emp]
-    //     // console.log(emp_full)
+
     //     const to_add_connection = await User.findOne({
     //         username: emp_full
     //     });
@@ -257,37 +253,19 @@ router.post('/idlogin', async (req, res) => {
     //             if (err) {
     //                 console.log("Something wrong when updating data!");
     //             }
-
-    //             console.log(doc);
     //         });
     //     }
     // }
 
-
-    //console.logle.log('Session initialized');
-
-    //console.logle.log(user,"klkl");
-
     // const pass1=await bcrypt.hash(req.body.pass, salt);
     //  if(!user) return res.status(400).send('ID code not found!');
-    //  //console.logle.log(pass1);
-    //  //console.logle.log(user.password);
     // if(user.password.toString() === pass1.toString())
 
-    //console.logle.log("hghg", currentUserData);
-
-    ////console.logle.log(map);
-
-    //console.logle.log(map.has('5e2b3564e2b3124f1bbd9f4e'));
     //CREATE A TOKEN
     // const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);
     // res.header('auth_token', token).send(token);
 
     // Get All posts
-
-    //console.logle.log("hjhjhj",userPosts);
-
-
     // else{
     // return res.status(400).send('userid/password  not correct!');	
 
@@ -296,9 +274,6 @@ router.post('/idlogin', async (req, res) => {
 });
 
 router.post('/feedPost', async (req, res, next) => {
-
-    console.log(req.file, req.body)
-
     let {
         feedId
     } = req.query;
@@ -363,7 +338,8 @@ router.post('/feedPost', async (req, res, next) => {
                 parent_id: feedId,
                 conversation_id: currentFeed.conversation_id,
                 mentions: [],
-                visible_to: { users: [] }
+                visible_to: { users: [] },
+                image: req.file ? req.file.location : "null",
             });
 
             var status = currentUserName + " commented on " + user.username + "'s post."
@@ -484,15 +460,15 @@ router.post('/feedPost', async (req, res, next) => {
                 user_id: req.user.user_id,
                 body: req.body.retweet_edit_body,
                 created_at: Date.now(),
-                liked_by: currentFeed.liked_by,
-                like_count: currentFeed.like_count,
-                retweet_count: currentFeed.retweet_count,
-                reply_count: currentFeed.reply_count,
-                quote_count: currentFeed.quote_count,
+                liked_by: [],//currentFeed.liked_by,
+                like_count: 0, //currentFeed.like_count,
+                retweet_count: 0, // currentFeed.retweet_count,
+                reply_count: 0, //currentFeed.reply_count,
+                quote_count: 0, //currentFeed.quote_count,
                 post_type: "quote",
                 parent_id: currentFeed._id,
                 conversation_id: currentFeed.conversation_id,
-                mentions: currentFeed.mentions,
+                mentions: [], //currentFeed.mentions,
                 visible_to: currentFeed.visible_to,
 
                 author: currentUserName,
@@ -674,7 +650,7 @@ router.post('/feedPost', async (req, res, next) => {
                 user_id: currentFeed.user_id
             });
 
-            if (!currentFeed.liked_by.includes(currentUserID)) {
+            if (!currentFeed.liked_by.includes(currentUserData.username)) {
                 currentFeed.like_count++;
                 currentFeed.liked_by.push(currentUserData.username);
                 await currentFeed.save();
@@ -758,10 +734,14 @@ router.post('/feedPost', async (req, res, next) => {
             }
         });
 
+
+
         req.user.getUserGroupMembers(currentUserID, async (groupUsers, groups) => {
             groupUsers = groupUsers.map(user => user.user_id);
 
-            const newFeed = new Feeds({
+            req.session.newPostMade = true;
+
+            let feed = {
                 user_id: currentUserData.user_id,
                 body: req.body.body,
                 created_at: Date.now(),
@@ -775,7 +755,7 @@ router.post('/feedPost', async (req, res, next) => {
                 conversation_id: null,
                 mentions: [...new Set(user_mentions)],
                 visible_to: { users: groupUsers, groups },
-                image: req.file ? req.file.path.replace(/\\/g, "/") : "null",
+                image: req.file ? req.file.location : "null",
 
 
                 author: currentUserName,
@@ -789,7 +769,10 @@ router.post('/feedPost', async (req, res, next) => {
                 retweet_edit_body: "",
                 retweet_edit_count: 0,
                 notification: ""
-            });
+            }
+
+            const newFeed = new Feeds(feed);
+
 
             try {
                 let feed = await newFeed.save();
@@ -950,6 +933,7 @@ router.post('/feedPost', async (req, res, next) => {
         nPosts.sort(function (a, b) {
             return b["timestamp"] - a["timestamp"]
         });
+        global.nsp.emit('new-post', "new-post");
         res.redirect('users/feeds');
     }
 
@@ -1008,7 +992,7 @@ router.post('/feedPost', async (req, res, next) => {
                 }).populate('author_id').exec().then(comments => {
                     nPosts.push({ ...post._doc, comments })
                     commentItemProcessed++;
-                    console.log(commentItemProcessed + "   " + array.length)
+                    
                     if (commentItemProcessed === array.length) {
                         callback();
                     }
@@ -1193,10 +1177,12 @@ router.post('/login', async (req, res) => {
 
 router.get('/logout', async (req, res, next) => {
     //Logger for user logout time
-    let log = await Logger.findOne({ 'user.id': req.user._id });
-    if (log) {
-        log.loggedOutAt = new Date();
-        log.save();
+    if (req.user) {
+        let log = await Logger.findOne({ 'user.id': req.user._id });
+        if (log) {
+            log.loggedOutAt = new Date();
+            log.save();
+        }
     }
 
     req.session.destroy((err) => {
@@ -1208,24 +1194,19 @@ router.post('/profile', async (req, res, next) => {
     //VALIDATE BEFORE CREATE
 
     sess = req.session;
-    //console.logle.log('Session signup');
+
     sess.body = req.body;
-    //console.logle.log("Request body : ",req.body);
 
 
     //const {error} = registerValidation(sess.body);
     //if(error) return res.status(400).send(error.details[0].message);
 
     //Check if user already in DB
-    //console.logle.log('Find User');
+
     const emailExists = await User.findOne({
         username: sess.body['username']
     });
     if (emailExists) return res.status(400).send('Email already exists!');
-
-    //HASH PASSWORD
-    //console.logle.log('Hash Pass');
-
 
     const salt = await bcrypt.genSalt(10);
 

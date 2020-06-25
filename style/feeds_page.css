@@ -374,9 +374,12 @@ body {
 }
 .image-previews {
     width: 100%;
-    border: 1px solid gray;
+    /* border: 1px solid gray; */
     padding: 8px;
     display: none;
+
+    margin-top: 10px;
+    margin-left: 45px;
 }
 .image-wrapper {
     height: 150px;
@@ -399,16 +402,97 @@ body {
     font-size: 18px;
 }
 .post-img-wrapper {
-    width: 680px;
-    height: 500px;
+    width: auto;
+    height: 325px;
 }
 .post-image {
-    width: 100%;height: 100%; display: block;background-size: cover; background-repeat: no-repeat;
+    width: 100%;
+    height: 100%; 
+    display: block;
+    background-size: cover; 
+    background-repeat: no-repeat;
+    background-position: center;
     border-radius: 8px;
+    cursor: pointer;
 }
-.emoji-picker-icon {
+.feeds  .emoji-picker-icon {
     position: absolute;
     bottom: 3px;
     left: 52px;
     top: 78px;
+}
+.comment-background {
+    margin-right: 20px;
+    word-break: break-all;
+}
+.post-image-full-wrapper {
+    height: auto; 
+    max-height: 100%; 
+    width: auto;
+}
+.post-image-full-wrapper img {
+    background-size: contain;
+    height: 100%;
+    width: 100%;
+}
+.comment-controls {
+    justify-content: space-between;
+    display: flex;
+}
+.comment-controls svg{
+    width: 24px;
+    padding-top: 10px;
+    cursor: pointer;
+}
+.comment-container {
+    position: relative;
+    border: 1px solid lightgray;
+    padding: 10px;
+    border-radius: 6px;
+}
+.comment-container .emoji-picker-icon{
+    position: absolute;
+    left: 8%;
+    top: 73%;
+    width: 8%;
+}
+.comment-container .emoji-wysiwyg-editor {
+    border: none;
+}
+.comment-modal .image-preview {
+    width: 120px;
+    margin: 10px 0px;
+}
+.comment-modal .image-preview img {
+    width: auto;
+    height: auto;
+    max-height: 100%;
+    max-width: 100%;
+}
+.comment-post-image-close-wrapper {
+    position: relative;
+}
+.comment-post-image-wrapper {
+    margin: 12px 0px;
+    box-sizing: border-box;
+    width: auto;
+    height: 180px;
+}
+.all-posts {
+    padding: 0;
+}
+
+.table-container {
+    padding: 10px;
+    border-bottom: 2px solid rgba(236, 240, 241, 1);
+}
+.post-retweet-preview{
+    margin: 8px 0px;
+}
+.post-retweet-preview img {
+    width: 100%;
+    border-radius: 6px;
+}
+.post-text-area {
+    height: 75px !important;
 }

@@ -7,6 +7,7 @@ const Feeds = require('../model/Feeds');
 const Notifications = require('../model/Notifications');
 const Comments = require('../model/Comments');
 const validation = require('../validation');
+const utils = require('./../utils');
 
 var currentUserID;
 
@@ -30,6 +31,7 @@ async function getAllPosts(userID) {
         let user = await User.findById(userID);
 
         let entireFeeds = await Feeds.find({ 'visible_to.users': { $in: [user.user_id] } })
+            .populate('parent_id')
             .populate('visible_to.userId')
             .populate('author_id', 'name username email')
 
@@ -270,6 +272,8 @@ module.exports.getFeeds = async (req, res, next, path = null) => {
         let nPosts = [];
         let replys = [];
 
+
+
         userPosts = userPosts.map(async (post, index, array) => {
             if (post._id) {
                 /*let commentUser = await User.findOne({ user_id: post.user_id.user_id });
@@ -290,19 +294,66 @@ module.exports.getFeeds = async (req, res, next, path = null) => {
                     }
                 })*/
 
-                if (post.post_type != "reply") {
-                    nPosts.push({ ...post, comments: [] })
-                    itemsProcessed++;
-                    if (itemsProcessed === array.length) {
-                        callback();
-                    }
-                } else {
+                /* if (post.post_type != "reply") {
+                     nPosts.push({ ...post, comments: [] })
+                     itemsProcessed++;
+                     if (itemsProcessed === array.length) {
+                         callback();
+                     }
+                 } else if (post.parent_id && post.parent_id.reply_count > 0) {
+                     replys.push({ ...post, comments: [] });
+                     itemsProcessed++;
+                     if (itemsProcessed === array.length) {
+                         callback();
+                     }
+                 } else {
+                     replys.push({ ...post, comments: [] });
+                     itemsProcessed++;
+                     if (itemsProcessed === array.length) {
+                         callback();
+                     }
+                 }*/
+
+
+
+                if (post.post_type == "reply") {
+
                     replys.push({ ...post, comments: [] });
                     itemsProcessed++;
                     if (itemsProcessed === array.length) {
                         callback();
                     }
+
+                } else if (post.post_type == "retweet") {
+
+                    console.log()
+
+                    let rp = await Feeds.find({ parent_id: post.parent_id, post_type: "reply" }).populate('parent_id').sort({ created_at: 'desc' });
+
+
+                    rp.forEach((r, index) => {
+                        let p_parent_id = { ...rp[index].parent_id._doc, _id: post._id };
+                        let p = { ...rp[index]._doc, parent_id: p_parent_id, user_id: post.user_id }
+
+                        replys.push({ ...p, comments: [] })
+                    })
+
+
+                    nPosts.push({ ...post, comments: [] })
+                    itemsProcessed++;
+                    if (itemsProcessed === array.length) {
+                        callback();
+                    }
+
+                } else {
+                    nPosts.push({ ...post, comments: [] })
+                    itemsProcessed++;
+                    if (itemsProcessed === array.length) {
+                        callback();
+                    }
                 }
+
+
             } else {
                 nPosts.push({ ...post, comments: [] })
                 itemsProcessed++;
@@ -312,11 +363,31 @@ module.exports.getFeeds = async (req, res, next, path = null) => {
             }
         });
 
+
+        function deepCopyFunction(inObject) {
+            let outObject, value, key
+
+            if (typeof inObject !== "object" || inObject === null) {
+                return inObject
+            }
+
+            outObject = Array.isArray(inObject) ? [] : {}
+
+            for (key in inObject) {
+                value = inObject[key]
+                outObject[key] = deepCopyFunction(value)
+            }
+
+            return outObject
+        }
+
         // nPosts = userPosts;
 
         // callback();
 
         function callback() {
+
+
 
 
             replys.forEach(reply => {
@@ -391,6 +462,16 @@ module.exports.getFeeds = async (req, res, next, path = null) => {
             //     return post.comments.length > 0;
             // });
             // uPosts.unshift(first);
+
+
+
+            // if (req.session.newPostMade)
+            //     global.nsp.emit('new-post', uPosts[1]);
+
+            // req.session.newPostMade = false;
+
+
+
             res.render('../views/feeds_page', {
                 user: user,
                 posts: uPosts,
@@ -401,7 +482,8 @@ module.exports.getFeeds = async (req, res, next, path = null) => {
                 notificationCount,
                 notificationViewed: req.session.notificationViewed,
                 moment,
-                path: path ? path : "users/feeds"
+                path: path ? path : "users/feeds",
+                pageTitle: "Feeds"
             });
         }
 
