@@ -308,6 +308,8 @@ router.post('/feedPost', async (req, res, next) => {
             currentFeed.reply_count++;
             await currentFeed.save();
 
+            req.session.activityPost = currentFeed._id;
+
             const user = await User.findOne({
                 user_id: currentFeed.user_id
             });
@@ -369,6 +371,8 @@ router.post('/feedPost', async (req, res, next) => {
             var author_user = currentFeed.author;
             var author_image_src = currentFeed.author_img_src;
             await currentFeed.save();
+            req.session.activityPost = currentFeed._id;
+
 
             var receiverName = currentUserName;
             var find_image_src = await User.findById(currentUserID);
@@ -387,11 +391,11 @@ router.post('/feedPost', async (req, res, next) => {
                 user_id: req.user.user_id,
                 body: req.body.retweet_edit_body_comm,
                 created_at: Date.now(),
-                liked_by: currentFeed.liked_by,
-                like_count: currentFeed.like_count,
-                retweet_count: currentFeed.retweet_count,
-                reply_count: currentFeed.reply_count,
-                quote_count: currentFeed.quote_count,
+                liked_by: 0, //currentFeed.liked_by,
+                like_count: 0, //currentFeed.like_count,
+                retweet_count: 0, //currentFeed.retweet_count,
+                reply_count: 0, //currentFeed.reply_count,
+                quote_count: 0, //currentFeed.quote_count,
                 post_type: "quote",
                 parent_id: currentFeed._id,
                 conversation_id: currentFeed.conversation_id,
@@ -415,7 +419,8 @@ router.post('/feedPost', async (req, res, next) => {
             });
 
             try {
-                await newFeed.save();
+                let feed = await newFeed.save();
+
             } catch (err) {
                 let error = new Error("Something went wrong");
                 next(error);
@@ -447,6 +452,8 @@ router.post('/feedPost', async (req, res, next) => {
             currentFeed = await Feeds.findById(req.body.retweet_edit_id);
             currentFeed.quote_count++;
             currentFeed.retweet_edit_count++;
+            req.session.activityPost = currentFeed._id;
+
 
             try {
                 await currentFeed.save();
@@ -489,7 +496,8 @@ router.post('/feedPost', async (req, res, next) => {
             });
 
             try {
-                await newFeed.save();
+                let nf = await newFeed.save();
+                req.session.activityPost = nf._id;
             } catch (err) {
                 let error = new Error("Something went wrong");
                 next(error);
@@ -515,16 +523,17 @@ router.post('/feedPost', async (req, res, next) => {
             currentFeed = await Feeds.findById(req.body.post_id);
             currentFeed.retweet_count++;
             await currentFeed.save();
+            req.session.activityPost = currentFeed._id;
 
             const newFeed = new Feeds({
                 user_id: req.user.user_id,
                 body: req.body.body,
                 created_at: Date.now(),
-                liked_by: currentFeed.liked_by,
-                like_count: currentFeed.like_count,
-                retweet_count: currentFeed.retweet_count,
-                reply_count: currentFeed.reply_count,
-                quote_count: currentFeed.quote_count,
+                liked_by: [], //currentFeed.liked_by,
+                like_count: 0, //currentFeed.like_count,
+                retweet_count: 0, //currentFeed.retweet_count,
+                reply_count: 0, // currentFeed.reply_count,
+                quote_count: 0, //currentFeed.quote_count,
                 post_type: "retweet",
                 parent_id: currentFeed._id,
                 conversation_id: currentFeed.conversation_id,
@@ -582,6 +591,7 @@ router.post('/feedPost', async (req, res, next) => {
             currentFeed.retweet_count++;
             currentFeed.count++;
             await currentFeed.save();
+            req.session.activityPost = currentFeed._id;
 
             const user = await User.findOne({
                 user_id: currentFeed.user_id
@@ -650,10 +660,13 @@ router.post('/feedPost', async (req, res, next) => {
                 user_id: currentFeed.user_id
             });
 
+
+
             if (!currentFeed.liked_by.includes(currentUserData.username)) {
                 currentFeed.like_count++;
                 currentFeed.liked_by.push(currentUserData.username);
                 await currentFeed.save();
+                req.session.activityPost = currentFeed._id;
             }
 
             var status = currentUserName + " liked " + user.username + "'s post."
@@ -678,12 +691,15 @@ router.post('/feedPost', async (req, res, next) => {
         //LIKE COMMENT ON POST
         if (req.body.love_com) {
 
-            currentFeed = await Comments.findById(req.body.love_com);
 
-            if (!currentFeed.love_people.includes(currentUserID)) {
-                currentFeed.love_count++;
-                currentFeed.love_people.push(currentUserID);
+
+            currentFeed = await Feeds.findById(req.body.love_com);
+
+            if (!currentFeed.liked_by.includes(currentUserData.username)) {
+                currentFeed.like_count++;
+                currentFeed.liked_by.push(currentUserData.username);
                 await currentFeed.save();
+                req.session.activityPost = currentFeed._id;
             }
 
             const user = await User.findOne({
@@ -1056,6 +1072,8 @@ router.post('/profile', async (req, res, next) => {
 });
 
 router.post('/login', async (req, res) => {
+    req.session.activityPost = null;
+
     const {
         error
     } = loginValidation(req.body);
@@ -1092,23 +1110,16 @@ router.post('/login', async (req, res) => {
     }
 
     //Logger for user login time
-    let log = await Logger.findOne({ 'user.id': user._id });
-    if (log) {
-        log.loggedInAt = new Date();
-        log.loggedOutAt = null;
-        log.save();
+    let log = new Logger({
+        user: {
+            id: user._id,
+            username: user.username,
+            name: user.name
+        },
+        loggedInAt: new Date()
+    });
+    log.save();
 
-    } else {
-        let log = new Logger({
-            user: {
-                id: user._id,
-                username: user.username,
-                name: user.name
-            },
-            loggedInAt: new Date()
-        });
-        log.save();
-    }
 
     currentUserID = user._id;
     req.session.user = user;
@@ -1178,13 +1189,12 @@ router.post('/login', async (req, res) => {
 router.get('/logout', async (req, res, next) => {
     //Logger for user logout time
     if (req.user) {
-        let log = await Logger.findOne({ 'user.id': req.user._id });
+        let log = await Logger.findOne({ 'user.id': req.user._id }).sort([['loggedInAt', -1]]);
         if (log) {
             log.loggedOutAt = new Date();
             log.save();
         }
     }
-
     req.session.destroy((err) => {
         res.redirect('/')
     })
@@ -1196,12 +1206,6 @@ router.post('/profile', async (req, res, next) => {
     sess = req.session;
 
     sess.body = req.body;
-
-
-    //const {error} = registerValidation(sess.body);
-    //if(error) return res.status(400).send(error.details[0].message);
-
-    //Check if user already in DB
 
     const emailExists = await User.findOne({
         username: sess.body['username']

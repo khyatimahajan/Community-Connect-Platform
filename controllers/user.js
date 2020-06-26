@@ -448,14 +448,34 @@ module.exports.getFeeds = async (req, res, next, path = null) => {
 
 
         function renderScreen(uPosts) {
+            uPosts = uPosts.map(p => {
+                return { ...p, 'post_order': p.created_at }
+            })
+
+            // bonsole("OLD ORDER");
+            // bonsole(uPosts);
+
+            console.log("ACTIVITY POST");
+            console.log(req.session.activityPost);
+
+            if (req.session.activityPost) {
+                let index = uPosts.findIndex(p => JSON.stringify(p._id) == JSON.stringify(req.session.activityPost))
+                console.log("INDEX", index);
+                if (index >= 0)
+                    uPosts[index].post_order = Date.now();
+            }
+
             uPosts.sort(function (a, b) {
-                return b["created_at"] - a["created_at"]
+                return b["post_order"] - a["post_order"]
             });
 
-            if (req.session.newCommentFeed) {
+            // bonsole("NEW ORDER");
+            // bonsole(uPosts);
+
+            /*if (req.session.newCommentFeed) {
                 let index = uPosts.findIndex(i => i._id == req.session.newCommentFeed);
                 arraymove(uPosts, index, 1);
-            }
+            }*/
 
             // let first = uPosts[0];
             // uPosts = uPosts.filter(post => {

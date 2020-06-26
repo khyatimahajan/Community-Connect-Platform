@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    var fileId;
+
     //Connection array
     connections = connections.split("&#34;").join('"')
     connections = JSON.parse(connections);
@@ -27,13 +29,14 @@ $(document).ready(function () {
     });
 
     //Post comment image input change
-    $('#comment-image').on('click', function () {
+    $('.comment-image').on('click', function () {
+        fileId = $(this).attr('id').split('#')[1];
         $('#main-post-image').remove();
-        $('#comment-post-image').trigger('click');
-    });
+        $(`.file${fileId}`).trigger('click');
 
-    $('#comment-post-image').change(function (evt) {
-        readURL(this, 'comment');
+        $(`.file${fileId}`).change(function (evt) {
+            readURL(this, 'comment');
+        });
     });
 
     $('.comment-post-image-close-wrapper').on('click', function () {
@@ -50,7 +53,7 @@ $(document).ready(function () {
                     $('.image-pre').css('background-image', 'url(' + e.target.result + ')');
                 } else {
                     $('.comment-post-image-close-wrapper').show();
-                    $('#comment-image-preview').attr('src', e.target.result);
+                    $(`.commentImage${fileId}`).attr('src', e.target.result);
                 }
             }
             reader.readAsDataURL(input.files[0]);

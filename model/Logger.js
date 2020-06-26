@@ -14,4 +14,4 @@ let loggerSchema = new schema({
     }
 });
 
-module.exports = mongoose.model("Logger", loggerSchema);
+module.exports = mongoose.model("LogTime", loggerSchema);

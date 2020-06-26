@@ -496,3 +496,6 @@ body {
 .post-text-area {
     height: 75px !important;
 }
+.sidemenu-bio a {
+    word-break: break-all;
+}
