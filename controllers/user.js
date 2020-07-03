@@ -25,8 +25,14 @@ async function getAllPosts(userID) {
                 //post_type: { $ne: "reply" }
             }).populate('parent_id');
 
-            allPosts.push.apply(allPosts, temp_post)
+            allPosts.push.apply(allPosts, temp_post);
         }
+
+
+
+        //allPosts.push([...all_replys]);
+
+
 
         let user = await User.findById(userID);
 
@@ -58,6 +64,12 @@ async function getAllPosts(userID) {
         }
 
         allPosts = allPosts.concat(entireFeeds);
+
+        let all_replys = await Feeds.find({
+            post_type: "reply"
+        }).populate('parent_id');
+
+        allPosts = allPosts.concat(all_replys);
 
         allPosts = removeDups(allPosts, "_id");
 

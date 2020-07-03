@@ -25,3 +25,7 @@ module.exports.urlify = (text) => {
         return '<a target="_blank" href="' + url + '">' + url + '</a>';
     })
 }
+
+module.exports.findCommonElements = (arr1, arr2) => {
+    return arr1.some(item => arr2.includes(item))
+} 

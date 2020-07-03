@@ -604,6 +604,11 @@ router.post('/feedPost', async (req, res, next) => {
                 currentFeed = await Feeds.findById(currentFeed.parent_id);
             }
 
+            let postUserGroups = user.group_id;
+            let currentUserGroups = req.user.group_id;
+
+            var isSamegroups = utils.findCommonElements(postUserGroups, currentUserGroups);
+
             const newFeed = new Feeds({
                 user_id: req.user.user_id,
                 body: req.body.body,
@@ -617,7 +622,7 @@ router.post('/feedPost', async (req, res, next) => {
                 parent_id: currentFeed._id,
                 conversation_id: currentFeed.conversation_id,
                 mentions: currentFeed.mentions,
-                visible_to: currentFeed.visible_to,
+                visible_to: isSamegroups ? currentFeed.visible_to : { ...currentFeed.visible_to, users: currentFeed.visible_to.users.concat(currentFeed.user_id) },
 
 
                 author: currentUserName,
