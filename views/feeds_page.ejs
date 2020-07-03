@@ -147,7 +147,7 @@
                                             <% if(posts[curPost].post_type == "quote") { %>
                                             <div class="col-md-12 p-2">
                                                 <div class="comment-background pl-4">
-                                                    <%= posts[curPost].body %>
+                                                    <%- posts[curPost].body %>
                                                 </div>
                                             </div>
                                             <% } %>
@@ -224,7 +224,7 @@
 
                                             <div class="col-md-12 ml-4">
                                                 <div class="comment-background pl-4">
-                                                    <%= posts[curPost].retweet_edit_body %>
+                                                    <%- posts[curPost].retweet_edit_body %>
                                                 </div>
                                             </div>
 
@@ -254,7 +254,7 @@
 
                                                 <% if(posts[curPost].author != posts[curPost].receiver) { %>
                                                 <div class="comment-background" style="margin-left:58px;">
-                                                    <%= posts[curPost].body %>
+                                                    <%- posts[curPost].body %>
 
                                                 </div>
 
@@ -262,7 +262,7 @@
                                                 <div class="comment-background" style="margin-left:58px;">
 
                                                     <% if(posts[curPost].post_type == "tweet") { %>
-                                                    <p><%= posts[curPost].body %></p>
+                                                    <p><%- posts[curPost].body %></p>
 
                                                     <% if(posts[curPost].image !="null") { %>
                                                     <div class="post-img-wrapper">
@@ -276,7 +276,7 @@
                                                     <% } else { %>
 
                                                     <% if(posts[curPost].parent_id && posts[curPost].parent_id.body) { %>
-                                                    <p><%= posts[curPost].parent_id.body %></p>
+                                                    <p><%- posts[curPost].parent_id.body %></p>
                                                     <% } %>
 
                                                     <% if( posts[curPost].parent_id && posts[curPost].parent_id.image != "null") { %>
@@ -432,7 +432,7 @@
                                                                         data-toggle="dropdown" aria-haspopup="true"
                                                                         aria-expanded="false" type="button">
                                                                         <div class="edit-icon">
-                                                                            <i class="fa fa-twitter-square"
+                                                                            <i class="fa fa-retweet"
                                                                                 aria-hidden="true"></i></a>
                                                                         </div>
                                                                     </button>
@@ -472,7 +472,7 @@
 
                                                                                 <div class="edit-icon"
                                                                                     style="padding: 0; background-color: transparent;">
-                                                                                    <i class="fa fa-share"
+                                                                                    <i class="fa fa-pencil"
                                                                                         aria-hidden="true"></i>
                                                                                     <%= posts[curPost].quote_count %>
 
@@ -553,7 +553,7 @@
                                                                                 <div class="col-md-12">
                                                                                     <div
                                                                                         class="comment-background p-2 pl-3 ml-5">
-                                                                                        <span><%= posts[curPost].body %></span>
+                                                                                        <span><%- posts[curPost].body %></span>
                                                                                         <br>
 
                                                                                         <% if(posts[curPost].image !="null"){ %>
@@ -655,7 +655,7 @@
                                                                         @<%= posts[curPost].comments[curComment].user_id.username %></span>
                                                                 </div>
                                                                 <p class="comment-background">
-                                                                    <%= posts[curPost].comments[curComment].body %>
+                                                                    <%- posts[curPost].comments[curComment].body %>
                                                                 </p>
 
 
@@ -743,7 +743,7 @@
                                                                                     aria-haspopup="true"
                                                                                     aria-expanded="false" type="button">
                                                                                     <div class="edit-icon">
-                                                                                        <i class="fa fa-twitter-square"
+                                                                                        <i class="fa fa-retweet"
                                                                                             aria-hidden="true"></i></a>
                                                                                     </div>
                                                                                 </button>
@@ -782,7 +782,7 @@
 
                                                                                             <div class="edit-icon"
                                                                                                 style="padding: 0; background-color: transparent;">
-                                                                                                <i class="fa fa-share"
+                                                                                                <i class="fa fa-pencil"
                                                                                                     aria-hidden="true"></i>
                                                                                                 <%= posts[curPost].comments[curComment].quote_count %>
 
@@ -855,7 +855,7 @@
                                                                                             <div class="col-md-12">
                                                                                                 <div
                                                                                                     class="comment-background p-2 pl-3 ml-5">
-                                                                                                    <%= posts[curPost].comments[curComment].body %>
+                                                                                                    <%- posts[curPost].comments[curComment].body %>
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>

@@ -274,6 +274,7 @@ router.post('/idlogin', async (req, res) => {
 });
 
 router.post('/feedPost', async (req, res, next) => {
+
     let {
         feedId
     } = req.query;
@@ -281,8 +282,6 @@ router.post('/feedPost', async (req, res, next) => {
     let currentFeed;
     var userPosts = [];
     var nPosts = [];
-
-
 
     currentUserName = req.user.username;
     currentUserID = req.user._id;
@@ -299,9 +298,13 @@ router.post('/feedPost', async (req, res, next) => {
 
     if (feedId) {
         //COMMENT/REPLY ON POST
-        if (req.body.comment) {
-
+        if (req.body.comment || req.file) {
             currentFeed = await Feeds.findById(feedId);
+
+            if (currentFeed.post_type == "retweet") {
+                currentFeed = await Feeds.findById(currentFeed.parent_id);
+            }
+
             req.session.newCommentFeed = feedId;
             //currentFeed.created_at = +new Date();
             currentFeed.com_count++;
@@ -337,7 +340,7 @@ router.post('/feedPost', async (req, res, next) => {
                 reply_count: 0,
                 quote_count: 0,
                 post_type: "reply",
-                parent_id: feedId,
+                parent_id: currentFeed._id,
                 conversation_id: currentFeed.conversation_id,
                 mentions: [],
                 visible_to: { users: [] },
@@ -534,7 +537,7 @@ router.post('/feedPost', async (req, res, next) => {
                 retweet_count: 0, //currentFeed.retweet_count,
                 reply_count: 0, // currentFeed.reply_count,
                 quote_count: 0, //currentFeed.quote_count,
-                post_type: "retweet",
+                post_type: "retweet_com",
                 parent_id: currentFeed._id,
                 conversation_id: currentFeed.conversation_id,
                 mentions: currentFeed.mentions,
@@ -591,7 +594,7 @@ router.post('/feedPost', async (req, res, next) => {
             currentFeed.retweet_count++;
             currentFeed.count++;
             await currentFeed.save();
-            req.session.activityPost = currentFeed._id;
+
 
             const user = await User.findOne({
                 user_id: currentFeed.user_id
@@ -644,7 +647,8 @@ router.post('/feedPost', async (req, res, next) => {
             })
 
             try {
-                await newFeed.save();
+                let nf = await newFeed.save();
+                req.session.activityPost = nf._id;
                 await notify.save();
             } catch (err) {
                 let error = new Error("Something went wrong");
@@ -655,37 +659,50 @@ router.post('/feedPost', async (req, res, next) => {
 
         //LIKE POST
         if (req.body.love) {
-            currentFeed = await Feeds.findById(feedId);
-            const user = await User.findOne({
+            currentFeed = await Feeds.findById(feedId).populate('parent_id');
+            req.session.activityPost = currentFeed._id;
+            let user1 = await User.findOne({
                 user_id: currentFeed.user_id
             });
+            let user2;
 
+            if (currentFeed.post_type == "retweet") {
+                currentFeed = await Feeds.findById(currentFeed.parent_id._id);
+                user2 = await User.findOne({
+                    user_id: currentFeed.user_id
+                });
 
+            }
 
             if (!currentFeed.liked_by.includes(currentUserData.username)) {
                 currentFeed.like_count++;
                 currentFeed.liked_by.push(currentUserData.username);
                 await currentFeed.save();
-                req.session.activityPost = currentFeed._id;
+
+                let notifications = [
+                    {
+                        inconn_id: currentUserID,
+                        outconn_id: user1._id,
+                        post_id: feedId,
+                        activity: "like",
+                        seen: false,
+                        status: currentUserName + " liked " + user1.username + "'s post."
+                    }
+                ];
+
+                if (user2) {
+                    notifications.push({
+                        inconn_id: currentUserID,
+                        outconn_id: user2._id,
+                        post_id: feedId,
+                        activity: "like",
+                        seen: false,
+                        status: currentUserName + " liked " + user2.username + "'s post."
+                    })
+                }
+
+                Notifications.insertMany(notifications);
             }
-
-            var status = currentUserName + " liked " + user.username + "'s post."
-
-            const notify = new Notifications({
-                inconn_id: currentUserID,
-                outconn_id: user._id,
-                post_id: feedId,
-                activity: "like",
-                seen: false,
-                status: status
-            })
-            try {
-                await notify.save();
-            } catch (err) {
-                let error = new Error("Something went wrong");
-                next(error);
-            }
-
         }
 
         //LIKE COMMENT ON POST
@@ -759,7 +776,7 @@ router.post('/feedPost', async (req, res, next) => {
 
             let feed = {
                 user_id: currentUserData.user_id,
-                body: req.body.body,
+                body: utils.urlify(req.body.body),
                 created_at: Date.now(),
                 liked_by: [],
                 like_count: 0,
@@ -796,6 +813,7 @@ router.post('/feedPost', async (req, res, next) => {
                 feed.getUserMentions(req.body.body);
 
                 feed.conversation_id = feed._id;
+                req.session.activityPost = feed._id;
                 await feed.save();
             } catch (err) {
                 let error = new Error("Something went wrong");
@@ -950,7 +968,7 @@ router.post('/feedPost', async (req, res, next) => {
             return b["timestamp"] - a["timestamp"]
         });
         global.nsp.emit('new-post', "new-post");
-        res.redirect('users/feeds');
+        res.redirect('users/home');
     }
 
     /*if (feedId && (req.body.comment || req.body.love)) {
@@ -1098,6 +1116,13 @@ router.post('/login', async (req, res) => {
                 input: { email: req.body.email }
             });
     }
+
+    if (!user.password) return res.status(403)
+        .render('./../views/login.ejs', {
+            pageTitle: "Login",
+            message: "Invalid email address or password",
+            input: { email: req.body.email }
+        });
 
     const validPass = await bcrypt.compare(req.body.password, user.password);
     if (!validPass) {

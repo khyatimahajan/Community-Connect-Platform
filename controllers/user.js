@@ -257,11 +257,7 @@ module.exports.getFeeds = async (req, res, next, path = null) => {
 
         var posts = await getAllPosts(user._id);
 
-
-
         // posts = removeDups(posts, "_id");
-
-
 
         userPosts = [currentUserData].concat(posts);
 
@@ -271,8 +267,6 @@ module.exports.getFeeds = async (req, res, next, path = null) => {
         var itemsProcessed = 0;
         let nPosts = [];
         let replys = [];
-
-
 
         userPosts = userPosts.map(async (post, index, array) => {
             if (post._id) {
@@ -314,30 +308,26 @@ module.exports.getFeeds = async (req, res, next, path = null) => {
                      }
                  }*/
 
-
-
                 if (post.post_type == "reply") {
-
                     replys.push({ ...post, comments: [] });
                     itemsProcessed++;
                     if (itemsProcessed === array.length) {
                         callback();
                     }
 
-                } else if (post.post_type == "retweet") {
-
-                    console.log()
-
+                } /*else if (post.post_type == "retweet") {
                     let rp = await Feeds.find({ parent_id: post.parent_id, post_type: "reply" }).populate('parent_id').sort({ created_at: 'desc' });
-
-
-                    rp.forEach((r, index) => {
+                    rp.forEach(async (r, index) => {
                         let p_parent_id = { ...rp[index].parent_id._doc, _id: post._id };
-                        let p = { ...rp[index]._doc, parent_id: p_parent_id, user_id: post.user_id }
+                       
+
+                        let pUser = await User.findOne({ user_id: r.parent_id.user_id });
+                      
+
+                        let p = { ...rp[index]._doc, parent_id: p_parent_id, user_id: pUser }
 
                         replys.push({ ...p, comments: [] })
                     })
-
 
                     nPosts.push({ ...post, comments: [] })
                     itemsProcessed++;
@@ -345,7 +335,7 @@ module.exports.getFeeds = async (req, res, next, path = null) => {
                         callback();
                     }
 
-                } else {
+                }*/ else {
                     nPosts.push({ ...post, comments: [] })
                     itemsProcessed++;
                     if (itemsProcessed === array.length) {
@@ -364,77 +354,60 @@ module.exports.getFeeds = async (req, res, next, path = null) => {
         });
 
 
-        function deepCopyFunction(inObject) {
-            let outObject, value, key
-
-            if (typeof inObject !== "object" || inObject === null) {
-                return inObject
-            }
-
-            outObject = Array.isArray(inObject) ? [] : {}
-
-            for (key in inObject) {
-                value = inObject[key]
-                outObject[key] = deepCopyFunction(value)
-            }
-
-            return outObject
-        }
-
-        // nPosts = userPosts;
-
-        // callback();
-
         function callback() {
+            setTimeout(() => {
+                replys.forEach((reply, index) => {
+                    let post = nPosts.filter(post => {
+                        return JSON.stringify(post._id) == JSON.stringify(reply.parent_id._id)
+                    })
+                    post = post[0];
+                    if (post) {
+                        let index = nPosts.findIndex(p => p == post);
+                        nPosts[index] = { ...post, comments: post.comments.concat(reply) }
+                    }
+                });
 
+                let finalPostProcessed = 0;
+                let uPosts = [];
 
+                nPosts.forEach(async (post, index, array) => {
+                    if (post.parent_id) {
+                        let p = await Feeds.findById(post.parent_id);
+                        let user = await User.findOne({ user_id: p.user_id })
+                        if (user) {
+                            uPosts.push({ ...post, parent_id: { ...p._doc, user_id: user } });
+                        }
+                        finalPostProcessed++;
+                        if (finalPostProcessed == array.length) {
+                            renderScreen(uPosts);
+                        }
+                    } else {
+                        uPosts.push({ ...post });
+                        finalPostProcessed++;
+                        if (finalPostProcessed == array.length) {
+                            renderScreen(uPosts);
+                        }
+                    }
+                });
 
-
-            replys.forEach(reply => {
-                let post = nPosts.filter(post => {
-                    return JSON.stringify(post._id) == JSON.stringify(reply.parent_id._id)
-                })
-                post = post[0];
-                if (post) {
-                    let index = nPosts.findIndex(p => p == post);
-                    // let cmts;
-                    // if (post.hasOwnProperty("comments") && post.comments) {
-                    //     cmts = post.comments;
-                    // } else {
-                    //     cmts = [];
-                    // }
-                    nPosts[index] = { ...post, comments: post.comments.concat(reply) }
-                }
-
-            });
+            }, 1500)
 
             //nPosts = [currentUserData].concat(nPosts);
 
-            let finalPostProcessed = 0;
-
+            /*let finalPostProcessed = 0;
             let uPosts = [];
-
             nPosts.forEach(async (post, index, array) => {
                 if (post.parent_id) {
 
                     let p = await Feeds.findById(post.parent_id);
                     let user = await User.findOne({ user_id: p.user_id })
-
-
-
-                    /* old let user = await User.findOne({ user_id: post.parent_id.user_id, isAdmin: "false" }) */
                     if (user) {
-
-                        // old uPosts.push({ ...post, parent_id: { ...post.parent_id._doc, user_id: user } });
                         uPosts.push({ ...post, parent_id: { ...p._doc, user_id: user } });
-
                     }
-
                     finalPostProcessed++;
                     if (finalPostProcessed == array.length) {
                         renderScreen(uPosts);
                     }
-
                 } else {
                     uPosts.push({ ...post });
                     finalPostProcessed++;
@@ -442,25 +415,25 @@ module.exports.getFeeds = async (req, res, next, path = null) => {
                         renderScreen(uPosts);
                     }
                 }
-            });
+            });*/
         }
-
-
 
         function renderScreen(uPosts) {
             uPosts = uPosts.map(p => {
+
+                //Copy Original post's comments to retweeted post.
+                if (p.post_type == 'retweet') {
+                    let PIndex = uPosts.findIndex(pst => JSON.stringify(p.parent_id._id) == JSON.stringify(pst._id));
+                    if (PIndex > -1)
+                        return { ...p, 'post_order': p.created_at, comments: uPosts[PIndex].comments }
+                }
                 return { ...p, 'post_order': p.created_at }
             })
 
-            // bonsole("OLD ORDER");
-            // bonsole(uPosts);
-
-            console.log("ACTIVITY POST");
-            console.log(req.session.activityPost);
 
             if (req.session.activityPost) {
                 let index = uPosts.findIndex(p => JSON.stringify(p._id) == JSON.stringify(req.session.activityPost))
-                console.log("INDEX", index);
+
                 if (index >= 0)
                     uPosts[index].post_order = Date.now();
             }
@@ -469,8 +442,6 @@ module.exports.getFeeds = async (req, res, next, path = null) => {
                 return b["post_order"] - a["post_order"]
             });
 
-            // bonsole("NEW ORDER");
-            // bonsole(uPosts);
 
             /*if (req.session.newCommentFeed) {
                 let index = uPosts.findIndex(i => i._id == req.session.newCommentFeed);
@@ -483,14 +454,10 @@ module.exports.getFeeds = async (req, res, next, path = null) => {
             // });
             // uPosts.unshift(first);
 
-
-
             // if (req.session.newPostMade)
             //     global.nsp.emit('new-post', uPosts[1]);
 
             // req.session.newPostMade = false;
-
-
 
             res.render('../views/feeds_page', {
                 user: user,
@@ -502,7 +469,7 @@ module.exports.getFeeds = async (req, res, next, path = null) => {
                 notificationCount,
                 notificationViewed: req.session.notificationViewed,
                 moment,
-                path: path ? path : "users/feeds",
+                path: path ? path : "users/home",
                 pageTitle: "Feeds"
             });
         }
@@ -511,13 +478,6 @@ module.exports.getFeeds = async (req, res, next, path = null) => {
         console.log(err);
         let error = new Error("Something went wrong");
         next(error);
-    }
-
-
-    function arraymove(arr, fromIndex, toIndex) {
-        var element = arr[fromIndex];
-        arr.splice(fromIndex, 1);
-        arr.splice(toIndex, 0, element);
     }
 }
 

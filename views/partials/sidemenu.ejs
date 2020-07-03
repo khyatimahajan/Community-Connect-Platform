@@ -18,21 +18,21 @@
                     </a>
                 </div>
             </li>
-            <li class="list-group-item <%= path == 'users/feeds' ? 'active' : null %>">
+            <li class="list-group-item <%= path == 'users/profile' ? 'active' : null %>">
                 <div class="on-hover-show">
-                    <a href="/users/feeds" class=" py-3 px-4">
+                    <a href="/users/profile" class=" py-3 px-4">
                         <img class="rounded-circle mr-3" height="25px" width="25px"
                             src=<%= user.profile_pic %> /><%=user.username%>
                     </a>
                 </div>
             </li>
-            <li class="list-group-item <%= path == 'users/profile' ? 'active' : null %>">
+            <!-- <li class="list-group-item <%= path == 'users/profile' ? 'active' : null %>">
                 <div class="on-hover-show">
                     <a href="/users/profile" class=" py-3 px-4">
                         <i class="fa fa-user fa-lg mr-3" aria-hidden="true"></i><%=user.name%>
                     </a>
                 </div>
-            </li>
+            </li> -->
             <li class="list-group-item">
                 <div class="on-hover-show">
                     <a href="#" class=" py-3 px-4">
