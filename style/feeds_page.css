@@ -499,3 +499,6 @@ body {
 .sidemenu-bio a {
     word-break: break-all;
 }
+.mr-3, .mx-3 {
+    margin-right: 0.5rem!important;
+}

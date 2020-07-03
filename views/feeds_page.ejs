@@ -133,9 +133,9 @@
                                                         <img src=<%= posts[curPost].user_id.profile_pic %>
                                                             class="rounded-circle mr-3" height="25px" width="25px" />
                                                         <!-- <b>@<%= posts[curPost].user_id.username %> Feed:</b> -->
-                                                        <b><%= posts[curPost].user_id.name %></b>
-                                                        <span class="tag_username">-
-                                                            @<%= posts[curPost].user_id.username %></span>
+                                                        <b>@<%= posts[curPost].user_id.username %></b>
+                                                        <!-- <span class="tag_username">-
+                                                            @<%= posts[curPost].user_id.username %></span> -->
                                                     </div>
                                                     <div class="col-md-2 postTimestamp">
                                                         <%= moment(posts[curPost].created_at).fromNow(true) %> ago
@@ -156,9 +156,9 @@
                                                 <img src=<%= posts[curPost].parent_id.user_id.profile_pic %>
                                                     class="rounded-circle mr-3" height="25px" width="25px" />
                                                 <!-- <b>@<%= posts[curPost].parent_id.user_id.username %>'s Feed:</b> -->
-                                                <b><%= posts[curPost].parent_id.user_id.name %></b>
-                                                <span class="tag_username">-
-                                                    @<%= posts[curPost].parent_id.user_id.username %></span>
+                                                <b>@<%= posts[curPost].parent_id.user_id.username %></b>
+                                                <!-- <span class="tag_username">-
+                                                    @<%= posts[curPost].parent_id.user_id.username %></span> -->
 
                                             </div>
 
@@ -178,11 +178,13 @@
                                                         <% } %>
 
                                                         <% if(posts[curPost].user_id && posts[curPost].user_id.name) { %>
-                                                        <b><%= posts[curPost].user_id.name %></b>
+                                                        <b>@<%= posts[curPost].user_id.username %></b>
                                                         <% } %>
-                                                        <span class="tag_username">-
+                                                        <span class="tag_username">
+                                                            <!-- -
                                                             <% if(posts[curPost].user_id && posts[curPost].user_id.username) { %>
-                                                            @<%= posts[curPost].user_id.username %></span>
+                                                            @<%= posts[curPost].user_id.username %> -->
+                                                        </span>
                                                         <% } %>
                                                     </div>
                                                     <div class="col-md-2 postTimestamp">
@@ -210,9 +212,9 @@
                                                         <img src=<%= posts[curPost].user_id.profile_pic %>
                                                             class="rounded-circle mr-3" height="25px" width="25px" />
                                                         <!-- <b>@<%= posts[curPost].author %> Feed:</b> -->
-                                                        <b><%= posts[curPost].user_id.name %></b>
-                                                        <span class="tag_username">-
-                                                            @<%= posts[curPost].user_id.username %></span>
+                                                        <b>@<%= posts[curPost].user_id.username %></b>
+                                                        <!-- <span class="tag_username">-
+                                                            @<%= posts[curPost].user_id.username %></span> -->
                                                     </div>
                                                     <div class="col-md-2 postTimestamp">
                                                         <%= moment(posts[curPost].created_at).fromNow(true) %> ago
@@ -235,9 +237,9 @@
                                                 <img src=<%= posts[curPost].receiver_image %>
                                                     class="rounded-circle mr-3" height="25px" width="25px" />
 
-                                                <b><%= posts[curPost].receiver_id.name %></b>
-                                                <span class="tag_username">-
-                                                    @<%= posts[curPost].receiver_id.username %></span>
+                                                <b>@<%= posts[curPost].receiver_id.username %></b>
+                                                <!-- <span class="tag_username">-
+                                                    @<%= posts[curPost].receiver_id.username %></span> -->
                                             </div>
                                             <% } %>
 
@@ -525,28 +527,29 @@
                                                                                         height="25px" width="25px" />
 
                                                                                     <% if(posts[curPost].user_id && posts[curPost].user_id.name) { %>
-                                                                                    <b><%= posts[curPost].user_id.name %></b>
+                                                                                    <b>@<%= posts[curPost].user_id.username %></b>
                                                                                     <% } %>
 
 
                                                                                     <span class="tag_username">-
                                                                                         <% if(posts[curPost].user_id && posts[curPost].user_id.username) { %>
-                                                                                        @<%= posts[curPost].user_id.username %></span>
-                                                                                    <% } %>
+                                                                                        <!-- @<%= posts[curPost].user_id.username %></span> -->
+                                                                                        <% } %>
 
-                                                                                    <%}%>
+                                                                                        <%}%>
                                         
                                                                                                                         <% if(posts[curPost].author != posts[curPost].receiver) { %>
 
-                                                                                    <img src=<%= posts[curPost].author_image %>
-                                                                                        class="rounded-circle mr-3"
-                                                                                        height="25px" width="25px" />
-                                                                                    <b>@<%= posts[curPost].author %>
-                                                                                    </b>
+                                                                                        <img src=<%= posts[curPost].author_image %>
+                                                                                            class="rounded-circle mr-3"
+                                                                                            height="25px"
+                                                                                            width="25px" />
+                                                                                        <b>@<%= posts[curPost].author %>
+                                                                                        </b>
 
 
 
-                                                                                    <% } %>
+                                                                                        <% } %>
 
                                                                                 </div>
 
@@ -650,9 +653,9 @@
                                                                     :
                                                                 </b> -->
                                                                 <div class="mr-2">
-                                                                    <b><%= posts[curPost].comments[curComment].user_id.name %></b>
-                                                                    <span class="tag_username">-
-                                                                        @<%= posts[curPost].comments[curComment].user_id.username %></span>
+                                                                    <b>@<%= posts[curPost].comments[curComment].user_id.username %></b>
+                                                                    <!-- <span class="tag_username">-
+                                                                        @<%= posts[curPost].comments[curComment].user_id.username %></span> -->
                                                                 </div>
                                                                 <p class="comment-background">
                                                                     <%- posts[curPost].comments[curComment].body %>
@@ -845,10 +848,10 @@
                                                                                                     height="25px"
                                                                                                     width="25px" />
                                                                                                 <!-- <b>@<%= posts[curPost].comments[curComment].author %></b> -->
-                                                                                                <b><%= posts[curPost].comments[curComment].user_id.name %></b>
-                                                                                                <span
+                                                                                                <b>@<%= posts[curPost].comments[curComment].user_id.username %></b>
+                                                                                                <!-- <span
                                                                                                     class="tag_username">-
-                                                                                                    @<%= posts[curPost].comments[curComment].user_id.username %></span>
+                                                                                                    @<%= posts[curPost].comments[curComment].user_id.username %></span> -->
 
                                                                                             </div>
 
@@ -925,7 +928,7 @@
                         <li class="list-group-item">
                             <img class="rounded-circle mr-3" height="25px" width="25px"
                                 src="<%= connections[i].profile_pic ? connections[i].profile_pic : 'https://via.placeholder.com/150' %>" />
-                            <%= connections[i].name ? connections[i].name: "Unavailable" %>
+                            <%= connections[i].username ? connections[i].username: "Unavailable" %>
                         </li>
                     </ul>
                     <% } %>

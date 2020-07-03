@@ -537,7 +537,7 @@ router.post('/feedPost', async (req, res, next) => {
                 retweet_count: 0, //currentFeed.retweet_count,
                 reply_count: 0, // currentFeed.reply_count,
                 quote_count: 0, //currentFeed.quote_count,
-                post_type: "retweet_com",
+                post_type: "retweet", //To avoid conflict - retweet_com
                 parent_id: currentFeed._id,
                 conversation_id: currentFeed.conversation_id,
                 mentions: currentFeed.mentions,
