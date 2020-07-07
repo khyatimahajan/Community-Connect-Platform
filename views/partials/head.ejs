@@ -36,7 +36,7 @@
         crossorigin="anonymous"></script>
 
     <script>
-        var socket = io('http://localhost:1337/feeds');
+        var socket = io('http://localhost:5000/feeds');
         socket.on('error', function (reason) {
             console.error('Unable to connect Socket.IO', reason);
         });
@@ -50,7 +50,7 @@
             console.log(post);
             console.log("RELOADING");
             setTimeout(() => {
-                window.location.href = "http://localhost:1337/users/home";
+                window.location.href = "http://localhost:5000/users/home";
             }, 500)
 
 
