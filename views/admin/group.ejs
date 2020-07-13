@@ -9,6 +9,9 @@
 <script src="https://yaireo.github.io/tagify/dist/tagify.js"></script>
 <script src="https://yaireo.github.io/tagify/dist/jQuery.tagify.min.js"></script>
 
+<!-- extra -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 </head>
 <div class="container-fluid mh-100 main-container">
     <div class="row">
@@ -42,7 +45,7 @@
                     <div class="group-main">
                         <div class="group-member-item">
                             <% if(member.profile_pic) { %>
-                            <img src="../<%= member.profile_pic %>" class="rounded-circle member-avatar">
+                            <img src="<%= member.profile_pic %>" class="rounded-circle member-avatar">
                             <% } else { %>
                             <img src="https://via.placeholder.com/150" class="rounded-circle member-avatar">
                             <% } %>
@@ -77,7 +80,7 @@
 
                 <div class="group-member-item">
                     <% if(user.profile_pic) { %>
-                    <img src="../<%= user.profile_pic %>" class="rounded-circle member-avatar">
+                    <img src="<%= user.profile_pic %>" class="rounded-circle member-avatar">
                     <% } else { %>
                     <img src="https://via.placeholder.com/150" class="rounded-circle member-avatar">
                     <% } %>

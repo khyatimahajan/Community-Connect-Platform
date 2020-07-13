@@ -17,26 +17,33 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- jquery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" crossorigin="anonymous"></script>
 
     <!-- socket io -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js" crossorigin="anonymous"></script>
 
-    <!-- bootstrap -->
+    <!-- bootstrap css -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- slim -->
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script> -->
+
+    <!-- popper -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
+
+    <!-- bootstrap js -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
+
 
     <script>
-        var socket = io('http://localhost:5000/feeds');
+        var socket = io(`${window.location.origin}/feeds`);
         socket.on('error', function (reason) {
             console.error('Unable to connect Socket.IO', reason);
         });
@@ -45,255 +52,15 @@
             console.info('Connected');
         });
 
-
         socket.on("new-post", function (post) {
-            console.log(post);
-            console.log("RELOADING");
             setTimeout(() => {
-                window.location.href = "http://localhost:5000/users/home";
+                window.location.href = `${window.location.origin}/users/home`;
             }, 500)
-
-
-            if (!post || post.post_type != 'tweet') return;
-
-            let post_image = null;
-            if (post.image != "null") {
-                post_image = ` <div class="post-img-wrapper">
-                                <span class="post-image" id="pst-image" data-toggle="modal" data-target="#postImageModal" onclick="previewPostImage(this)" style="background-image: url('${post.image}')"></span>
-                            </div>`;
-            } else {
-                post_image = `<div style='display:none;'></div>`;
-            }
-
-            let p = `
-      
-            <div class="table-container">
-    <table class="post-table">
-        <tr class="post-row">
-            <td class="post-content">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="row">
-                            <div class="col-md-10">
-                                <img src=${post.user_id.profile_pic} class="rounded-circle mr-3"
-                                    height="25px" width="25px" />
-                                <b>${post.user_id.name}</b>
-                                <span class="tag_username">-
-                                    @${post.user_id.username}</span>
-                            </div>
-                            <div class="col-md-2 postTimestamp">
-                                a few seconds ago
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </td>
-        </tr>
-        <tr class="post-row">
-            <td class="post-content">
-                <div class="row">
-                    <div class="col-md-12 p-1">
-                        <div class="comment-background" style="margin-left:58px;">
-                            <p>${post.body}</p>
-                           ${post_image}
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <form method="POST" action="/feedPost?feedId=${post._id}" enctype="multipart/form-data">
-                            <li class="active" style="list-style: none;">
-                                <input type="hidden" name="body" id="body" value="${post.body}">
-                                <input type="hidden" name="count" id="count" value="${post.retweet_count}">
-                                <input class="receiver" type="hidden" name="receiver" id="receiver"
-                                    value="">
-                                <div class="row">
-                                    <div class="col-md-3 text-center">
-                                        <button class="custom-padding tweet-buttons" name="comment-btn"
-                                            data-toggle="modal" title="Reply" data-target="#m${post._id}"
-                                            type="button">
-                                            <div class="comment-icon">
-                                                <i class="fa fa-comment" aria-hidden="true"></i>
-                                               ${post.reply_count}
-                                            </div>
-                                        </button>
-                                        <!-- Modal -->
-                                        <div class="modal" id="m${post._id}" tabindex="-1" role="dialog"
-                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">
-                                                            Type Comment</h5>
-                                                        <button type="button" class="close" data-dismiss="modal"
-                                                            aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body comment-modal">
-                                                        <div class="lead emoji-picker-container comment-container">
-                                                            <textarea
-                                                                class="input-type-dec1 form-control textarea-control"
-                                                                type="text" rows="3" id="comment" name="comment"
-                                                                placeholder="Comment" data-emojiable="true"
-                                                                data-emoji-input="unicode"></textarea>
-                                                            <input type="file" id="comment-post-image"
-                                                                style="display: none;" name="post-image" />
-                                                            <div class="comment-controls">
-                                                                <svg viewBox="0 0 24 24" id="comment-image"
-                                                                    class="icon">
-                                                                    <g>
-                                                                        <path
-                                                                            d="M19.75 2H4.25C3.01 2 2 3.01 2 4.25v15.5C2 20.99 3.01 22 4.25 22h15.5c1.24 0 2.25-1.01 2.25-2.25V4.25C22 3.01 20.99 2 19.75 2zM4.25 3.5h15.5c.413 0 .75.337.75.75v9.676l-3.858-3.858c-.14-.14-.33-.22-.53-.22h-.003c-.2 0-.393.08-.532.224l-4.317 4.384-1.813-1.806c-.14-.14-.33-.22-.53-.22-.193-.03-.395.08-.535.227L3.5 17.642V4.25c0-.413.337-.75.75-.75zm-.744 16.28l5.418-5.534 6.282 6.254H4.25c-.402 0-.727-.322-.744-.72zm16.244.72h-2.42l-5.007-4.987 3.792-3.85 4.385 4.384v3.703c0 .413-.337.75-.75.75z">
-                                                                        </path>
-                                                                        <circle cx="8.868" cy="8.309" r="1.542">
-                                                                        </circle>
-                                                                    </g>
-                                                                </svg>
-                                                                <button class="btn-comment btn-sm"
-                                                                    type="submit">Comment</button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="image-preview">
-                                                            <div style="display: none;"
-                                                                class="comment-post-image-close-wrapper">
-                                                                <span class="img-close"><i class="fa fa-times-circle"
-                                                                        aria-hidden="true"></i></span>
-                                                                <img id="comment-image-preview" alt="Image"
-                                                                    draggable="true">
-                                                            </div>
-                                                        </div>
-                                                        <br>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                            data-dismiss="modal">Close</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 text-center ">
-                                        <div class="btn-group dropleft">
-                                            <button class="custom-padding tweet-buttons dropright" name="edit"
-                                                data-toggle="dropdown" title="Retweet/Retweet with comment"
-                                                id="openmodal${post._id}" data-toggle="dropdown"
-                                                aria-haspopup="true" aria-expanded="false" type="button">
-                                                <div class="edit-icon">
-                                                    <i class="fa fa-twitter-square" aria-hidden="true"></i></a>
-                                                </div>
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item" href="#" style="padding: 0;">
-                                                    <button class="custom-padding tweet-buttons" name="retweet"
-                                                        id="retweet" type="submit" value="Post" title="Retweet"
-                                                        style="width: 100%;">
-
-                                                        <div class="retweet-icon"
-                                                            style="padding: 0; background-color: transparent;">
-                                                            <i class="fa fa-retweet" aria-hidden="true"></i>
-                                                            ${post.retweet_count}
-                                                        </div>
-                                                    </button>
-                                                </a>
-                                                <a class="dropdown-item" href="#">
-                                                    <button class="custom-padding tweet-buttons" name="edit"
-                                                        data-toggle="modal" title="Retweet with comment"
-                                                        style="width: 100px;" data-target=#edit${post._id}
-                                                        type="button">
-                                                        <div class="edit-icon"
-                                                            style="padding: 0; background-color: transparent;">
-                                                            <i class="fa fa-share" aria-hidden="true"></i>
-                                                            ${post.quote_count}
-                                                        </div>
-                                                    </button>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal" id=edit${post._id} tabindex="-1" role="dialog"
-                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">
-                                                        Type your Tweet
-                                                    </h5>
-                                                    <button type="button" class="close" data-dismiss="modal"
-                                                        aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p class="lead emoji-picker-container">
-                                                        <textarea class="input-type-dec1" type="text" rows="2" cols="60"
-                                                            id="retweet_edit_body" name="retweet_edit_body"
-                                                            placeholder="Tweet" data-emojiable="true"
-                                                            data-emoji-input="unicode" color:black></textarea>
-                                                    </p>
-                                                    <br>
-                                                    <br>
-                                                    <div class="row">
-                                                        <div class="col-md-12" style="padding-left: 30px;">
-                                                            
-                                                            <img src="${post.user_id.profile_pic}"
-                                                                class="rounded-circle mr-3" height="25px"
-                                                                width="25px" />
-
-                                                            <b>${post.user_id.name}</b>
-                                                            <span class="tag_username">-
-                                                                @ ${post.user_id.username}</span>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="comment-background p-2 pl-3 ml-5">
-                                                                ${post.body}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <button class="btn-comment" name="retweet_edit_id"
-                                                        id="retweet_edit_id" type="submit"
-                                                        value=${post._id}>Tweet</button>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-dismiss="modal">Close</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 text-center">
-                                        <button class="custom-padding tweet-buttons" name="love" title="Like" id="love"
-                                            type="submit" value="${post._id}">
-                                            <div class="love-icon">
-                                                <i class="fa fa-heart-o" aria-hidden="true"></i></a>
-                                                ${post.like_count}
-                                            </div>
-                                        </button>
-                                    </div>
-                                </div>
-                        </form>
-                        </li>
-                    </div>
-                </div>
-            </td>
-        </tr>
-        </td>
-        </tr>
-    </table>
-</div>
-      `;
-
-
-
-            //$('.all-posts').prepend(p);
-            //$('.empty-view-container').hide();
-
         });
-
-
     </script>
 
     <link rel="stylesheet" href="../style/feeds_page.css">
     <link rel="stylesheet" href="../style/main.css">
-    <!-- <script src="https://blog.sandglaz.com/bootstrap-tagautocomplete/deps/jquery.js"></script> -->
     <title><%= pageTitle %></title>
 
     <style>

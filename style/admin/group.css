@@ -1,31 +1,31 @@
 .group-member-item {
-    display: flex;
-    flex-direction: row;
-    padding: 15px;
-    padding: 12px 15px;
+	display: flex;
+	flex-direction: row;
+	padding: 15px;
+	padding: 12px 15px;
 }
 .member-avatar {
-    width: 40px;
-    height: 40px;
-    box-shadow: 0 1px 6px 0 rgba(32, 33, 36, .28);
+	width: 40px;
+	height: 40px;
+	box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28);
 }
 .member-details {
-    display: flex;
-    flex-direction: column;
-    padding: 0px 18px;
-    justify-content: center;
+	display: flex;
+	flex-direction: column;
+	padding: 0px 18px;
+	justify-content: center;
 }
 .member-name {
 	font-weight: bold;
-    font-size: 12px;
+	font-size: 12px;
 }
 .member-email {
-    color: gray;
-    font-size: 10px;
+	color: gray;
+	font-size: 10px;
 }
 .divider {
-    margin-top: 0;
-    margin-bottom: 0;
+	margin-top: 0;
+	margin-bottom: 0;
 }
 .all-users {
 	height: 95vh;
@@ -34,12 +34,12 @@
 }
 .user_header {
 	display: flex;
-    justify-content: center;
-    align-items: center;
+	justify-content: center;
+	align-items: center;
 	height: 45px;
 	position: fixed;
-    top: 0;
-    background: white;
+	top: 0;
+	background: white;
 	width: 100%;
 	border-bottom: 1px solid gray;
 }
@@ -50,27 +50,24 @@
 	margin-top: 38px;
 }
 
-
-
-
 .add-member {
-    font-size: 14px;
+	font-size: 14px;
 }
 .member-total {
-    font-weight: bold;
-    color: gray;
+	font-weight: bold;
+	color: gray;
 }
 .group-main {
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 .stiched {
-    margin: 7px;
-    /* //border-top: 2px solid #9c9c9c; */
+	margin: 7px;
+	/* //border-top: 2px solid #9c9c9c; */
 }
 .group-action {
-    display: flex;
-    justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 }
 
 .tagify__tag-text {
@@ -81,18 +78,18 @@
 }
 
 .trash-icon {
-    position: absolute;
-    right: 30px;
-    width: 35px;
-    border-radius: 50%;
-    height: 35px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    box-shadow: 0 1px 3px 0 rgba(32, 33, 36, .28);
-    align-items: center;
+	position: absolute;
+	right: 30px;
+	width: 35px;
+	border-radius: 50%;
+	height: 35px;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	box-shadow: 0 1px 3px 0 rgba(32, 33, 36, 0.28);
+	align-items: center;
 }
 .group_member_autocomplete {
-    height: 120px;
-    overflow: auto;
+	height: 120px;
+	overflow: auto;
 }

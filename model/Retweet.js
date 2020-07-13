@@ -1,22 +1,22 @@
 const mongoose = require('mongoose');
 
-const retweetSchema = new mongoose.Schema ({
-    username: {
-        type: String,
-    },
-    receiver: {
-        type: String,
-    },
-    post_id: {
-        type: String,
-    },
-    timestamp: {
-        type: Date,
-        default: Date.now
-    }
+// Retweets model
+const retweetSchema = new mongoose.Schema({
+	username: {
+		type: String,
+	},
+	receiver: {
+		type: String,
+	},
+	post_id: {
+		type: String,
+	},
+	timestamp: {
+		type: Date,
+		default: Date.now,
+	},
 });
 
-retweet= mongoose.model('retweet', retweetSchema);
+retweet = mongoose.model('retweet', retweetSchema);
 
-
-module.exports.retweet = retweet
+module.exports.retweet = retweet;

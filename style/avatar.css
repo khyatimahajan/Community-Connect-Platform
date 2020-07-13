@@ -1,0 +1,9 @@
+.container {
+	margin-top: 50px;
+	text-align: center;
+}
+body {
+	background-color: lightgray;
+	background-image: url('../assets/joshua-rawson-harris-KRELIShKxTM-unsplash.jpg');
+	background-blend-mode: soft-light;
+}

@@ -1,10 +1,14 @@
 <%- include('../partials/head.ejs') %>
 <link rel="stylesheet" href="../style/admin/dashboard.css">
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 <!-- tagify -->
 <link rel="stylesheet" href="https://yaireo.github.io/tagify/dist/tagify.css">
 <script src="https://yaireo.github.io/tagify/dist/tagify.js"></script>
 <script src="https://yaireo.github.io/tagify/dist/jQuery.tagify.min.js"></script>
+
+
 
 </head>
 <div class="container-fluid mh-100 main-container">
@@ -101,7 +105,6 @@
                                         class="form-control group_member_autocomplete input" id="groupMemberLabel"
                                         placeholder="Try to add persons from the list" required>
                                 </div>
-
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary btn-sm"
@@ -168,6 +171,11 @@
 <script>
     users = users.split("&#34;").join('"')
     users = JSON.parse(users);
+    users = users.map(user => {
+        return { ...user, profile_pic: null }
+    })
+    console.log(users);
+
 </script>
 <script src="./../../assets/js/admin/dashboard.js"></script>
 

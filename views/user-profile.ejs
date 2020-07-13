@@ -1,5 +1,6 @@
 <%- include partials/head.ejs %>
 <link rel="stylesheet" href="../style/userProfile.css">
+
 </head>
 <div class="container-fluid mh-100 main-container">
     <div class="row">
@@ -72,7 +73,7 @@
                                             <label for="inputBio">Bio</label>
                                             <textarea type="text" class="form-control" id="inputBio" name="bio"
                                                 aria-describedby="emailHelp" placeholder="Enter bio"
-                                                disabled><%= pform.length > 0 ? pform[0].bio : user.bio  %></textarea>
+                                                disabled><%= pform.length > 0 ? pform[0].bio : user.bio.replace("\"", '');  %></textarea>
                                         </div>
                                     </div>
                                 </div>

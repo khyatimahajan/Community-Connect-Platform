@@ -1,6 +1,7 @@
 <%- include('../partials/head.ejs') -%>
 <link rel="stylesheet" href="../style/admin/login.css" type="text/css">
 </head>
+
 <body>
     <div class="main">
         <div class="admin_login_card">
@@ -14,33 +15,24 @@
                 <% if(message.length > 0) { %>
                 <tr>
                     <div class="alert alert-primary" role="alert">
-                    <%= message %>
+                        <%= message %>
                     </div>
                 </tr>
                 <% } %>
                 <form action="/admin/login" method="post">
                     <div class="form-group">
                         <label for="inputEmail">Email address</label>
-                        <input 
-                            type="email" 
-                            class="form-control" 
-                            id="inputEmail" 
-                            name="email"
+                        <input type="email" class="form-control" id="inputEmail" name="email"
                             value="<%= form.length>0 ? form[0].email : 'admin@gmail.com' %>"
-                            aria-describedby="emailHelp"
-                            placeholder="Enter email"/>
+                            aria-describedby="emailHelp" placeholder="Enter email" />
                     </div>
                     <div class="form-group">
                         <label for="inputPassword">Password</label>
-                        <input 
-                            type="password" 
-                            class="form-control"
-                            name="password"
-                            value="<%= form.length>0 ? form[0].password : '123456' %>"
-                            id="inputPassword" 
+                        <input type="password" class="form-control" name="password"
+                            value="<%= form.length>0 ? form[0].password : '123456' %>" id="inputPassword"
                             placeholder="Password">
                     </div>
-                    
+
                     <div class="form-check">
                         <button type="submit" class="btn btn-primary admin_login_btn">Login</button>
                     </div>
