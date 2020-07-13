@@ -61,7 +61,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
--   **Sourav Roy** -
+-   **Sourav Roy Choudhury** -
 
 ## License
 
