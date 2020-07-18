@@ -1,8 +1,10 @@
-# Mock-social-network
-
+# Community Connect: A Mock Social Media Platform to Study Online Behavior
 
 take text from the paper for 1-3
 1. Describe Community Connect here
+
+Community Connect is a social media platform for conducting controlled experiments of human behavior, created with the goal of facilitating research on data collected through controlled experiments on social networks. The key distinguishing factor of Community Connect is the ability to control the visibility of user posts based on the groups they belong to, allowing careful and controlled investigation into how information propagates through a social network.
+
 
 2. add interface screenshots here
 
@@ -23,7 +25,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites and Installation
 
 Before starting, please make sure you have Node and NPM installed. <br>
-For installing, you can follow instructions on this link --> [Installing NodeJS](https://nodejs.org/en/download/) <br><br>
+For installing Node, follow instructions on this link --> [Installing NodeJS](https://nodejs.org/en/download/) <br><br>
 
 You can verify the installation by running following commonds on terminal or cmd
 `npm -v`
@@ -65,11 +67,49 @@ The folder `views` contains all the `.ejs` files. Similarly the folder `style` c
 Also `controller` & `middleware` contains all the logical files for controller and middleware files.
 
 
-## Data Storage
+## Data Storage and Retreival
 
-describe backend
+### Schema for Backend
 
-## Built With
+#### Users
+
+| *Field*                                               | _id                                            | user_id                                        | username                  | password                  | name                      | bio                       | location                  | Email ID                  | created_at                | profile_pic               | group_id                         |
+|-------------------------------------------------------|------------------------------------------------|------------------------------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|----------------------------------|
+| *Function*                                            | *primary_key, system generated, do not change* | *generate based on demo, experiment condition* | *assign default or empty* | *assign default or empty* | *assign default or empty* | *assign default or empty* | [assign default or empty] | *assign default or empty* | *assign default or empty* | *assign default or empty* | *pre-populate*                   |
+| *Data Type*                                           | *ObjectId*                                     | *string*                                       | *string*                  | *private password*        | *string*                  | *string*                  | *string*                  | *string*                  | *datetime*                | *URL*                     | *list of strings*                |
+| *Example of how this will look at setup*              | \<empty\>                                      | jd_c1_06112020                                 | \<empty\>                 | \<empty\>                 | John Doe                  | \<empty\>                 | \<empty\>                 | john.doe&#8203;@gmail.com | \<empty\>                 | \<empty\>                 | [Blue] ([Blue, Red] if multiple) |
+| *Example of how this will look when the experiment is underway* | x1y2                                           | jd_c1_06112020                                 | john_doe                  | john_doe                  | John Doe                  | hello                     | Charlotte                 | john.doe&#8203;@gmail.com | TIMESTAMP                 | [link to profile pic]     | [Red] ([Blue, Red] if multiple)  |
+
+### Groups
+
+| *Field*                                               | group_id                                       | group_name                                                            | group_desc                          |
+|-------------------------------------------------------|------------------------------------------------|-----------------------------------------------------------------------|-------------------------------------|
+| *Function*                                            | *primary key, system_generated, do not change* | *experiment-assigned group name, same as group info from Users table* | *field to store group descriptions* |
+| *Data Type*                                           | *ObjectId*                                     | *list of strings*                                                     | *string*                            |
+| *Example of how this will look at setup*              | a1b2                                           | [Blue, Red]                                                           | All bridge users                    |
+| *Example of how this will look when the experiment is underway* | a1b2                                           | [Blue, Red]                                                           | All bridge users                    |
+
+### Feeds
+
+| *Field*                                                          | _id                                            | user_id                                          | body                | created_at          | liked_by                                       | like_count              | retweet_count              | reply_count                                    | quote_count                                | post_type                                                                                     | parent_id                                                                                                                     | conversation_id                                                                                                                                 | mentions                                                                                                                               | visible_to                                                                                    |
+|------------------------------------------------------------------|------------------------------------------------|--------------------------------------------------|---------------------|---------------------|------------------------------------------------|-------------------------|----------------------------|------------------------------------------------|--------------------------------------------|-----------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| *Function*                                                       | *primary key, system generated, do not change* | *copy from user_id of person taking this action* | *created with post* | *created with post* | *maintains list of people who liked this post* | *updates post is liked* | *updates post is reposted* | *updates when a reply is posted on this post*  | *updates post is reposted with comment*    | *created with post based on how it was created - can be “tweet”, “retweet”, “reply”, “quote”* | *if post_type is “tweet”, this is empty, otherwise this is the _id of the post on which action was taken to create this post* | *if post_type is “tweet”, this is copy of _id, otherwise this is the conversation_id of the post on which action was taken to create this post* | *if another user was mentioned, add their user_id from Users table here; also logically these can only be users in this user’s groups* | *mark this post visible to the user’s groups, then update based on interactions on this post* |
+| *Data Type*                                                      | *ObjectId*                                     | *string*                                         | *string*            | *datetime*          | *list of strings*                              | *number*                | *number*                   | *number*                                       | *number*                                   | *string*                                                                                      | *string*                                                                                                                      | *string*                                                                                                                                        | *list of strings*                                                                                                                      | *list of strings*                                                                             |
+| *Example of how this will look at setup*                         | \<empty\>                                      | \<empty\>                                        | \<empty\>           | \<empty\>           | \<empty\>                                      | \<empty\>               | \<empty\>                  | \<empty\>                                      | \<empty\>                                  | \<empty\>                                                                                     | \<empty\>                                                                                                                     | \<empty\>                                                                                                                                       | []                                                                                                                                     | \<empty\>                                                                                     |
+| *Example of how this will look when someone posts*               | 123                                            | x1y2                                             | hello               | TIMESTAMP           | []                                             | 0                       | 0                          | 0                                              | 1 *(became 1 when x2y3 quoted this tweet)* | tweet                                                                                         | \<empty\>                                                                                                                     | 123                                                                                                                                             | []                                                                                                                                     | [Blue]                                                                                        |
+| *Example of how this will look when someone quotes post 123*     | 234                                            | x2y3                                             | world               | TIMESTAMP           | []                                             | 0                       | 0                          | 1 *(became 1 when x3y4 replied on this tweet)* | 0                                          | quote                                                                                         | 123 *(copied from _id of post which was quoted)*                                                                              | 123 *(copied from conversation_id of post which was quoted)*                                                                                    | []                                                                                                                                     | [Blue]                                                                                        |
+| *Example of how this will look when someone replies on post 234* | 356                                            | x3y4                                             | everyone            | TIMESTAMP           | []                                             | 0                       | 0                          | 0                                              | 0                                          | reply                                                                                         | 234 *(copied from _id of post on which reply was made)*                                                                       | 123 *(copied from conversation_id of post which was quoted)*                                                                                    | []                                                                                                                                     | [Blue]                                                                                        |
+
+### How to Retrieve Data
+1. [Dumping MongoDB data](https://docs.mongodb.com/manual/reference/program/mongodump/)
+2. [Backing up and restoring data from MongoDB dump](https://docs.mongodb.com/manual/tutorial/backup-and-restore-tools/)
+3. [For python - using pymongo to read data from MongoDB](https://pymongo.readthedocs.io/en/stable/)
+3. [For R - using the 'mongolite' R package to read MongoDB data](https://jeroen.github.io/mongolite/connecting-to-mongodb.html)
+
+## Current version Details
+
+### Built With
+mention versions here
 
 -   [Express](http://www.dropwizard.io/1.0.2/docs/) - NodeJS web application framework
 -   [NPM](https://expressjs.com/) - Dependency Management
@@ -77,7 +117,7 @@ describe backend
 -   [EJS](https://ejs.co/) - Templating engine
 -   [MongoDB](https://www.mongodb.com/) - Database
 
-## Browser support
+### Browser Support
 mention versions here
 -   Chrome (latest)
 -   Firefox (latest)
@@ -87,16 +127,15 @@ mention versions here
 -   Internet Explorer 9+
 tags).
 
-
-## Servers?
+### Servers? Hosting Availablility
 Localhost 
 or 
 Amazon
 
-## Authors
+## Contributors
 
--   **Sourav Roy Choudhury** -
+-   Sourav Roy Choudhury
+-   Khyati Mahajan
 
 ## License
-
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
