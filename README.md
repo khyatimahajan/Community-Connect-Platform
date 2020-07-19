@@ -31,6 +31,14 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites and Installation
 
+Clone the repo locally then install all the dependencies using [NPM](https://npmjs.org/)
+
+```bash
+$ git clone https://github.com/Souravroych/Mock-social-network-master-updated.git
+$ cd Mock-social-network-master-updated
+$ npm install
+```
+
 ## Requirements
 
 - [Node.js](https://nodejs.org)
