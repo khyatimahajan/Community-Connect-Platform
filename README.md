@@ -67,6 +67,14 @@ You can verify the installation by running following commonds on terminal or cmd
 
 Doing a `npm install` in the project folder should install all the dependencies and create a folder called `node_modules`. <br>
 
+## Populating the database using the Excel
+![](assets/Users_Groups_database.png)
+- Users are prepopulated using the excel file referenced above. 
+- The name of the User is in column B **"User name"**. 
+- The unique ID for each user needs to entered in column C **"user_id"**, this is the id string using which users Sign-up for the very first time to create their profile. 
+- Email in column D holds the **email-ids** for every user. 
+- Group in column E is used to assign the users to their individual groups. (Users who are assigned in multiple groups are **Bridge Users**)
+
 
 ## For Local
 
