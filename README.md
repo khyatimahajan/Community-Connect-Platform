@@ -163,36 +163,19 @@ Also `controller` & `middleware` contains all the logical files for controller a
 3. [For python - using pymongo to read data from MongoDB](https://pymongo.readthedocs.io/en/stable/)
 3. [For R - using the 'mongolite' R package to read MongoDB data](https://jeroen.github.io/mongolite/connecting-to-mongodb.html)
 
-## Current version Details
-
-### Built With
-mention versions here
-
--   [Express](http://www.dropwizard.io/1.0.2/docs/) - NodeJS web application framework
--   [NPM](https://expressjs.com/) - Dependency Management
--   [Javascript](https://www.javascript.com/) - Use for jquery operations
--   [EJS](https://ejs.co/) - Templating engine
--   [MongoDB](https://www.mongodb.com/) - Database
-
 ### Browser Support
 mention versions here
--   Chrome (latest)
--   Firefox (latest)
--   Safari (latest)
--   Opera (latest)
--   Edge (latest)
--   Internet Explorer 9+
-tags).
+-   Chrome (84.0.4147)
+-   Firefox (78.0)
+-   Safari (14.x)
+-   Internet Explorer(11.0)
 
-### Servers? Hosting Availablility
-Localhost 
-or 
-Amazon
 
 ## Contributors
 
--   Sourav Roy Choudhury
--   Khyati Mahajan
+-   [Sourav Roy Choudhury](https://github.com/Souravroych)
+-   [Khyati Mahajan](https://github.com/khyatimahajan)
+-   [Samira Shaikh](https://github.com/sshaikh2)
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
