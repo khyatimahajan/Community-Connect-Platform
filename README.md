@@ -68,7 +68,17 @@ You can verify the installation by running following commonds on terminal or cmd
 Doing a `npm install` in the project folder should install all the dependencies and create a folder called `node_modules`. <br>
 
 
-## Deployment
+## For Local
+
+Clone the repo locally then install all the dependencies using [NPM](https://npmjs.org/)
+
+```bash
+$ git clone https://github.com/Souravroych/Mock-social-network-master-updated.git
+$ cd Mock-social-network-master-updated
+$ brew services restart mongodb-community
+$ npm install
+$ npm start
+```
 
 Explain pm2 here 
 Additional to this you need to install pm2
