@@ -164,7 +164,7 @@ Also `controller` & `middleware` contains all the logical files for controller a
 3. [For R - using the 'mongolite' R package to read MongoDB data](https://jeroen.github.io/mongolite/connecting-to-mongodb.html)
 
 ### Browser Support
-mention versions here
+
 -   Chrome (84.0.4147)
 -   Firefox (78.0)
 -   Safari (14.x)
