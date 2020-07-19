@@ -15,18 +15,31 @@ Community Connect is a social media platform for conducting controlled experimen
 
 ![](assets/websequence_diagram-1.png)
 
+## Features
+- Sign up using unique_id for each user. 
+- Unique user avatar for every user.
+- Tweet and Retweet feature like Twitter.
+- Like and Reply on Tweets and Retweets.
+- Image and URL uploads.
+- Data Abstraction on the basis of groups. 
+- Emojis.
+- Notifications.
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites and Installation
 
+## Requirements
+
+- [Node.js](https://nodejs.org)
+  - expressjs [ExpressJS HTTP middleware](https://npmjs.org/package/express)
+  - ejs [Embedded JavaScript templates](https://npmjs.org/package/ejs)
+- [MongoDB](http://mongodb.org)
+
 Before starting, please make sure you have Node and NPM installed. <br>
 For installing Node, follow instructions on this link --> [Installing NodeJS](https://nodejs.org/en/download/) <br><br>
-
-You can verify the installation by running following commonds on terminal or cmd
-`npm -v`
-`node -v`
 
 Make sure to install and configure MongoDB on server.
 
@@ -35,6 +48,14 @@ Also make sure to install Install MongoDB Community Edition on your machine.
 
 You can also install mongoDB compass to explore and manage MongoDB data easily
 [MongoDB-Compass](https://www.mongodb.com/products/compass)
+
+
+
+You can verify the installation by running following commonds on terminal or cmd
+`npm -v`
+`node -v`
+
+
 
 Doing a `npm install` in the project folder should install all the dependencies and create a folder called `node_modules`. <br>
 
