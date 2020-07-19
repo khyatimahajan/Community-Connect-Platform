@@ -87,10 +87,16 @@ $ npm start
 - Install the node.js dependencies in the Amazon Elastic Compute Cloud Instance.
   - Connect to your Linux instance as ec2-user using SSH
   - npm install downloads a package and it's dependencies. npm install can be run with or without arguments. When run without arguments, npm install downloads  dependencies defined in a package. json file and generates a node_modules folder with the installed modules.
+  - Install MongoDB in the EC2 Operating system.
   - Install pm2 (PM2 is a production process manager for Node.js applications with a built-in load balancer. It allows you to keep applications alive forever, to reload them without downtime and to facilitate common system admin tasks)
   ```bash
   $ npm install pm2 -g
   ```
+  - Start the application using
+  ```bash
+  $ pm2 start index.js
+  ```
+  (Your app is now daemonized, monitored and kept alive forever)
 
 
 ## Folder Structure 
