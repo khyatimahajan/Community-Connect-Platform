@@ -80,6 +80,12 @@ $ npm install
 $ npm start
 ```
 
+## For EC2
+
+- Create your EC2 instance using your Amazon AWS account. [EC2](https://docs.aws.amazon.com/efs/latest/ug/gs-step-one-create-ec2-resources.html)
+- Create your S3 container. [S3](https://docs.aws.amazon.com/quickstarts/latest/s3backup/step-1-create-bucket.html)
+-
+
 Explain pm2 here 
 Additional to this you need to install pm2
 [pm2](https://pm2.keymetrics.io/docs/usage/quick-start/)
