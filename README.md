@@ -3,6 +3,7 @@
 Community Connect is a social media platform for conducting controlled experiments of human behavior, created with the goal of facilitating research on data collected through controlled experiments on social networks. The key distinguishing feature of Community Connect is the ability to control the visibility of user posts based on the groups they belong to, allowing careful and controlled investigation into how information propagates through a social network. We release this platform as a resource to the broader community, with the goal of faciliating research on data collected through controlled experiments.
 
 ## User Interface for Community Connect
+
 ![Interface](assets/interface.png)
 
 
@@ -10,9 +11,9 @@ Community Connect is a social media platform for conducting controlled experimen
 
 ![Interface](assets/arch.png)
 
-add sequence diagram
+## Web Sequence Diagram 
 
-
+![Interface](assets/websequence_diagram.pdf)
 
 
 ## Getting Started
