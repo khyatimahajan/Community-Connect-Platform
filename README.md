@@ -11,10 +11,9 @@ Community Connect is a social media platform for conducting controlled experimen
 
 ![Interface](assets/arch.png)
 
-## Web Sequence Diagram 
+## Web Sequence Diagram
 
-![Interface](assets/websequence_diagram.pdf)
-
+![](assets/websequence_diagram-1.png)
 
 ## Getting Started
 
