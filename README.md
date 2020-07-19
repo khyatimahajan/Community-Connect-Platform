@@ -73,8 +73,12 @@ Doing a `npm install` in the project folder should install all the dependencies 
 - The name of the User is in column B **"User name"**. 
 - The unique ID for each user needs to entered in column C **"user_id"**, this is the id string using which users Sign-up for the very first time to create their profile. 
 - Email in column D holds the **email-ids** for every user. 
-- Group in column E is used to assign the users to their individual groups. (Users who are assigned in multiple groups are **Bridge Users**)
+- **Group** in column E is used to assign the users to their individual groups. (Users who are assigned in multiple groups are **Bridge Users**)
 
+## Changing the .env file
+![ENV](assets/env.png)
+
+Before running, we need to add `AWS_BUCKET_NAME`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION` & `SESSION_SECRET_KEY`
 
 ## For Local
 
