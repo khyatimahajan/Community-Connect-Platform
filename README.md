@@ -84,7 +84,9 @@ $ npm start
 
 - Create your EC2 instance using your Amazon AWS account. [EC2](https://docs.aws.amazon.com/efs/latest/ug/gs-step-one-create-ec2-resources.html)
 - Create your S3 container. [S3](https://docs.aws.amazon.com/quickstarts/latest/s3backup/step-1-create-bucket.html)
--
+- Install the node.js dependencies in the Amazon Elastic Compute Cloud Instance.
+  - Connect to your Linux instance as ec2-user using SSH
+  - npm install downloads a package and it's dependencies. npm install can be run with or without arguments. When run without arguments, npm install downloads  dependencies defined in a package. json file and generates a node_modules folder with the installed modules.
 
 Explain pm2 here 
 Additional to this you need to install pm2
