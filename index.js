@@ -122,7 +122,7 @@ app.use((err, req, res, next) => {
 	});
 });
 
-let port = process.env.PORT || 1337;
+let port = process.env.PORT || 5000;
 
 // Seed DB with xlsx data
 xlsxFile('./Groups in Community Connect.xlsx').then((rows) => {
