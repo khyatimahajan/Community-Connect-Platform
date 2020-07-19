@@ -87,15 +87,10 @@ $ npm start
 - Install the node.js dependencies in the Amazon Elastic Compute Cloud Instance.
   - Connect to your Linux instance as ec2-user using SSH
   - npm install downloads a package and it's dependencies. npm install can be run with or without arguments. When run without arguments, npm install downloads  dependencies defined in a package. json file and generates a node_modules folder with the installed modules.
-
-Explain pm2 here 
-Additional to this you need to install pm2
-[pm2](https://pm2.keymetrics.io/docs/usage/quick-start/)
-
-It's daemon process manager for running our application.
-On project folder, run below command to serve application.
-
-`pm2 start index.js`
+  - Install pm2 (PM2 is a production process manager for Node.js applications with a built-in load balancer. It allows you to keep applications alive forever, to reload them without downtime and to facilitate common system admin tasks)
+  ```bash
+  $ npm install pm2 -g
+  ```
 
 
 ## Folder Structure 
