@@ -113,15 +113,16 @@ $ npm start
 
 ## Folder Structure 
 
-which functions do these serve -- should be explained here. 
+To start off please note that all third party dependencies are managed through NPM and a package.json file.
+NPM is the defualt package management system for javascript programming and it aids in package installation, dependency management and version management.
 
-`index.js` is starting point for application.
-
-`npm start` at the root folder will serve the file `index.js` which has specified routes and connections to other files. <br>
-The folder `views` contains all the `.ejs` files. Similarly the folder `style` contains `.css` files corresponing to the ejs files. `models` folder contains schema for entities required to be stored in the database. `routes` folder contains the server side functions for different routes that are required and declared in `index.js`.
-
-
-Also `controller` & `middleware` contains all the logical files for controller and middleware files.
+`/model` contains all the ORM or the Virtual object database (specifically called schemas in mongoose)
+`/views` contains all the view templates (we have used Embedded javascript templating engine for node.js)
+`/style` contains all the style sheets or the css files used for stylisation including colour, layout and fonts.
+`/routes` contains all the server side functions for different modules or areas of the application.
+`/middleware` contains the functions which have access to request object, response object and the next function in applications request response cycle. 
+`/controller` contains all the major express routes seprated by major sections. 
+`/assets` contains all the images, some client side JS files and style sheets.
 
 
 ## Data Storage and Retreival
