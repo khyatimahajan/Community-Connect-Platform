@@ -16,13 +16,12 @@ Community Connect is a social media platform for conducting controlled experimen
 ![](assets/websequence_diagram-1.png)
 
 ## Features
-- Sign up using unique_id for each user. 
-- Unique user avatar for every user.
-- Tweet and Retweet feature like Twitter.
-- Like and Reply on Tweets and Retweets.
-- Image and URL uploads.
-- Data Abstraction on the basis of groups. 
-- Emojis.
+- Outcomes: Information about likes, reposts, replies and quotes for each post.
+- Images: Images can be attached for each post or comment. 
+- Conversation Threads: We make available the functionality to follow the conversation threads created by any post through a unique conversation ID.
+- Bridge Users: Posts can become available across groups only when a bridge user who belongs to two groups interacts with them.
+- Data Abstraction on the basis of groups.
+- Emojis
 - Notifications.
 
 ## Getting Started
