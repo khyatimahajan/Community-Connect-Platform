@@ -78,9 +78,9 @@ Doing a `npm install` in the project folder should install all the dependencies 
 ![ENV](assets/env.png)
 
 Before running, we need to add `AWS_BUCKET_NAME` [S3](https://docs.aws.amazon.com/quickstarts/latest/s3backup/step-1-create-bucket.html)<br />
-`AWS_ACCESS_KEY_ID` [AWS_ACCESS_KET](https://aws.amazon.com/blogs/security/wheres-my-secret-access-key/)<br />
-`AWS_SECRET_ACCESS_KEY`<br />
-`AWS_REGION`<br />
+`AWS_ACCESS_KEY_ID` [AWS_ACCESS_KEY](https://aws.amazon.com/blogs/security/wheres-my-secret-access-key/)<br />
+`AWS_SECRET_ACCESS_KEY` [AWS_SECRET ACCESS_KEY](https://aws.amazon.com/blogs/security/wheres-my-secret-access-key/)<br />
+`AWS_REGION` [AWS_REGION](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html)<br />
 `SESSION_SECRET_KEY`<br />
 
 ## For Local
