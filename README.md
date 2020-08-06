@@ -119,13 +119,19 @@ $ npm start
 To start off please note that all third party dependencies are managed through NPM and a package.json file.
 NPM is the defualt package management system for javascript programming and it aids in package installation, dependency management and version management.
 
-- `/model` contains all the ORM or the Virtual object database (specifically called schemas in mongoose). <br />
+### Frontend
+- `/assets` contains all the images, some client side JS files and style sheets. <br />
 - `/views` contains all the view templates (we have used Embedded javascript templating engine for node.js). <br />
 - `/style` contains all the style sheets or the css files used for stylisation including colour, layout and fonts. <br />
-- `/routes` contains all the server side functions for different modules or areas of the application. <br />
+
+### Middleware
 - `/middleware` contains the functions which have access to request object, response object and the next function in applications request response cycle. <br />
+
+### Backend
+- `/model` contains all the ORM or the Virtual object database (specifically called schemas in mongoose). <br />
+- `/routes` contains all the server side functions for different modules or areas of the application. <br />
 - `/controller` contains all the major express routes seprated by major sections.  <br />
-- `/assets` contains all the images, some client side JS files and style sheets. <br />
+
 
 
 ## Data Storage and Retreival
