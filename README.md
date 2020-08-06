@@ -78,9 +78,13 @@ Doing a `npm install` in the project folder should install all the dependencies 
 ![ENV](assets/env.png)
 
 Before running, we need to add `AWS_BUCKET_NAME` [S3](https://docs.aws.amazon.com/quickstarts/latest/s3backup/step-1-create-bucket.html) The first step involves creating an Amazon Aws S3 bucket by choosing create bucket from Aamazon S3 console dashboard. Once created the console displays your empty bucket in the Buckets pane. <br />
+
 `AWS_ACCESS_KEY_ID` [AWS_ACCESS_KEY](https://aws.amazon.com/blogs/security/wheres-my-secret-access-key/) You can assign up to two access keys per user (root user or IAM user). Having two access keys is useful when you want to rotate them. When you disable an access key, you can't use it, but it counts toward your limit of two access keys. After you delete an access key, it's gone forever and can't be restored, but it can be replaced with a new access key. <br />
+
 `AWS_SECRET_ACCESS_KEY` [AWS_SECRET ACCESS_KEY](https://aws.amazon.com/blogs/security/wheres-my-secret-access-key/) Sign in to the AWS Management Console as the root user. In the navigation bar on the upper right, choose your account name or number and then choose My Security Credentials.Expand and choose Create New Access Key. If you already have two access keys, this button is disabled.To save the credentials you can download the Download keyfile. <br />
+
 `AWS_REGION` [AWS_REGION](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html) You can use the Amazon EC2 console or the command line interface to determine which Regions, Availability Zones, and Local Zones are available for your account. <br />
+
 `SESSION_SECRET_KEY`<br />
 
 ## For Local
