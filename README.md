@@ -1,11 +1,11 @@
-# Community Connect: A Mock Social Media Platform to Study Online Behavior
+# Community Connect 
+## A Mock Social Media Platform to Study Online Behavior
 
 Community Connect is a social media platform for conducting controlled experiments of human behavior, created with the goal of facilitating research on data collected through controlled experiments on social networks. The key distinguishing feature of Community Connect is the ability to control the visibility of user posts based on the groups they belong to, allowing careful and controlled investigation into how information propagates through a social network. We release this platform as a resource to the broader community, with the goal of faciliating research on data collected through controlled experiments.
 
 ## User Interface for Community Connect
 
 ![Interface](assets/interface.png)
-
 
 ## System Architecture
 
@@ -16,112 +16,77 @@ Community Connect is a social media platform for conducting controlled experimen
 ![](assets/websequence_diagram-1.png)
 
 ## Features
-- Outcomes: Information about likes, reposts, replies and quotes for each post.
-- Images: Images can be attached for each post or comment. 
-- Conversation Threads: We make available the functionality to follow the conversation threads created by any post through a unique conversation ID.
-- Bridge Users: Posts can become available across groups only when a bridge user who belongs to two groups interacts with them.
-- Data Abstraction on the basis of groups.
-- Emojis
-- Notifications.
+- **Bridge Users** and **Information Flow Control***: Setup bridge users who are connected to multiple groups, and control information flow through them since posts only become available across groups when a bridge user interacts with them
+- **Outcomes**: Collect information about likes, reposts, replies and quotes for each post
+- **Images**: Attach images to any post or comment
+- **Conversation Threads**: Follow conversation threads following any post through a unique conversation ID
+- **Emojis**: Emoji support for text
+- **Notifications**: Help users catch up with posts they missed
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for documentation on how to deploy the project on a live system.
 
-### Prerequisites and Installation
-
-Clone the repo locally then install all the dependencies using [NPM](https://npmjs.org/)
-
-```bash
-$ git clone https://github.com/Souravroych/Mock-social-network-master-updated.git
-$ cd Mock-social-network-master-updated
-$ npm install
-```
-
-## Requirements
+### Prerequisites
 
 - [Node.js](https://nodejs.org)
   - expressjs [ExpressJS HTTP middleware](https://npmjs.org/package/express)
   - ejs [Embedded JavaScript templates](https://npmjs.org/package/ejs)
 - [MongoDB](http://mongodb.org)
 
-Before starting, please make sure you have Node and NPM installed. <br>
-For installing Node, follow instructions on this link --> [Installing NodeJS](https://nodejs.org/en/download/) <br><br>
+## Installation
 
-Make sure to install and configure MongoDB on server.
+Follow these steps to install prerequisites on the local machine, or the server where the platform will be hosted.
 
-Also make sure to install Install MongoDB Community Edition on your machine.
-[MongoDB](https://docs.mongodb.com/manual/administration/install-community/)
+1. [Install `Node.js`](https://nodejs.org/en/download/) - this also installs ```NPM```.
+2. [Install `MongoDB Community Edition`](https://docs.mongodb.com/manual/administration/install-community/).
+3. Verify installation by running following commands on the terminal or command line: `npm -v`, `node -v`, `mongod --version`.
+4. Clone the repo locally then install all the dependencies using [NPM](https://npmjs.org/), running `npm install` should install all the dependencies and create a folder called `node_modules`:
 
-You can also install mongoDB compass to explore and manage MongoDB data easily
-[MongoDB-Compass](https://www.mongodb.com/products/compass)
+>  ```bash
+>  $ git clone https://github.com/Souravroych/Mock-social-network-master-updated.git
+>  $ cd Mock-social-network-master-updated
+>  $ npm install
+>  ```
 
+5. Optionally, [install `pm2`](https://www.npmjs.com/package/pm2) to help with managing the process. This step is recommended if using EC2. PM2 is a production process manager for Node.js applications with a built-in load balancer. It allows you to keep applications alive forever, to reload them without downtime and to facilitate common system admin tasks.
 
+Please note that all third party dependencies are managed through NPM and a package.json file. NPM is the default package management system for javascript programming and aids in package installation, dependency management and version management.
 
-You can verify the installation by running following commonds on terminal or cmd
-`npm -v`
-`node -v`
+## Setup for running the platform
 
+#### If using Amazon EC2
 
+- Setup the environment file, and replace line 25 in the [`index.js`](index.js) file with `require('dotenv').config({ path: 'ENV_FILENAME' });`, where ENV_FILENAME is the path to the `.env` environment file. Make sure to include it in `.gitignore` to protect credentials. Further instructions for setting up this file are detailed here: [Setting up the environment file](https://github.com/khyatimahajan/Mock-social-network-master-updated#setting-up-the-environment-file)
+- Enable access to port 5000 (this is the specified port we will be using to provide internet access) for the security group managing your EC2 instance, using inbound rules: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/authorizing-access-to-an-instance.html
 
-Doing a `npm install` in the project folder should install all the dependencies and create a folder called `node_modules`. <br>
+1. [Start the `MongoDB` server](https://docs.mongodb.com/manual/administration/configuration/).
+2. Optionally, check if running `npm start` works smoothly. If yes, continue to next step.
+3. Run `pm2 start index.js` to start the platform. Your app is now daemonized, monitored and kept alive forever.
+4. Go to your browser, copy the public URL displayed on your EC2 instance, add `:5000` at the end to access port 5000. If this works, your platform is all set!
+
 
 ## Populating the database using the Excel
-![](assets/Users_Groups_database.png)
-- Users are prepopulated using the excel file referenced above. 
-- The name of the User is in column B **"User name"**. 
-- The unique ID for each user needs to entered in column C **"user_id"**, this is the id string using which users Sign-up for the very first time to create their profile. 
-- Email in column D holds the **email-ids** for every user. 
-- **Group** in column E is used to assign the users to their individual groups. (Users who are assigned in multiple groups are **Bridge Users**)
 
-## Changing the .env file
+When the platform first runs, it creates users and groups specified in this excel file:
+![](assets/Users_Groups_database.png)
+
+To customize the users and groups, edit this excel file.
+
+- **"User name"**: Name of the user. 
+- **"user_id"**: Unique ID for each user - this is used by the users to sign up for the platform. Without it, they cannot sign up for the platform.
+- **email-ids**: Enter user email. They will be using this to sign into the platform.
+- **Group** in column E is used to assign the users to their individual groups. (Users who are assigned in multiple groups are ***Bridge Users***)
+
+## Setting up the environment file
 ![ENV](assets/env.png)
 
-Before running, we need to add `AWS_BUCKET_NAME` [S3](https://docs.aws.amazon.com/quickstarts/latest/s3backup/step-1-create-bucket.html) The first step involves creating an Amazon Aws S3 bucket by choosing create bucket from Aamazon S3 console dashboard. Once created the console displays your empty bucket in the Buckets pane. <br />
-
-`AWS_ACCESS_KEY_ID` [AWS_ACCESS_KEY](https://aws.amazon.com/blogs/security/wheres-my-secret-access-key/) You can assign up to two access keys per user (root user or IAM user). Having two access keys is useful when you want to rotate them. When you disable an access key, you can't use it, but it counts toward your limit of two access keys. After you delete an access key, it's gone forever and can't be restored, but it can be replaced with a new access key. <br />
-
-`AWS_SECRET_ACCESS_KEY` [AWS_SECRET_ACCESS_KEY](https://aws.amazon.com/blogs/security/wheres-my-secret-access-key/) Sign in to the AWS Management Console as the root user. In the navigation bar on the upper right, choose your account name or number and then choose My Security Credentials.Expand and choose Create New Access Key. If you already have two access keys, this button is disabled.To save the credentials you can download the Download keyfile. <br />
-
-`AWS_REGION` [AWS_REGION](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html) You can use the Amazon EC2 console or the command line interface to determine which Regions, Availability Zones, and Local Zones are available for your account. <br />
-
-`SESSION_SECRET_KEY` [SESSION_SECRET_KEY](https://github.com/expressjs/session#readme) Simple session middleware for Express. <br />
-
-## For Local
-
-Clone the repo locally then install all the dependencies using [NPM](https://npmjs.org/)
-
-```bash
-$ git clone https://github.com/Souravroych/Mock-social-network-master-updated.git
-$ cd Mock-social-network-master-updated
-$ brew services restart mongodb-community
-$ npm install
-$ npm start
-```
-
-## For EC2
-
-- Create your EC2 instance using your Amazon AWS account. [EC2](https://docs.aws.amazon.com/efs/latest/ug/gs-step-one-create-ec2-resources.html)
-- Create your S3 container. [S3](https://docs.aws.amazon.com/quickstarts/latest/s3backup/step-1-create-bucket.html)
-- Install the node.js dependencies in the Amazon Elastic Compute Cloud Instance.
-  - Connect to your Linux instance as ec2-user using SSH
-  - npm install downloads a package and it's dependencies. npm install can be run with or without arguments. When run without arguments, npm install downloads  dependencies defined in a package. json file and generates a node_modules folder with the installed modules.
-  - Install MongoDB in the EC2 Operating system.
-  - Install pm2 (PM2 is a production process manager for Node.js applications with a built-in load balancer. It allows you to keep applications alive forever, to reload them without downtime and to facilitate common system admin tasks)
-  ```bash
-  $ npm install pm2 -g
-  ```
-  - Start the application using
-  ```bash
-  $ pm2 start index.js
-  ```
-  (Your app is now daemonized, monitored and kept alive forever)
-
+1. **`AWS_BUCKET_NAME`**: [Create an `S3` bucket on Amazon AWS](https://docs.aws.amazon.com/quickstarts/latest/s3backup/step-1-create-bucket.html), and add the name of this newly created `S3` bucket here.
+2. **`AWS_ACCESS_KEY_ID`**, **`AWS_SECRET_ACCESS_KEY`**: Check the access keys using the Security Credentials menu from your user dropdown on the navigation bar top right. Fill these fields using data in these access keys. If you do not already have one, create a new one. To get information from the keys, [follow this guide](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html).
+3. **`AWS_REGION`**: [AWS_REGION](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html) You can use the Amazon EC2 console or the command line interface to determine which Regions, Availability Zones, and Local Zones are available for your account. Fill in the region you will be using for your EC2 instance.
+4. **`SESSION_SECRET_KEY`**: Setup a [SESSION_SECRET_KEY](https://github.com/expressjs/session#readme) for Express middleware.
 
 ## Folder Structure 
-
-To start off please note that all third party dependencies are managed through NPM and a package.json file.
-NPM is the defualt package management system for javascript programming and it aids in package installation, dependency management and version management.
 
 ### Frontend
 - `/assets` contains all the images, some client side JS files and style sheets. <br />
@@ -136,9 +101,7 @@ NPM is the defualt package management system for javascript programming and it a
 - `/routes` contains all the server side functions for different modules or areas of the application. <br />
 - `/controller` contains all the major express routes seprated by major sections.  <br />
 
-
-
-## Data Storage and Retreival
+## Data Storage and Retrieval
 
 ### Schema for Backend
 
@@ -146,7 +109,7 @@ NPM is the defualt package management system for javascript programming and it a
 
 | *Field*                                               | _id                                            | user_id                                        | username                  | password                  | name                      | bio                       | location                  | Email ID                  | created_at                | profile_pic               | group_id                         |
 |-------------------------------------------------------|------------------------------------------------|------------------------------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|----------------------------------|
-| *Function*                                            | *primary_key, system generated, do not change* | *generate based on demo, experiment condition* | *assign default or empty* | *assign default or empty* | *assign default or empty* | *assign default or empty* | [assign default or empty] | *assign default or empty* | *assign default or empty* | *assign default or empty* | *pre-populate*                   |
+| *Function*                                            | *primary_key, system generated, do not change* | *generate based on demo, experiment condition* | *assign default or empty* | *assign default or empty* | *assign default or empty* | *assign default or empty* | *assign default or empty* | *assign default or empty* | *assign default or empty* | *assign default or empty* | *pre-populate*                   |
 | *Data Type*                                           | *ObjectId*                                     | *string*                                       | *string*                  | *private password*        | *string*                  | *string*                  | *string*                  | *string*                  | *datetime*                | *URL*                     | *list of strings*                |
 | *Example of how this will look at setup*              | \<empty\>                                      | jd_c1_06112020                                 | \<empty\>                 | \<empty\>                 | John Doe                  | \<empty\>                 | \<empty\>                 | john.doe&#8203;@gmail.com | \<empty\>                 | \<empty\>                 | [Blue] ([Blue, Red] if multiple) |
 | *Example of how this will look when the experiment is underway* | x1y2                                           | jd_c1_06112020                                 | john_doe                  | john_doe                  | John Doe                  | hello                     | Charlotte                 | john.doe&#8203;@gmail.com | TIMESTAMP                 | [link to profile pic]     | [Red] ([Blue, Red] if multiple)  |
@@ -178,15 +141,13 @@ NPM is the defualt package management system for javascript programming and it a
 3. [For R - using the 'mongolite' R package to read MongoDB data](https://jeroen.github.io/mongolite/connecting-to-mongodb.html)
 
 ### Browser Support
-
+Tested on:
 -   Chrome (84.0.4147)
 -   Firefox (78.0)
 -   Safari (14.x)
 -   Internet Explorer(11.0)
 
-
 ## Contributors
-
 -   [Sourav Roy Choudhury](https://github.com/Souravroych)
 -   [Khyati Mahajan](https://github.com/khyatimahajan)
 -   [Samira Shaikh](https://github.com/sshaikh2)
