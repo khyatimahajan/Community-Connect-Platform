@@ -55,10 +55,12 @@ Please note that all third party dependencies are managed through NPM and a pack
 
 ## Setup for running the platform
 
-#### If using Amazon EC2
+#### If using Amazon EC2, follow these additional steps
 
 - Setup the environment file, and replace line 25 in the [`index.js`](index.js) file with `require('dotenv').config({ path: 'ENV_FILENAME' });`, where ENV_FILENAME is the path to the `.env` environment file. Make sure to include it in `.gitignore` to protect credentials. Further instructions for setting up this file are detailed here: [Setting up the environment file](https://github.com/khyatimahajan/Mock-social-network-master-updated#setting-up-the-environment-file)
 - Enable access to port 5000 (this is the specified port we will be using to provide internet access) for the security group managing your EC2 instance, using inbound rules: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/authorizing-access-to-an-instance.html
+
+#### Main setup starts here
 
 1. [Start the `MongoDB` server](https://docs.mongodb.com/manual/administration/configuration/).
 2. Optionally, check if running `npm start` works smoothly. If yes, continue to next step.
