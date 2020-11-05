@@ -44,7 +44,7 @@ Follow these steps to install prerequisites on the local machine, or the server 
 4. Clone the repo locally then install all the dependencies using [NPM](https://npmjs.org/), running `npm install` should install all the dependencies and create a folder called `node_modules`:
 
 >  ```bash
->  $ git clone https://github.com/Souravroych/Mock-social-network-master-updated.git
+>  $ git clone https://github.com/khyatimahajan/Community-Connect-Platform.git
 >  $ cd Mock-social-network-master-updated
 >  $ npm install
 >  ```
