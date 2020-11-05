@@ -45,7 +45,7 @@ Follow these steps to install prerequisites on the local machine, or the server 
 
 >  ```bash
 >  $ git clone https://github.com/khyatimahajan/Community-Connect-Platform.git
->  $ cd Mock-social-network-master-updated
+>  $ cd Community-Connect-Platform
 >  $ npm install
 >  ```
 
