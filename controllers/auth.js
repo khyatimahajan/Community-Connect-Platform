@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const saltRounds = 12;
 
 const User = require('./../model/User');
 const validator = require('./../validation');
@@ -119,7 +120,7 @@ module.exports.postCreateUser = async (req, res, next) => {
 	}
 
 	//Password hash making
-	const hashPassword = await bcrypt.hash(req.body.password, 12);
+	const hashPassword = await bcrypt.hash(req.body.password, saltRounds);
 	let usernameCheck = await User.findOne({ username: req.body.username });
 
 	// Username duplication check

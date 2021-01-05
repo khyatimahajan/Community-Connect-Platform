@@ -59,7 +59,7 @@ userSchema.methods.getUserGroupMembers = async (currentUserID, cb) => {
 		userGroups.forEach(async (userGroup, index, array) => {
 			let group = await mongoose
 				.model('Group')
-				.findOne({ group_id: userGroup });
+				.findOne({ group_name: userGroup });
 			if (group) groups.push(group.group_name);
 			let group_users = await mongoose
 				.model('user')

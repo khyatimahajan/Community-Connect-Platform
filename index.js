@@ -6,6 +6,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const flash = require('connect-flash');
 const bcrypt = require('bcryptjs');
+const saltRounds = 12;
 const mongoDBStore = require('connect-mongodb-session')(session);
 const xlsxFile = require('read-excel-file/node');
 const AWS = require('aws-sdk');
@@ -25,7 +26,8 @@ const errorRoutes = require('./routes/errors');
 dotenv.config();
 
 // MONGO DB URI
-const MONGODB_URI = process.env.MONGO_DB;
+// const MONGODB_URI = process.env.MONGO_DB;
+const MONGODB_URI = 'mongodb://localhost:27017'
 
 const app = express();
 var server = http.createServer(app);
@@ -33,7 +35,7 @@ var io = require('socket.io').listen(server);
 
 app.set('socketio', io);
 
-const groups = [];
+const groups = ['Admin'];
 const users = [];
 let allRecords = 0;
 
@@ -46,7 +48,8 @@ const store = new mongoDBStore({
 // Session configuration
 app.use(
 	session({
-		secret: process.env.SESSION_SECRET_KEY,
+		// secret: process.env.SESSION_SECRET_KEY,
+		secret: 'bruh',
 		saveUninitialized: false,
 		resave: false,
 		store: store,
@@ -75,7 +78,8 @@ const s3 = new AWS.S3();
 var upload = multer({
 	storage: multerS3({
 		s3: s3,
-		bucket: process.env.AWS_BUCKET_NAME,
+		// bucket: process.env.AWS_BUCKET_NAME,
+		bucket: 'bruh_bucket',
 		acl: 'public-read',
 		key: function (req, file, cb) {
 			if (file !== undefined) {
@@ -166,17 +170,24 @@ server.listen(port, () => {
 			/* New admin creation */
 			let isAdminExist = await User.findOne({ isAdmin: true });
 			if (!isAdminExist) {
-				const hashPassword = await bcrypt.hash('123456', 12);
+				const hashPassword = await bcrypt.hash('bla123456', saltRounds);
 				new User({
 					EmailID: 'admin@gmail.com',
 					password: hashPassword,
 					isAdmin: true,
+					name: 'admin',
+					user_id: 'admin',
+					group_id: ["Admin"],
+					age: '500',
+					gender: 'admin',
 				})
 					.save()
 					.then(() => {
 						console.log('Admin Created');
 					})
 					.catch((err) => console.log(err));
+			} else {
+				console.log('Admin found: ', isAdminExist);
 			}
 		})
 		.catch((err) => {
@@ -218,7 +229,7 @@ const createUsers = () => {
 		userGroups.forEach(async (userGroup, index, array) => {
 			foundGroup = await Group.findOne({ group_name: userGroup.trim() });
 			if (foundGroup) {
-				arrGr.push(foundGroup.group_id);
+				arrGr.push(foundGroup.group_name);
 				userGroupIndex++;
 				if (array.length == userGroupIndex) isUserDone(user, arrGr);
 			}

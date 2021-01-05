@@ -6,15 +6,21 @@ const validation = require('./../validation');
 
 // Login for admin
 module.exports.getLogin = (req, res) => {
-	res.render('../views/admin/login', {
+	try {
+		console.log('getLogin in controllers/admin');
+		res.render('../views/admin/login', {
 		pageTitle: 'Admin login',
 		form: req.flash('form'),
 		message: req.flash('message'),
-	});
+		});
+	} catch (err) {
+		console.log(err);
+	};
 };
 
 // Post admin login
 module.exports.postLogin = async (req, res) => {
+	console.log('postLogin in controllers/admin');
 	const { email, password } = req.body;
 
 	const validationResult = validation.loginValidation(req.body);
@@ -55,6 +61,7 @@ module.exports.addDescription = async (req, res) => {
 
 // Get admin dashboard
 module.exports.getDashboard = async (req, res, next) => {
+	console.log('getDashboard in controllers/admin');
 	let users = [];
 	let groups = [];
 	let allusers = [];
@@ -183,7 +190,7 @@ module.exports.getGroup = async (req, res, next) => {
 			memberMessage: req.flash('memberMessage'),
 		});
 	} catch (error) {
-		req.flash('groupMessage', 'Something has went wrong');
+		req.flash('groupMessage', 'Something went wrong');
 		return res.redirect('/admin/dashboard');
 	}
 };
@@ -248,7 +255,7 @@ module.exports.postGroupDelete = async (req, res, next) => {
 		}
 	} catch (error) {
 		console.log(error);
-		req.flash('groupMessage', 'Something has went wrong');
+		req.flash('groupMessage', 'Something went wrong');
 		return res.redirect('/admin/dashboard');
 	}
 
@@ -283,6 +290,7 @@ module.exports.postGroupMemberDelete = async (req, res, next) => {
 
 // admin logout
 module.exports.getLogout = (req, res) => {
+	console.log('getLogout in controllers/admin');
 	req.session.destroy();
 	return res.redirect('login');
 };

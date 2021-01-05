@@ -754,7 +754,7 @@ router.post('/feedPost', async (req, res, next) => {
 		let notificationUsers = [];
 
 		userGroups.forEach(async (userGroup, index, array) => {
-			let group = await Group.findOne({ group_id: userGroup });
+			let group = await Group.findOne({ group_name: userGroup });
 			let group_users = await User.find({
 				group_id: { $in: [group.group_id] },
 				user_id: { $ne: user.user_id },
@@ -787,7 +787,7 @@ router.post('/feedPost', async (req, res, next) => {
 				let otherGroups = [];
 				let groupProccessed = 0;
 				currentUserGroups.forEach(async (grp, index, array) => {
-					let g = await Group.findOne({ group_id: grp });
+					let g = await Group.findOne({ group_name: grp });
 					otherGroups.push(g.group_name);
 					groupProccessed++;
 					if (groupProccessed == array.length) {
@@ -892,7 +892,7 @@ router.post('/profile', async (req, res, next) => {
 				'Email already exists! Please signup with different Email address'
 			);
 
-	const salt = await bcrypt.genSalt(10);
+	const salt = await bcrypt.genSalt(12);
 	const hashPassword = await bcrypt.hash(sess.body.password, salt);
 
 	const user = new User({
