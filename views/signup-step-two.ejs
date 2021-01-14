@@ -66,23 +66,32 @@
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">@</div>
                                     </div>
-                                    <input type="text" class="form-control" name="username" id="username"
+                                    <input type="text" class="form-control" name="username" id="username" placeholder="User Name"
+                                    value="<%= body.username? body.username : null %>" readonly="readonly">
+                                    <!-- <input type="text" class="form-control" name="username" id="username"
                                         value="<%= body.username? body.username : null %>" placeholder="User Name"
-                                        required>
+                                        required> -->
                                 </div>
                             </div>
+                            <!-- Removing location info
                             <div class="col">
                                 <label class="sr-only" for="user-ln">City</label>
                                 <input type="text" class="form-control" name="location" id="location"
                                     value="<%= body.location ? body.location : null %>" placeholder="Location" required>
                             </div>
+                            -->
                         </div>
                         <div class="form-row">
                             <div class="form-group col">
                                 <label class="sr-only" for="myTextarea"></label>
+                                <input type="text" class="form-control" name="bio" id="bio" placeholder="Bio"
+                                    value="<%= body.bio ? body.bio: null %>" readonly="readonly">
+
+                                <!-- Removing ability to add bio
                                 <textarea type="text" class="form-control" name="bio" id="bio" maxlength="120" rows="5"
                                     placeholder="Bio" style="margin-left:0px"
                                     required><%= body.bio ? body.bio : null %></textarea>
+                                -->
                             </div>
                         </div>
                         <div class="form-row">
