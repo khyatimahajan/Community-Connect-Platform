@@ -39,7 +39,7 @@ if ( $file['name'] !== 'invalid' && $file['type'] !== 'invalid' ) {
         }
     } elseif ( $file['type'] === 'svg' ) {
         // cheking that validated code is SVG
-        if ( strpos( $valid_data, '<svg xmlns="http://www.w3.org/2000/svg" version="1.1"' ) !== false && strrpos($valid_data, '</svg>', -6) !== false ) {
+        if ( strpos( $valid_data, '<svg xmlns="https://www.w3.org/2000/svg" version="1.1"' ) !== false && strrpos($valid_data, '</svg>', -6) !== false ) {
             $valid_data = stripcslashes( $valid_data );
             $dir = '../temp-avatars/';
             if ( is_dir( $dir ) && is_writable( $dir ) ) {

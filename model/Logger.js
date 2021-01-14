@@ -8,10 +8,20 @@ let loggerSchema = new schema({
 		type: mongoose.Schema.Types.Mixed,
 	},
 	loggedInAt: {
-		type: Date,
+		userTime: {
+			type: String,
+		},
+		serverTime: {
+			type: String,
+		},
 	},
 	loggedOutAt: {
-		type: Date,
+		userTime: {
+			type: String,
+		},
+		serverTime: {
+			type: String,
+		},
 	},
 });
 

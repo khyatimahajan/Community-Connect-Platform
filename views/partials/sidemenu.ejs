@@ -58,7 +58,7 @@
             <li class="list-group-item sidemenu-bio">
                 <div class="on-hover-show">
                     <a href="#" class=" py-3 px-4">
-                        <i class="fa fa-pencil fa-lg mr-3" aria-hidden="true"></i><%=user.bio%>
+                        <i class="fa fa-user fa-lg mr-3" aria-hidden="true"></i><%=user.bio%>
                     </a>
                 </div>
             </li>
@@ -74,12 +74,17 @@
             <% } else { %>
             <li class="list-group-item">
                 <div class="on-hover-show">
-                    <a href="/logout" class=" py-3 px-4">
-                        <i class="fa fa-sign-in fa-lg mr-3" aria-hidden="true"></i>Logout
-                    </a>
+                    <form action="/logout" id="logout_frm" method="POST">
+                        <a href="javascript:$('#logout_frm').submit();" class=" py-3 px-4">
+                            <i class="fa fa-sign-in fa-lg mr-3" aria-hidden="true"></i>Logout
+                        </a>
+
+                        <input type="hidden" name="timezone" id="timezone">
+                    </form>
                 </div>
             </li>
             <% } %>
         </ul>
     </div>
 </div>
+<script src="./../../assets/js/user/login.js"></script>

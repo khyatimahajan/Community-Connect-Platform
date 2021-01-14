@@ -42,7 +42,9 @@
         crossorigin="anonymous"></script>
 
 
+
     <script>
+        var idleTime = 0;
         var socket = io(`${window.location.origin}/feeds`);
         socket.on('error', function (reason) {
             console.error('Unable to connect Socket.IO', reason);
@@ -57,6 +59,44 @@
                 window.location.href = `${window.location.origin}/users/home`;
             }, 500)
         });
+
+
+        // check for idle time
+        $(document).ready(function () {
+            var idleInterval = setInterval(timerIncrement, 60000); // 1 minute
+
+            //Zero the idle timer on mouse movement.
+            $(this).mousemove(function (e) {
+                idleTime = 0;
+            });
+            $(this).keypress(function (e) {
+                idleTime = 0;
+            });
+
+
+        });
+
+        function timerIncrement() {
+            idleTime = idleTime + 1;
+            if (idleTime == 14) { // 15 minutes
+                fetch('/logout', {
+                    method: "POST"
+                }
+                ).then(() => {
+                    window.location.href = '/';
+                });
+            }
+        }
+
+        // window.addEventListener("scroll", (event) => {
+        //     
+        // });
+
+        // localStorage.setItem('scrollPosition', event.target.scrollingElement.scrollTop)
+        // console.log(activityPost);
+
+
+
     </script>
 
     <link rel="stylesheet" href="../style/feeds_page.css">

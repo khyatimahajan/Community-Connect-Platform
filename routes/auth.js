@@ -2,6 +2,7 @@ const router = require('express').Router();
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const moment = require('moment');
+const momentTZ = require('moment-timezone');
 
 const User = require('../model/User');
 const Feeds = require('../model/Feeds');
@@ -19,6 +20,7 @@ var currentUserName = 'admin'; // default [temporary]
 var currentUserData;
 var currentUserID;
 
+// session configuration
 router.use(
 	session({
 		secret: 'ssshhhhh',
@@ -215,6 +217,7 @@ router.post('/feedPost', async (req, res, next) => {
 	currentUserName = req.user.username;
 	currentUserID = req.user._id;
 
+	// get all user data
 	currentUserData = {
 		username: req.user.username,
 		name: req.user.name,
@@ -238,14 +241,17 @@ router.post('/feedPost', async (req, res, next) => {
 			//currentFeed.created_at = +new Date();
 			currentFeed.com_count++;
 			currentFeed.reply_count++;
+			currentFeed.timestamp = Date.now();
 			await currentFeed.save();
 
 			req.session.activityPost = currentFeed._id;
 
+			// find user with current post
 			const user = await User.findOne({
 				user_id: currentFeed.user_id,
 			});
 
+			// create new feed with 'reply' type
 			const newFeed = new Feeds({
 				user_id: currentUserData.user_id,
 				body: urlify(req.body.comment),
@@ -259,13 +265,14 @@ router.post('/feedPost', async (req, res, next) => {
 				parent_id: currentFeed._id,
 				conversation_id: currentFeed.conversation_id,
 				mentions: [],
-				visible_to: { users: [] },
+				visible_to: { users: [...currentFeed.visible_to.users] },
 				image: req.file ? req.file.location : 'null',
 			});
 
 			var status =
 				currentUserName + ' commented on ' + user.username + '"s post.';
 
+			// create notification
 			const notify = new Notifications({
 				inconn_id: currentUserID,
 				outconn_id: user._id,
@@ -274,6 +281,7 @@ router.post('/feedPost', async (req, res, next) => {
 				seen: false,
 				status: status,
 			});
+			// save notification
 			await notify.save();
 
 			try {
@@ -288,6 +296,7 @@ router.post('/feedPost', async (req, res, next) => {
 		if (req.body.retweet_edit_body_comm) {
 			currentFeed = await Feeds.findById(req.body.retweet_edit_id_comm);
 			currentFeed.quote_count++;
+
 			var author_user = currentFeed.author;
 			var author_image_src = currentFeed.author_img_src;
 			await currentFeed.save();
@@ -299,10 +308,12 @@ router.post('/feedPost', async (req, res, next) => {
 
 			let recieverUser;
 
+			// create new feed with 'quote' type
 			const newFeed = new Feeds({
 				user_id: req.user.user_id,
 				body: urlify(req.body.retweet_edit_body_comm),
 				created_at: Date.now(),
+				timestamp: Date.now(),
 				liked_by: 0,
 				like_count: 0,
 				retweet_count: 0,
@@ -330,6 +341,7 @@ router.post('/feedPost', async (req, res, next) => {
 			});
 
 			try {
+				// save feed
 				await newFeed.save();
 			} catch (err) {
 				let error = new Error('Something went wrong');
@@ -358,21 +370,26 @@ router.post('/feedPost', async (req, res, next) => {
 			}
 
 			currentFeed = await Feeds.findById(req.body.retweet_edit_id);
+			// increase quote count
 			currentFeed.quote_count++;
 			currentFeed.retweet_edit_count++;
+
 			req.session.activityPost = currentFeed._id;
 
 			try {
+				// save feed
 				await currentFeed.save();
 			} catch (err) {
 				let error = new Error('Something went wrong');
 				next(error);
 			}
 
+			// Create new feed with 'quote' type
 			const newFeed = new Feeds({
 				user_id: req.user.user_id,
 				body: urlify(req.body.retweet_edit_body),
 				created_at: Date.now(),
+				timestamp: Date.now(),
 				liked_by: [],
 				like_count: 0,
 				retweet_count: 0,
@@ -400,6 +417,7 @@ router.post('/feedPost', async (req, res, next) => {
 			});
 
 			try {
+				// Save feed
 				let nf = await newFeed.save();
 				req.session.activityPost = nf._id;
 			} catch (err) {
@@ -416,6 +434,7 @@ router.post('/feedPost', async (req, res, next) => {
 
 			let recieverUser;
 
+			// find user of feed
 			const user = await User.findOne({
 				username: req.body.retweet_com,
 			});
@@ -425,13 +444,16 @@ router.post('/feedPost', async (req, res, next) => {
 
 			currentFeed = await Feeds.findById(req.body.post_id);
 			currentFeed.retweet_count++;
+
 			await currentFeed.save();
 			req.session.activityPost = currentFeed._id;
 
+			// Create new feed with type 'retweet'
 			const newFeed = new Feeds({
 				user_id: req.user.user_id,
 				body: urlify(req.body.body),
 				created_at: Date.now(),
+				timestamp: Date.now(),
 				liked_by: [],
 				like_count: 0,
 				retweet_count: 0,
@@ -459,6 +481,7 @@ router.post('/feedPost', async (req, res, next) => {
 			});
 
 			try {
+				// save feed
 				await newFeed.save();
 			} catch (err) {
 				let error = new Error('Something went wrong');
@@ -487,11 +510,14 @@ router.post('/feedPost', async (req, res, next) => {
 				recieverUser = user;
 			}
 
+			// find feed
 			currentFeed = await Feeds.findById(feedId);
 			currentFeed.retweet_count++;
 			currentFeed.count++;
+
 			await currentFeed.save();
 
+			// find user from feed user_id
 			const user = await User.findOne({
 				user_id: currentFeed.user_id,
 			});
@@ -503,15 +529,18 @@ router.post('/feedPost', async (req, res, next) => {
 			let postUserGroups = user.group_id;
 			let currentUserGroups = req.user.group_id;
 
+			// check if current user and post user share's common group
 			var isSamegroups = findCommonElements(
 				postUserGroups,
 				currentUserGroups
 			);
 
+			// Create new feed with type 'retweet'
 			const newFeed = new Feeds({
 				user_id: req.user.user_id,
 				body: urlify(req.body.body),
 				created_at: Date.now(),
+				timestamp: Date.now(),
 				liked_by: currentFeed.liked_by,
 				like_count: currentFeed.like_count,
 				retweet_count: currentFeed.retweet_count,
@@ -547,6 +576,7 @@ router.post('/feedPost', async (req, res, next) => {
 			let status =
 				currentUserName + ' retweeted ' + user.username + '"s post.';
 
+			// Create notification for retweet
 			const notify = new Notifications({
 				inconn_id: currentUserID,
 				outconn_id: user._id,
@@ -557,6 +587,7 @@ router.post('/feedPost', async (req, res, next) => {
 			});
 
 			try {
+				// Save notification
 				let nf = await newFeed.save();
 				req.session.activityPost = nf._id;
 				await notify.save();
@@ -575,6 +606,7 @@ router.post('/feedPost', async (req, res, next) => {
 			});
 			let user2;
 
+			// check if post type is 'retweet'
 			if (currentFeed.post_type == 'retweet') {
 				currentFeed = await Feeds.findById(currentFeed.parent_id._id);
 				user2 = await User.findOne({
@@ -582,11 +614,16 @@ router.post('/feedPost', async (req, res, next) => {
 				});
 			}
 
+			// increase like count
 			if (!currentFeed.liked_by.includes(currentUserData.username)) {
 				currentFeed.like_count++;
+				currentFeed.timestamp = Date.now();
 				currentFeed.liked_by.push(currentUserData.username);
+
+				// Save feed
 				await currentFeed.save();
 
+				// Create notification
 				let notifications = [
 					{
 						inconn_id: currentUserID,
@@ -617,6 +654,7 @@ router.post('/feedPost', async (req, res, next) => {
 					});
 				}
 
+				// Save to notifications
 				Notifications.insertMany(notifications);
 			}
 		}
@@ -625,13 +663,21 @@ router.post('/feedPost', async (req, res, next) => {
 		if (req.body.love_com) {
 			currentFeed = await Feeds.findById(req.body.love_com);
 
+			let parentFeed = await Feeds.findById(currentFeed.parent_id);
+			parentFeed.timestamp = Date.now();
+			await parentFeed.save();
+
+			// Increase like count
 			if (!currentFeed.liked_by.includes(currentUserData.username)) {
 				currentFeed.like_count++;
+
 				currentFeed.liked_by.push(currentUserData.username);
+				// Save feed
 				await currentFeed.save();
 				req.session.activityPost = currentFeed._id;
 			}
 
+			// Find user with feed user_id
 			const user = await User.findOne({
 				user_id: currentFeed.user_id,
 			});
@@ -639,6 +685,7 @@ router.post('/feedPost', async (req, res, next) => {
 			let status =
 				currentUserName + ' liked ' + user.username + '"s comment.';
 
+			// Create notification
 			const notify = new Notifications({
 				inconn_id: currentUserID,
 				outconn_id: user._id,
@@ -648,6 +695,7 @@ router.post('/feedPost', async (req, res, next) => {
 				status: status,
 			});
 			try {
+				// save notification
 				await notify.save();
 			} catch (err) {
 				let error = new Error('Something went wrong');
@@ -686,6 +734,7 @@ router.post('/feedPost', async (req, res, next) => {
 
 				req.session.newPostMade = true;
 
+				// Create new feed with type 'tweet'
 				let feed = {
 					user_id: currentUserData.user_id,
 					body: urlify(req.body.body),
@@ -718,12 +767,16 @@ router.post('/feedPost', async (req, res, next) => {
 				const newFeed = new Feeds(feed);
 
 				try {
+					// Save to DB
 					let feed = await newFeed.save();
 
+					// Get user mentions in feed body
 					feed.getUserMentions(req.body.body);
 
 					feed.conversation_id = feed._id;
 					req.session.activityPost = feed._id;
+
+					// Update to feed
 					await feed.save();
 				} catch (err) {
 					let error = new Error('Something went wrong');
@@ -733,18 +786,21 @@ router.post('/feedPost', async (req, res, next) => {
 		);
 	}
 
+	// Get all posts from users
 	var posts = await getAllPosts(req.user._id);
 	var connection_list = await getAllConnectionInformation();
 	userPosts = [currentUserData].concat(posts);
 
 	let userGroups = [];
 	let user;
+	let userRedir;
 
 	if (feedId && (req.body.comment || req.body.love)) {
 		currentFeed = await Feeds.findById(feedId);
 		user = await User.findOne({
 			user_id: currentFeed.user_id,
 		});
+		userRedir = user;
 		let u = await User.findById(currentUserID);
 		userGroups = u.group_id;
 	}
@@ -870,11 +926,17 @@ router.post('/feedPost', async (req, res, next) => {
 	}
 
 	function callback() {
+		// Sort posts
 		nPosts.sort(function (a, b) {
 			return b['timestamp'] - a['timestamp'];
 		});
-		global.nsp.emit('new-post', 'new-post');
-		res.redirect('users/home');
+
+		if (req.body.timezone) {
+			res.redirect(`users/${userRedir._id}`);
+		} else {
+			global.nsp.emit('new-post', 'new-post');
+			res.redirect('users/home');
+		}
 	}
 });
 
@@ -882,6 +944,8 @@ router.post('/feedPost', async (req, res, next) => {
 router.post('/profile', async (req, res, next) => {
 	sess = req.session;
 	sess.body = req.body;
+
+	// Check if email exists
 	const emailExists = await User.findOne({
 		username: sess.body['username'],
 	});
@@ -892,9 +956,11 @@ router.post('/profile', async (req, res, next) => {
 				'Email already exists! Please signup with different Email address'
 			);
 
+	// Generate new hashed password
 	const salt = await bcrypt.genSalt(12);
 	const hashPassword = await bcrypt.hash(sess.body.password, salt);
 
+	// new user object
 	const user = new User({
 		name: req.body['name'],
 		username: req.body['username'],
@@ -905,6 +971,7 @@ router.post('/profile', async (req, res, next) => {
 		image_src: req.body.image_src,
 	});
 	try {
+		// Save to DB
 		const savedUser = await user.save();
 		res.render('../views/login_succ');
 	} catch (err) {
@@ -917,6 +984,7 @@ router.post('/profile', async (req, res, next) => {
 router.post('/login', async (req, res) => {
 	req.session.activityPost = null;
 
+	// Validate user inputs
 	const { error } = loginValidation(req.body);
 
 	if (error) {
@@ -927,9 +995,11 @@ router.post('/login', async (req, res) => {
 		});
 	}
 
+	// Find user with email
 	const user = await User.findOne({
 		EmailID: req.body.email,
 	});
+	// throw error if user not found
 	if (!user) {
 		return res.status(403).render('./../views/login.ejs', {
 			pageTitle: 'Login',
@@ -937,7 +1007,7 @@ router.post('/login', async (req, res) => {
 			input: { email: req.body.email },
 		});
 	}
-
+	// Validate password
 	if (!user.password)
 		return res.status(403).render('./../views/login.ejs', {
 			pageTitle: 'Login',
@@ -945,6 +1015,7 @@ router.post('/login', async (req, res) => {
 			input: { email: req.body.email },
 		});
 
+	// Cross verifiy password
 	const validPass = await bcrypt.compare(req.body.password, user.password);
 	if (!validPass) {
 		return res.status(403).render('./../views/login.ejs', {
@@ -961,8 +1032,14 @@ router.post('/login', async (req, res) => {
 			username: user.username,
 			name: user.name,
 		},
-		loggedInAt: new Date(),
+		loggedInAt: {
+			serverTime: new Date(),
+			userTime: new Date().toLocaleString('en-US', {
+				timeZone: req.body.timezone || 'America/New_York',
+			}),
+		},
 	});
+	// Save it to DB
 	log.save();
 
 	currentUserID = user._id;
@@ -972,6 +1049,7 @@ router.post('/login', async (req, res) => {
 	const salt = user.salt;
 	currentUserName = user.username;
 
+	// User object
 	currentUserData = {
 		username: user.username,
 		name: user.name,
@@ -992,6 +1070,7 @@ router.post('/login', async (req, res) => {
 
 	let nPosts = [];
 
+	// Get all user post with comments
 	userPosts = userPosts.map((post, index, array) => {
 		if (post._id) {
 			Comments.find({
@@ -1015,6 +1094,7 @@ router.post('/login', async (req, res) => {
 		}
 	});
 
+	// Render template
 	function callback() {
 		nPosts.sort(function (a, b) {
 			return b['timestamp'] - a['timestamp'];
@@ -1024,17 +1104,23 @@ router.post('/login', async (req, res) => {
 });
 
 // User logout
-router.get('/logout', async (req, res, next) => {
+router.post('/logout', async (req, res, next) => {
 	//Logger for user logout time
+
 	if (req.user) {
 		let log = await Logger.findOne({ 'user.id': req.user._id }).sort([
 			['loggedInAt', -1],
 		]);
+
 		if (log) {
-			log.loggedOutAt = new Date();
+			log.loggedOutAt.serverTime = new Date();
+			log.loggedOutAt.userTime = new Date().toLocaleString('en-US', {
+				timeZone: req.body.timezone || 'America/New_York',
+			});
 			log.save();
 		}
 	}
+	// Destroy session and return to login screen
 	req.session.destroy((err) => {
 		res.redirect('/');
 	});
@@ -1049,9 +1135,11 @@ router.post('/profile', async (req, res, next) => {
 	});
 	if (emailExists) return res.status(400).send('Email already exists!');
 
-	const salt = await bcrypt.genSalt(10);
+	// Generate new hashed password
+	const salt = await bcrypt.genSalt(12);
 	const hashPassword = await bcrypt.hash(sess.body.password, salt);
 
+	// Create user object
 	const user = new User({
 		name: req.body['name'],
 		username: req.body['username'],
@@ -1061,6 +1149,7 @@ router.post('/profile', async (req, res, next) => {
 		bio: req.body['bio'],
 	});
 	try {
+		// Save to DB
 		await user.save();
 		res.send({
 			user: user._id,

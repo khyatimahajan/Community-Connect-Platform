@@ -49,7 +49,7 @@ if ( $file['name'] !== 'invalid' ) {
     } elseif ( $file['type'] === 'svg' ) {
         $data = stripcslashes( $data );
         // cheking that valid code is SVG
-        if ( strpos( $data, '<svg xmlns="http://www.w3.org/2000/svg" version="1.1"' ) !== false && strrpos($data, '</svg>', -6) !== false ) {
+        if ( strpos( $data, '<svg xmlns="https://www.w3.org/2000/svg" version="1.1"' ) !== false && strrpos($data, '</svg>', -6) !== false ) {
             $dir = '../ready-avatars/';
             if ( is_dir( $dir ) && is_writable( $dir ) ) {
                 file_put_contents( $dir . $file['name'] . '.svg', $data );

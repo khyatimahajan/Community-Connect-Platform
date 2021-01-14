@@ -64,3 +64,6 @@ li.list-group-item.active a {
 .emoji-wysiwyg-editor {
 	border: none !important;
 }
+.modal-dialog-quote .emoji-wysiwyg-editor {
+	border: 1px solid #d2dbe3 !important;
+}

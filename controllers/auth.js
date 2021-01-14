@@ -29,6 +29,7 @@ module.exports.getSignupStepTwo = async (req, res, next) => {
 		return res.redirect('/signup');
 	}
 
+    // render signup
 	res.render('./../views/signup-step-two.ejs', {
 		pageTitle: 'Sign up',
 		id,
@@ -51,7 +52,7 @@ module.exports.getLogin = (req, res, next) => {
 module.exports.getCheckUser = async (req, res, next) => {
 	const user_id = req.body.idCode;
 	try {
-		// user_id check
+		// user_id check if already taken
 		let isUserExist = await User.findOne({ user_id: user_id });
 		if (isUserExist && isUserExist.username) {
 			return res.render('./../views/signup-step-one.ejs', {
@@ -61,7 +62,8 @@ module.exports.getCheckUser = async (req, res, next) => {
 				error:
 					'This account already exists. Please sign in instead using the email you provided for the study and the password you set for this account',
 			});
-		}
+        }
+        // if invalid id entered
 		if (!isUserExist) {
 			return res.render('./../views/signup-step-one.ejs', {
 				pageTitle: 'Sign up',
@@ -77,8 +79,10 @@ module.exports.getCheckUser = async (req, res, next) => {
 			email: isUserExist.EmailID,
 		};
 
+        // store params in session for later use
 		req.session.signup_user_param = userParam;
 
+        // render template
 		res.render('./../views/choose-avatar.ejs', {
 			id: isUserExist._id,
 			pageTitle: 'Sign Up',
@@ -133,8 +137,6 @@ module.exports.postCreateUser = async (req, res, next) => {
 		});
 	}
 
-	console.log(req.body.bio);
-
 	//User creation
 	user.name = req.body.name;
 	user.EmailID = req.body.email;
@@ -144,6 +146,9 @@ module.exports.postCreateUser = async (req, res, next) => {
 	user.bio = unescapeQuotes(req.body.bio);
 	user.profile_pic = req.body.image_src;
 
-	await user.save();
+    // save user to DB
+    await user.save();
+    
+    // redirect
 	return res.redirect('/');
 };

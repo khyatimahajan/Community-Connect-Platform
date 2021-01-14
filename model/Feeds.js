@@ -67,13 +67,19 @@ const feedSchema = new mongoose.Schema({
 			},
 		],
 	},
+	timestamp: {
+		type: Date,
+		default: Date.now,
+	},
 });
 
+// get user mentions inside post body
 feedSchema.methods.getUserMentions = (body) => {
 	let user_mentions = [];
 	let user_ids = [];
 	let processedMentions = 0;
 
+	// splitting between @ sign
 	let post_body_parts = body.split(' ');
 	post_body_parts.forEach((part) => {
 		if (part.startsWith('@')) {

@@ -23,6 +23,7 @@ const User = require('./model/User');
 const Group = require('./model/Group');
 const errorRoutes = require('./routes/errors');
 
+// enviromnet variables configurations
 dotenv.config();
 
 // MONGO DB URI
@@ -33,6 +34,7 @@ const app = express();
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
+// setup sockio middleware
 app.set('socketio', io);
 
 const groups = ['Admin'];
@@ -56,10 +58,14 @@ app.use(
 	})
 );
 
+// set up body parser for getting form body data
 app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
 app.use(express.json());
 
+// setup ejs view engine
 app.set('view engine', '.ejs');
+
+// setup static folder
 app.use('/style', express.static('style'));
 app.use('/assets', express.static('assets'));
 app.use('/lib', express.static('lib'));
@@ -68,7 +74,7 @@ app.use('/uploads', express.static('uploads'));
 
 app.use(flash());
 
-//configure multer
+//configure multer for file upload
 AWS.config.update({
 	secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 	accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -119,6 +125,7 @@ app.use('/users', userRoutes);
 app.use('/admin', adminRoutes);
 app.use(errorRoutes);
 
+// middleware for handing the 500 error
 app.use((err, req, res, next) => {
 	console.log(err);
 	res.render('./errors/500.ejs', {
@@ -126,10 +133,12 @@ app.use((err, req, res, next) => {
 	});
 });
 
+// application port
 let port = process.env.PORT || 5000;
 
 // Seed DB with xlsx data
 xlsxFile('./Groups in Community Connect.xlsx').then((rows) => {
+	console.log('Trying to read from excel');
 	let countIndex = 1;
 	for (i in rows) {
 		if (i == 0) continue;
@@ -144,7 +153,7 @@ xlsxFile('./Groups in Community Connect.xlsx').then((rows) => {
 		});
 		let userGroup = rows[i][4].split(',');
 		userGroup.forEach((g) => {
-			let isAlreadyExist = groups.find((gr) => gr == g);
+			let isAlreadyExist = groups.find((gr) => gr.trim() == g.trim());
 			if (!isAlreadyExist) groups.push(g.trim());
 		});
 		if (countIndex == rows.length) {
@@ -158,6 +167,7 @@ function all() {
 	createGroups();
 }
 
+// start listening to the server
 server.listen(port, () => {
 	console.log(`Listening at port ${port}`);
 	mongoose

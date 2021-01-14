@@ -3,6 +3,7 @@
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/emoji-picker/1.1.5/css/emoji.css" rel="stylesheet">
 <link rel="stylesheet" href="https://ichord.github.io/At.js/dist/css/jquery.atwho.css" />
+
 </head>
 
 <body>
@@ -87,10 +88,10 @@
                     </div> -->
 
                     <div class="col-md-12 all-posts custom-border">
-                        <% if (posts.length > 1) { %>
+                        <% if (posts.length >1) { %>
                         <% for(var curPost=1; curPost<posts.length; curPost++) { %>
 
-                        <div class="table-container">
+                        <div class="table-container" id="<%= posts[curPost]._id %>">
 
                             <table class="post-table">
                                 <!-- <% if(posts[curPost].author == posts[curPost].receiver && posts[curPost].author == posts[0].username) { %>
@@ -138,7 +139,8 @@
                                                             @<%= posts[curPost].user_id.username %></span> -->
                                                     </div>
                                                     <div class="col-md-2 postTimestamp">
-                                                        <%= moment(posts[curPost].created_at).fromNow(true) %> ago
+                                                        <%= moment(posts[curPost].created_at).utcOffset(moment().format("Z")).fromNow(true) %>
+                                                        ago
                                                     </div>
                                                 </div>
 
@@ -188,7 +190,8 @@
                                                         <% } %>
                                                     </div>
                                                     <div class="col-md-2 postTimestamp">
-                                                        <%= moment(posts[curPost].created_at).fromNow(true) %> ago
+                                                        <%= moment(posts[curPost].created_at).utcOffset(moment().format("Z")).fromNow(true) %>
+                                                        ago
                                                     </div>
                                                 </div>
                                             </div>
@@ -217,7 +220,8 @@
                                                             @<%= posts[curPost].user_id.username %></span> -->
                                                     </div>
                                                     <div class="col-md-2 postTimestamp">
-                                                        <%= moment(posts[curPost].created_at).fromNow(true) %> ago
+                                                        <%= moment(posts[curPost].created_at).utcOffset(moment().format("Z")).fromNow(true) %>
+                                                        ago
                                                     </div>
                                                 </div>
                                             </div>
@@ -490,7 +494,8 @@
                                                             <div class="modal" id=edit<%= posts[curPost]._id %>
                                                                 tabindex="-1" role="dialog"
                                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                                <div class="modal-dialog" role="document">
+                                                                <div class="modal-dialog modal-dialog-quote"
+                                                                    role="document">
                                                                     <div class="modal-content">
                                                                         <div class="modal-header">
                                                                             <h5 class="modal-title"
@@ -740,7 +745,7 @@
                                                                                 <button
                                                                                     class="custom-padding tweet-buttons dropright"
                                                                                     name="edit" data-toggle="dropdown"
-                                                                                    title="Repost/Repost with comment"
+                                                                                    title="Repost / Repost with comment"
                                                                                     id=openmodal<%= posts[curPost]._id %>
                                                                                     data-toggle="dropdown"
                                                                                     aria-haspopup="true"
@@ -759,8 +764,7 @@
                                                                                             class="custom-padding tweet-buttons"
                                                                                             name="retweet_com"
                                                                                             id="retweet_com"
-                                                                                            type="submit"
-                                                                                            title="Repost"
+                                                                                            type="submit" title="Repost"
                                                                                             style="width: 100%"
                                                                                             value="<%= posts[curPost].comments[curComment].user_id.username %>">
                                                                                             <div class="retweet-icon">
@@ -802,7 +806,8 @@
                                                                             tabindex="-1" role="dialog"
                                                                             aria-labelledby="exampleModalLabel"
                                                                             aria-hidden="true">
-                                                                            <div class="modal-dialog" role="document">
+                                                                            <div class="modal-dialog modal-dialog-quote"
+                                                                                role="document">
                                                                                 <div class="modal-content">
                                                                                     <div class="modal-header">
                                                                                         <h5 class="modal-title"
@@ -925,11 +930,15 @@
                 <div class="col-md-12">
                     <% for(var i = 0; i < connections.length; i++) { %>
                     <ul class="list-group">
-                        <li class="list-group-item">
-                            <img class="rounded-circle mr-3" height="25px" width="25px"
-                                src="<%= connections[i].profile_pic ? connections[i].profile_pic : 'https://via.placeholder.com/150' %>" />
-                            <%= connections[i].username ?  connections[i].username: "Unavailable" %>
-                        </li>
+                        <% if(connections[i].username) { %>
+                        <a href="<%= connections[i]._id %>" class="user_group_item">
+                            <li class="list-group-item">
+                                <img class="rounded-circle mr-3" height="25px" width="25px"
+                                    src="<%= connections[i].profile_pic ? connections[i].profile_pic : 'https://via.placeholder.com/150' %>" />
+                                <%= connections[i].username ?  connections[i].username.replace(/\\"/g, " ").replace(/'/g, " "): "Unavailable" %>
+                            </li>
+                        </a>
+                        <% } %>
                     </ul>
                     <% } %>
                 </div>
@@ -1013,7 +1022,15 @@
         <script>var connections = `<%= suggestions %>`;</script>
         <script src="./../assets/js/user/feeds.js"></script>
 
+        <script>
+            var activityPost = `<%= activityPost %>`;
+            $(document).ready(function () {
+                setTimeout(() => {
+                    if (activityPost)
+                        window.location.href = '#' + activityPost
+                }, 1000)
 
-
+            })
+        </script>
 
         <%- include partials/end.ejs -%>

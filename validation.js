@@ -30,6 +30,7 @@ const loginValidation = (data) => {
 	const schema = Joi.object({
 		email: Joi.string().required().email(),
 		password: Joi.string().required(),
+		timezone: Joi.string(),
 	});
 	return schema.validate(data);
 };

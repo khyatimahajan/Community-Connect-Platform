@@ -20,21 +20,25 @@ module.exports.getLogin = (req, res) => {
 
 // Post admin login
 module.exports.postLogin = async (req, res) => {
+	// get data from body
 	console.log('postLogin in controllers/admin');
 	const { email, password } = req.body;
 
+	// validate user inputs
 	const validationResult = validation.loginValidation(req.body);
 	if (validationResult.error) {
 		req.flash('message', validationResult.error.details[0].message);
 		req.flash('form', req.body);
 		return res.redirect('login');
 	}
+	// find user
 	let user = await User.findOne({ EmailID: email });
 	if (!user) {
 		req.flash('message', 'Invalid credentials');
 		req.flash('form', req.body);
 		return res.redirect('login');
 	}
+	// compare password if equal or not
 	let isMatch = await bcrypt.compare(password, user.password);
 	if (isMatch) {
 		req.session.user = user;
@@ -51,6 +55,7 @@ module.exports.postLogin = async (req, res) => {
 module.exports.addDescription = async (req, res) => {
 	let { group_id, description } = req.body;
 
+	// find group with id
 	let group = await Group.findById(group_id);
 	group.group_desc = description;
 	await group.save();
@@ -66,6 +71,7 @@ module.exports.getDashboard = async (req, res, next) => {
 	let groups = [];
 	let allusers = [];
 	try {
+		// find all non-admin users
 		allusers = await User.find({
 			isAdmin: false,
 		});
@@ -78,9 +84,12 @@ module.exports.getDashboard = async (req, res, next) => {
 			});
 		});
 
+		// find all grups
 		let allGroups = await Group.find();
 		let groupIndex = 0;
 		if (allGroups.length == 0) callback();
+
+		// create group array with it's members
 		allGroups.forEach(async (group, index, array) => {
 			let group_users = await User.find({
 				group_id: { $in: [group.group_id] },
@@ -117,6 +126,7 @@ module.exports.postAddGroup = async (req, res, next) => {
 	members = JSON.parse(members);
 	var users = [];
 
+	// create new group
 	let group = await new Group({
 		group_id: Math.random().toString(32).substring(2),
 		group_name: groupName,
@@ -146,17 +156,21 @@ module.exports.postAddGroup = async (req, res, next) => {
 module.exports.getGroup = async (req, res, next) => {
 	let id = req.params.id;
 	try {
+		// find non-admin users
 		let users = await User.find({
 			isAdmin: false,
 		});
 		let allusers = await User.find({
 			isAdmin: false,
 		});
+		// find group with id
 		let group = await Group.findById(id);
+		// find all it's members.
 		let group_members = await User.find({
 			group_id: { $in: [group.group_id] },
 		}).exec();
 
+		//filter out already existing
 		group_members.map((member) => {
 			let res = false;
 			users = users.filter((user) => {
@@ -179,6 +193,7 @@ module.exports.getGroup = async (req, res, next) => {
 			});
 		});
 
+		// render template
 		res.render('./../views/admin/group', {
 			group,
 			group_members,
@@ -199,9 +214,12 @@ module.exports.getGroup = async (req, res, next) => {
 module.exports.addGroupMember = async (req, res, next) => {
 	let { group_id, members } = req.body;
 	members = JSON.parse(members);
+
+	// find group
 	let group = await Group.findById(group_id);
 	var itemsProcessed = 0;
 
+	// create group array with looping from members
 	members.forEach(async (member, index, array) => {
 		let currentUser = await User.findById(member.id);
 		let groups = currentUser.group_id;
@@ -226,6 +244,7 @@ module.exports.postGroupDelete = async (req, res, next) => {
 	let groupId = req.body.group_id;
 	let group;
 	try {
+		//find group
 		group = await Group.findById(groupId);
 		var itemsProcessed = 0;
 		let group_members = await User.find({
@@ -240,6 +259,7 @@ module.exports.postGroupDelete = async (req, res, next) => {
 				console.log(error);
 			}
 		}
+		// remove group ufrom user's group
 		if (group_members.length > 0) {
 			group_members.forEach(async (member, index, array) => {
 				let groups = member.group_id.filter(
@@ -260,6 +280,7 @@ module.exports.postGroupDelete = async (req, res, next) => {
 	}
 
 	async function callback() {
+		// remove grop
 		await group.remove();
 		req.flash('groupMessage', 'Group deleted successfully');
 		return res.redirect('/admin/dashboard');
@@ -269,8 +290,13 @@ module.exports.postGroupDelete = async (req, res, next) => {
 module.exports.postGroupMemberDelete = async (req, res, next) => {
 	let { member_id, group_id } = req.body;
 	try {
+		// find group
 		let group = await Group.findById(group_id);
+
+		// find user
 		let user = await User.findById(member_id);
+
+		// remove group from user
 		let userGroups = user.group_id.filter((grp) => grp != group.group_id);
 
 		user.group_id = userGroups;
@@ -280,6 +306,7 @@ module.exports.postGroupMemberDelete = async (req, res, next) => {
 			'memberMessage',
 			'Member deleted successfully from this group'
 		);
+		// redirect
 		return res.redirect(`/admin/group/${group_id}`);
 	} catch (error) {
 		console.log(error);

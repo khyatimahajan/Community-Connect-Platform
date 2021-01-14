@@ -28,7 +28,9 @@
                             </span>
                             <span class="notification_text"><%= notification.status %></span>
                         </div>
-                        <span class="notification_time"><%= moment(notification.timestamp).fromNow(true) %> ago</span>
+                        <span
+                            class="notification_time"><%= moment(notification.timestamp).utcOffset(moment().format("Z")).fromNow(true) %>
+                            ago</span>
                     </div>
                     <% }) %>
                     <% } else { %>

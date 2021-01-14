@@ -404,7 +404,7 @@ body {
 }
 .comment-background {
 	margin-right: 20px;
-	word-break: break-all;
+	word-break: break-word;
 }
 .post-image-full-wrapper {
 	height: auto;
@@ -487,4 +487,15 @@ body {
 .mr-3,
 .mx-3 {
 	margin-right: 0.5rem !important;
+}
+.user_group_item {
+	color: black;
+}
+.user_group_item:hover {
+	cursor: pointer;
+	text-decoration: none;
+	color: black;
+}
+.user_group_item li:hover {
+	background-color: #eee;
 }

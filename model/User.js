@@ -48,14 +48,17 @@ const userSchema = new mongoose.Schema({
 	},
 });
 
+// Get user's group members
 userSchema.methods.getUserGroupMembers = async (currentUserID, cb) => {
 	let currentUser = await mongoose.model('user').findById(currentUserID);
+	// Get user group
 	let userGroups = currentUser.group_id;
 
 	let notificationUsers = [];
 	let groups = [];
 	if (userGroups.length > 0) {
 		var feedNotificationProcessed = 0;
+		//find all group member in which user belongs
 		userGroups.forEach(async (userGroup, index, array) => {
 			let group = await mongoose
 				.model('Group')

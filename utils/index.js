@@ -40,3 +40,23 @@ module.exports.findCommonElements = (arr1, arr2) => {
 module.exports.unescapeQuotes = (str) => {
 	return str.replace(/"/g, '\\"');
 };
+
+//sort array by alphabetical order
+module.exports.sortArrayByUsername = (array) => {
+	return array.sort((a, b) => {
+		if (a.username && b.username) {
+			if (
+				a.username.toLocaleLowerCase() < b.username.toLocaleLowerCase()
+			) {
+				return -1;
+			}
+			if (
+				a.username.toLocaleLowerCase() > b.username.toLocaleLowerCase()
+			) {
+				return 1;
+			}
+		}
+
+		return 0;
+	});
+};

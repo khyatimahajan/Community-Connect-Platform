@@ -32,7 +32,7 @@ These instructions will get you a copy of the project up and running on your loc
 - [Node.js](https://nodejs.org)
   - expressjs [ExpressJS HTTP middleware](https://npmjs.org/package/express)
   - ejs [Embedded JavaScript templates](https://npmjs.org/package/ejs)
-- [MongoDB](http://mongodb.org)
+- [MongoDB](https://mongodb.org)
 
 ## Installation
 

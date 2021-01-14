@@ -38,7 +38,7 @@
 
 //
 // Modified by DeeThemes to suit Gravatar requirements
-// @author URI http://codecanyon.net/user/DeeThemes
+// @author URI https://codecanyon.net/user/DeeThemes
 //
 
 	if(!function_exists('xml_parser_create'))
@@ -834,7 +834,7 @@
 		var $request_compression = '';
 		/**
 		* CURL handle: used for keep-alive connections (PHP 4.3.8 up, see:
-		* http://curl.haxx.se/docs/faq.html#7.3)
+		* https://curl.haxx.se/docs/faq.html#7.3)
 		*/
 		var $xmlrpc_curl_handle = null;
 		/// Wheter to use persistent connections for http 1.1 and https

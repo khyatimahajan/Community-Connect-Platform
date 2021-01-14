@@ -15,7 +15,7 @@ function svgAvatarsOptions() {
   'use strict';
 
   var options = {
-    // the path from root of your site to svgavatars folder. Also may be as URL, like 'http://yoursite.com/path/to/svgavatars/' or 'https://yoursite.com/path/to/svgavatars/'
+    // the path from root of your site to svgavatars folder. Also may be as URL, like 'https://yoursite.com/path/to/svgavatars/' or 'https://yoursite.com/path/to/svgavatars/'
     pathToFolder: 'assets/svgavatars/',
 
     // the default file name for downloaded avatars

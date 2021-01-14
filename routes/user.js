@@ -20,4 +20,7 @@ route.post('/profileUpdate', isAuth, userController.updateProfile);
 // Post password reset - user/password-reset
 route.post('/password-reset', isAuth, userController.resetPassword);
 
+// Get User posts and details
+route.get('/:id', isAuth, userController.getUserPosts);
+
 module.exports = route;
