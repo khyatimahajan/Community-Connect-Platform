@@ -13,6 +13,9 @@ const AWS = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const http = require('http');
+const xss = require('xss-clean');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
 
 const authRoute = require('./routes/auth');
 const loginRoutes = require('./routes/loginRoute');
@@ -33,6 +36,14 @@ const MONGODB_URI = 'mongodb://localhost:27017'
 const app = express();
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
+
+// protect against various attacks using helmet's 11 options
+app.use(helmet.expectCt());
+app.use(helmet.referrerPolicy());
+app.use(helmet.hsts());
+app.use(helmet.noSniff());
+app.use(helmet.dnsPrefetchControl());
+app.use(helmet.frameguard());
 
 // setup sockio middleware
 app.set('socketio', io);
@@ -61,6 +72,11 @@ app.use(
 // set up body parser for getting form body data
 app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
 app.use(express.json());
+
+// Data Sanitization against XSS
+app.use(xss());
+// Data sanitization for mongodb queries
+app.use(mongoSanitize());
 
 // setup ejs view engine
 app.set('view engine', '.ejs');
