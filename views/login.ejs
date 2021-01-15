@@ -12,21 +12,19 @@
         <% } %>
         <div class="card-container">
             <h1 class="heading">Community Connect</h1>
-            <h1 class="subheading">Login to Your Account!</h1>
+            <h1 class="subheading">Access Community Connect!</h1>
             <form action="/login" method="POST" novalidate>
                 <input type="email" id="email" name="email" placeholder="Enter email"
                     value="<%= input ? input.email: '' %>" class="form-control form-control-sm" required />
                 <input type="password" id="password" name="password" class="form-control form-control-sm"
                     placeholder="Enter password" required />
                 <input type="hidden" name="timezone" id="timezone">
-                <button class="btn btn-primary btn-sm signin w-100">Sign In</button>
+                <button class="btn btn-primary btn-sm signin w-100">Access Community Connect</button>
             </form>
             <hr>
             <ul class="bottom-form-link">
-                <!-- <li><a href="#">Can't log
-                        in?</a></li> -->
-                <li><a href="/signup">Sign up for an
-                        account</a></li>
+                <!-- <li><a href="#">Can't access Commmunity Connect?</a></li> -->
+                <li><a href="/signup">First time here? Create credentials.</a></li>
             </ul>
         </div>
     </div>
