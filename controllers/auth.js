@@ -8,7 +8,7 @@ const { unescapeQuotes } = require('./../utils/index');
 // Get User Id check
 module.exports.getSignupStepOne = (req, res, next) => {
 	res.render('./../views/signup-step-one.ejs', {
-		pageTitle: 'Sign up',
+		pageTitle: 'Create credentials',
 		form: [],
 		message: [],
 		error: false,
@@ -31,7 +31,7 @@ module.exports.getSignupStepTwo = async (req, res, next) => {
 
     // render signup
 	res.render('./../views/signup-step-two.ejs', {
-		pageTitle: 'Sign up',
+		pageTitle: 'Create credentials',
 		id,
 		form: [],
 		message: null,
@@ -42,7 +42,7 @@ module.exports.getSignupStepTwo = async (req, res, next) => {
 // Get login
 module.exports.getLogin = (req, res, next) => {
 	res.render('./../views/login.ejs', {
-		pageTitle: 'Login',
+		pageTitle: 'Access Community Connect',
 		message: null,
 		input: {},
 	});
@@ -54,30 +54,35 @@ module.exports.getCheckUser = async (req, res, next) => {
 	try {
 		// user_id check if already taken
 		let isUserExist = await User.findOne({ user_id: user_id });
-		if (isUserExist && isUserExist.username) {
+		if (isUserExist && isUserExist.password) {
 			return res.render('./../views/signup-step-one.ejs', {
-				pageTitle: 'Sign up',
+				pageTitle: 'Create credentials',
 				form: [],
 				message: [],
 				error:
-					'This account already exists. Please sign in instead using the email you provided for the study and the password you set for this account',
+					'These credentials are already set up. Please access Community Connect instead using the credentials you set for this account.',
 			});
         }
         // if invalid id entered
 		if (!isUserExist) {
 			return res.render('./../views/signup-step-one.ejs', {
-				pageTitle: 'Sign up',
+				pageTitle: 'Create credentials',
 				form: [],
 				message: [],
-				error: 'No account found',
+				error: 'No credentials found. Please check the information you have entered.',
 			});
 		}
 
+		// console.log(isUserExist);
 		let userParam = {
 			id: isUserExist._id,
 			name: isUserExist.name,
 			email: isUserExist.EmailID,
+			username: isUserExist.username,
+			bio: isUserExist.bio,
+			location: isUserExist.location,
 		};
+		// console.log(userParam);
 
         // store params in session for later use
 		req.session.signup_user_param = userParam;
@@ -85,7 +90,7 @@ module.exports.getCheckUser = async (req, res, next) => {
         // render template
 		res.render('./../views/choose-avatar.ejs', {
 			id: isUserExist._id,
-			pageTitle: 'Sign Up',
+			pageTitle: 'Create credentials',
 			message: null,
 			body: { name: isUserExist.name, email: isUserExist.EmailID },
 		});
@@ -107,7 +112,7 @@ module.exports.postCreateUser = async (req, res, next) => {
 	if (error) {
 		return res.render('./../views/signup-step-two.ejs', {
 			id: user._id,
-			pageTitle: 'Sign Up',
+			pageTitle: 'Create credentials',
 			message: error.details[0].message,
 			body: req.body,
 		});
@@ -117,33 +122,37 @@ module.exports.postCreateUser = async (req, res, next) => {
 	if (req.body.password != req.body.password_conf) {
 		return res.render('./../views/signup-step-two.ejs', {
 			id: user._id,
-			pageTitle: 'Sign Up',
-			message: 'Passwords are not matching',
+			pageTitle: 'Create credentials',
+			message: 'Passwords did not match. Try again.',
 			body: req.body,
 		});
 	}
 
 	//Password hash making
 	const hashPassword = await bcrypt.hash(req.body.password, saltRounds);
-	let usernameCheck = await User.findOne({ username: req.body.username });
 
+	//  Removing username check, since we are prefilling this info
+	// let usernameCheck = await User.findOne({ username: req.body.username });
 	// Username duplication check
-	if (usernameCheck) {
-		return res.render('./../views/signup-step-two.ejs', {
-			id: user._id,
-			pageTitle: 'Sign Up',
-			message: 'Username is already taken',
-			body: req.body,
-		});
-	}
+	// if (usernameCheck) {
+	// 	return res.render('./../views/signup-step-two.ejs', {
+	// 		id: user._id,
+	// 		pageTitle: 'Sign Up',
+	// 		message: 'Username is already taken',
+	// 		body: req.body,
+	// 	});
+	// }
 
 	//User creation
 	user.name = req.body.name;
 	user.EmailID = req.body.email;
-	user.username = unescapeQuotes(req.body.username);
-	user.location = unescapeQuotes(req.body.location);
+	// user.username = unescapeQuotes(req.body.username);
+	// user.location = unescapeQuotes(req.body.location);
+	user.username = req.body.username;
+	user.location = req.body.location;
 	user.password = hashPassword;
-	user.bio = unescapeQuotes(req.body.bio);
+	// user.bio = unescapeQuotes(req.body.bio);
+	user.bio = req.body.bio;
 	user.profile_pic = req.body.image_src;
 
     // save user to DB

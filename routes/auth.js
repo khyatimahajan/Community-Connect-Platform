@@ -953,7 +953,7 @@ router.post('/profile', async (req, res, next) => {
 		return res
 			.status(400)
 			.send(
-				'Email already exists! Please signup with different Email address'
+				'Credentials already in use. Please access Community Connect with different credentials, or reach out to Community Connect support.'
 			);
 
 	// Generate new hashed password
@@ -989,7 +989,7 @@ router.post('/login', async (req, res) => {
 
 	if (error) {
 		return res.status(422).render('./../views/login.ejs', {
-			pageTitle: 'Login',
+			pageTitle: 'Access Community Connect',
 			message: error.details[0].message,
 			input: { email: req.body.email },
 		});
@@ -1002,7 +1002,7 @@ router.post('/login', async (req, res) => {
 	// throw error if user not found
 	if (!user) {
 		return res.status(403).render('./../views/login.ejs', {
-			pageTitle: 'Login',
+			pageTitle: 'Access Community Connect',
 			message: 'Invalid email address or password',
 			input: { email: req.body.email },
 		});
@@ -1010,7 +1010,7 @@ router.post('/login', async (req, res) => {
 	// Validate password
 	if (!user.password)
 		return res.status(403).render('./../views/login.ejs', {
-			pageTitle: 'Login',
+			pageTitle: 'Access Community Connect',
 			message: 'Invalid email address or password',
 			input: { email: req.body.email },
 		});
@@ -1019,7 +1019,7 @@ router.post('/login', async (req, res) => {
 	const validPass = await bcrypt.compare(req.body.password, user.password);
 	if (!validPass) {
 		return res.status(403).render('./../views/login.ejs', {
-			pageTitle: 'Login',
+			pageTitle: 'Access Community Connect',
 			message: 'Invalid email address or password',
 			input: { email: req.body.email },
 		});
@@ -1133,7 +1133,7 @@ router.post('/profile', async (req, res, next) => {
 	const emailExists = await User.findOne({
 		username: sess.body['username'],
 	});
-	if (emailExists) return res.status(400).send('Email already exists!');
+	if (emailExists) return res.status(400).send('Credentials already exist. Please use them to access Community Connect or reach out to Community Connect support.');
 
 	// Generate new hashed password
 	const salt = await bcrypt.genSalt(12);

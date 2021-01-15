@@ -31,8 +31,8 @@ dotenv.config();
 require('dotenv').config({ path: 'env_config_file.env' });
 
 // MONGO DB URI
-const MONGODB_URI = process.env.MONGO_DB;
-// const MONGODB_URI = 'mongodb://localhost:27017'
+// const MONGODB_URI = process.env.MONGO_DB;
+const MONGODB_URI = 'mongodb://localhost:27017'
 // const DB_NAME = 'finaldb'
 
 const app = express();
@@ -69,8 +69,8 @@ const store = new mongoDBStore({
 // Session configuration
 app.use(
 	session({
-		secret: process.env.SESSION_SECRET_KEY,
-		// secret: 'bruh',
+		// secret: process.env.SESSION_SECRET_KEY,
+		secret: 'bruh',
 		saveUninitialized: false,
 		resave: false,
 		store: store,
@@ -103,8 +103,8 @@ const s3 = new AWS.S3();
 var upload = multer({
 	storage: multerS3({
 		s3: s3,
-		bucket: process.env.AWS_BUCKET_NAME,
-		// bucket: 'bruh_bucket',
+		// bucket: process.env.AWS_BUCKET_NAME,
+		bucket: 'bruh_bucket',
 		acl: 'public-read',
 		key: function (req, file, cb) {
 			if (file !== undefined) {
