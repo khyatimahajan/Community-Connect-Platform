@@ -167,8 +167,8 @@ xlsxFile('./Groups in Community Connect.xlsx').then((rows) => {
 			user_id: rows[i][2],
 			EmailID: rows[i][3],
 			group: rows[i][4],
-			age: rows[i][5],
-			gender: rows[i][6],
+			username: rows[i][5],
+			bio: rows[i][6],
 		});
 		let userGroup = rows[i][4].split(',');
 		userGroup.forEach((g) => {
@@ -207,8 +207,8 @@ server.listen(port, () => {
 					name: 'admin',
 					user_id: 'admin',
 					group_id: ["Admin"],
-					age: '500',
-					gender: 'admin',
+					username: 'admin',
+					bio: 'Hello admin',
 				})
 					.save()
 					.then(() => {
@@ -276,6 +276,8 @@ const isUserDone = async (user, gr) => {
 			EmailID: user.EmailID,
 			isAdmin: false,
 			group_id: gr,
+			username: user.username,
+			bio: user.bio
 		}).save();
 	}
 };
