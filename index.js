@@ -28,10 +28,12 @@ const errorRoutes = require('./routes/errors');
 
 // enviromnet variables configurations
 dotenv.config();
+require('dotenv').config({ path: 'env_config_file.env' });
 
 // MONGO DB URI
-// const MONGODB_URI = process.env.MONGO_DB;
-const MONGODB_URI = 'mongodb://localhost:27017'
+const MONGODB_URI = process.env.MONGO_DB;
+// const MONGODB_URI = 'mongodb://localhost:27017'
+// const DB_NAME = 'finaldb'
 
 const app = express();
 var server = http.createServer(app);
@@ -45,6 +47,11 @@ app.use(helmet.noSniff());
 app.use(helmet.dnsPrefetchControl());
 app.use(helmet.frameguard());
 
+// Data Sanitization against XSS
+app.use(xss());
+// Data sanitization for mongodb queries
+app.use(mongoSanitize());
+
 // setup sockio middleware
 app.set('socketio', io);
 
@@ -55,14 +62,15 @@ let allRecords = 0;
 // Session storage in mongodb
 const store = new mongoDBStore({
 	uri: MONGODB_URI,
+	// databaseName: DB_NAME,
 	collection: 'sessions',
 });
 
 // Session configuration
 app.use(
 	session({
-		// secret: process.env.SESSION_SECRET_KEY,
-		secret: 'bruh',
+		secret: process.env.SESSION_SECRET_KEY,
+		// secret: 'bruh',
 		saveUninitialized: false,
 		resave: false,
 		store: store,
@@ -72,11 +80,6 @@ app.use(
 // set up body parser for getting form body data
 app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
 app.use(express.json());
-
-// Data Sanitization against XSS
-app.use(xss());
-// Data sanitization for mongodb queries
-app.use(mongoSanitize());
 
 // setup ejs view engine
 app.set('view engine', '.ejs');
@@ -100,8 +103,8 @@ const s3 = new AWS.S3();
 var upload = multer({
 	storage: multerS3({
 		s3: s3,
-		// bucket: process.env.AWS_BUCKET_NAME,
-		bucket: 'bruh_bucket',
+		bucket: process.env.AWS_BUCKET_NAME,
+		// bucket: 'bruh_bucket',
 		acl: 'public-read',
 		key: function (req, file, cb) {
 			if (file !== undefined) {
