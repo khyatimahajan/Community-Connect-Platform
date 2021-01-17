@@ -934,7 +934,8 @@ router.post('/feedPost', async (req, res, next) => {
 		if (req.body.timezone) {
 			res.redirect(`users/${userRedir._id}`);
 		} else {
-			global.nsp.emit('new-post', 'new-post');
+			// by commenting global.nsp out, we are not pushing update to everyone else's feeds
+			// global.nsp.emit('new-post', 'new-post');
 			res.redirect('users/home');
 		}
 	}
