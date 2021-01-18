@@ -4,8 +4,12 @@ const bodyParser = require("body-parser");
 var cors = require("cors");
 const User = require("../model/User");
 const validation = require("./../validation");
-const { MongoClient } = require("mongodb");
 const uri = "mongodb://localhost:27017/test";
+const mongoose = require('mongoose')
+mongoose.connect(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 var app = express();
 app.use(bodyParser.json());
@@ -59,22 +63,11 @@ app.post("/login", function (req, res) {
 });
 
 app.get("/server/test", async (req, res) => {
-  const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  try {
-    // Connect to the MongoDB cluster
-    await client.connect();
-
-    // Make the appropriate DB calls
-    databasesList = await client.db().admin().listDatabases();
-    console.log("Databases:");
-    databasesList.databases.forEach((db) => console.log(` - ${db.name}`));
-  } catch (e) {
-    console.error(e);
-  } finally {
-    await client.close();
-  }
-  res.status(200).send("Server OK");
+    User.findOne({EmailID : 'aaa@email.com'}).then(model => {
+        console.log("WE COME HERE >>> \n\n\n HURRAY \n\n\n")
+        res.send(model)
+    }, error => {
+        console.log("WE COME HERE >>> \n\n\n FUCK \n\n\n")
+        res.send(error)
+    });
 });
