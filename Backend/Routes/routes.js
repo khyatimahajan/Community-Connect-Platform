@@ -166,7 +166,7 @@ router.post("/feed", async (req, res) => {
     conversation_id: null,
     mentions: [...new Set(user_mentions)],
     visible_to: { users: groupUsers, groups },
-    image: user.profile_pic ? user.profile_pic : "null",
+    image: req.body.image ? req.body.image : "null",
 
     author: user.username,
     author_image: user.profile_pic,
@@ -246,8 +246,7 @@ router.post("/retweet", async (req, res) => {
   try {
     // Save to DB
     let feed = await newFeed.save();
-    feed.conversation_id = feed._id;
-
+    feed.conversation_id = oldFeed.conversation_id;
     oldFeed.retweet_count = oldFeed.retweet_count + 1;
     // Update to feed
     await feed.save();
@@ -334,7 +333,7 @@ router.put("/comment", async (req, res) => {
   try {
     // Save to DB
     let feed = await newFeed.save();
-    feed.conversation_id = feed._id;
+    feed.conversation_id = oldFeed.conversation_id;
     oldFeed.comments.push(feed._id);
     oldFeed.reply_count = oldFeed.reply_count + 1;
     // Update to feed
