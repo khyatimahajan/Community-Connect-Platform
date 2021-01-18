@@ -43,6 +43,12 @@ const feedSchema = new mongoose.Schema({
 	parent_post: {
 		type: Object
 	},
+	comments: [
+		{
+			type: mongoose.Types.ObjectId,
+			ref: 'Feeds'
+		}
+	],
 	conversation_id: {
 		type: mongoose.Types.ObjectId,
 		ref: 'Feeds',
