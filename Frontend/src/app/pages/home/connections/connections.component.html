@@ -1,1 +1,10 @@
-<p>connections works!</p>
+<div class="user-connection-list" fxLayout="column" fxLayoutAlign="space-evenly stretch" >
+	<h3>Connections</h3>
+
+	<div *ngFor="let conn of connections">
+		<!-- figure out how to add avatar in small round image here + link to connection's posts-->
+		<div fxFlex="15" class="user-connections">
+			<a [title]="conn.name"></a>
+		</div>
+	</div>
+</div>
