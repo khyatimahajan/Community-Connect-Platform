@@ -197,7 +197,8 @@ router.post("/feed", async (req, res) => {
 
 router.post("/retweet", async (req, res) => {
   let user_mentions = [];
-  let post_body_parts = req.body.body.split(" ");
+  const body_parts = req.body.body? req.body.body : ""
+  let post_body_parts = body_parts.split(" ");
   post_body_parts.forEach((part) => {
     if (part.startsWith("@")) {
       part = part.split("");
@@ -214,14 +215,14 @@ router.post("/retweet", async (req, res) => {
   // Create new feed with type 'tweet'
   let feed = {
     user_id: user.user_id,
-    body: urlify(req.body.body),
+    body: req.body.body? urlify(req.body.body) : null,
     created_at: Date.now(),
     liked_by: [],
     like_count: 0,
     retweet_count: 0,
     reply_count: 0,
     quote_count: 0,
-    post_type: parent_id ? "retweet" : "tweet",
+    post_type: parent_id && req.body.body ? "quote" : parent_id? "retweet" : "tweet",
     parent_id: parent_id ? parent_id : null,
     conversation_id: null,
     mentions: [...new Set(user_mentions)],
@@ -247,7 +248,11 @@ router.post("/retweet", async (req, res) => {
     // Save to DB
     let feed = await newFeed.save();
     feed.conversation_id = oldFeed.conversation_id;
-    oldFeed.retweet_count = oldFeed.retweet_count + 1;
+    if (req.body.body) {
+        oldFeed.quote_count = oldFeed.quote_count + 1;
+    } else {
+        oldFeed.retweet_count = oldFeed.retweet_count + 1;
+    }
     // Update to feed
     await feed.save();
     await oldFeed.save();
