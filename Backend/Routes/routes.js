@@ -195,4 +195,69 @@ router.post("/feed", async (req, res) => {
     }
 
 });
+
+router.post("/retweet", async (req, res) => {
+    let user_mentions = [];
+    let post_body_parts = req.body.body.split(' ');
+    post_body_parts.forEach((part) => {
+        if (part.startsWith('@')) {
+            part = part.split('');
+            part.shift();
+            user_mentions.push(part.join('').trim());
+        }
+    });
+
+    const user = await User.findById(req.body.userId);
+    groupUsers = [];
+    groups = user.group_id
+    var parent_id = req.body.parent_id
+
+    // Create new feed with type 'tweet'
+    let feed = {
+        user_id: user.user_id,
+        body: urlify(req.body.body),
+        created_at: Date.now(),
+        liked_by: [],
+        like_count: 0,
+        retweet_count: 0,
+        reply_count: 0,
+        quote_count: 0,
+        post_type: parent_id? 'retweet': 'tweet',
+        parent_id: parent_id? parent_id : null,
+        conversation_id: null,
+        mentions: [...new Set(user_mentions)],
+        visible_to: { users: groupUsers, groups },
+        image: req.body.image ? req.body.image : 'null',
+
+        author: user.username,
+        author_image: user.profile_pic,
+        receiver: user.username,
+        author_id: user._id,
+        count: 0,
+        love_count: 0,
+        com_count: 0,
+        love_people: [],
+        retweet_edit_body: '',
+        retweet_edit_count: 0,
+        notification: '',
+    };
+
+    const newFeed = new Feeds(feed);
+    var oldFeed = await Feeds.findById(parent_id)
+    try {
+        // Save to DB
+        let feed = await newFeed.save();
+        feed.conversation_id = feed._id;
+
+        oldFeed.retweet_count = oldFeed.retweet_count + 1
+        // Update to feed
+        await feed.save();
+        await oldFeed.save();
+        res.status(201).send("Created New Feed")
+    } catch (err) {
+        let error = new Error('Something went wrong');
+        res.status(400).send(error)
+    }
+
+});
 module.exports = router;
