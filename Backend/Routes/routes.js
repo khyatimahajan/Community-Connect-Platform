@@ -348,23 +348,23 @@ router.put("/comment", async (req, res) => {
 });
 
 router.get("/connections", async (req, res) => {
-  const userId = req.header('userId');
+  const userId = req.header("userId");
   if (userId != null) {
     const user = await User.findById(userId);
     if (user) {
       let group = user.group_id;
-      
-      const users = await User.find({
-          "group_id": { $in: group}
-      })
 
-      var response = []
-      users.forEach(user => {
-          response.push({
-            'username' : user.username,
-            'profile_pic': user.profile_pic
-        })
-      })
+      const users = await User.find({
+        group_id: { $in: group },
+      });
+
+      var response = [];
+      users.forEach((user) => {
+        response.push({
+          username: user.username,
+          profile_pic: user.profile_pic,
+        });
+      });
 
       res.send(response);
     }
@@ -372,4 +372,35 @@ router.get("/connections", async (req, res) => {
     res.status(400).send({ status: "Bad Request" });
   }
 });
+
+router.put("/change-password", async (req, res) => {
+  const userId = req.header("userId");
+  const { currentPassword, newPassword, cnewPassword } = req.body;
+  const validationResult = validation.resetPassword(req.body);
+
+  if (validationResult.error) {
+    res.status(400).send({ status: "Bad Request" });
+  } else {
+    try {
+      const user = await User.findById(userId);
+      // check if current password entered is correct
+      let isMatch = await bcrypt.compare(currentPassword, user.password);
+      if (isMatch) {
+        let salt = await bcrypt.genSalt(10);
+        // generate new hashed password
+        const hashPassword = await bcrypt.hash(newPassword, salt);
+        user.password = hashPassword;
+        // save changes to db
+        await user.save();
+        res.status(200).send({ status: "Password Changed Successfully" });
+      } else {
+        res.status(400).send({ status: "Old Password is Wrong" });
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).send({ status: "Internal Error" });
+    }
+  }
+});
+
 module.exports = router;

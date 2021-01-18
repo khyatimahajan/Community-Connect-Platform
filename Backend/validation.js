@@ -49,7 +49,7 @@ const updateProfile = (data) => {
 const resetPassword = (data) => {
 	const schema = Joi.object({
 		currentPassword: Joi.string().required(),
-		newPassword: Joi.string().min(6).required(),
+		newPassword: Joi.string().min(2).required(),
 		cnewPassword: Joi.any()
 			.valid(Joi.ref('newPassword'))
 			.required()
