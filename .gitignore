@@ -2,3 +2,5 @@ Groups_in_Community_Connect.xlsx
 Groups_in_Community_Connect_2.xlsx
 node_modules/
 package-lock.json
+
+.DS_STORE

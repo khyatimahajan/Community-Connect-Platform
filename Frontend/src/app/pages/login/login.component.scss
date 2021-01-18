@@ -1,0 +1,34 @@
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url("../../../assets/background.jpg");
+  height: 100%;
+}
+
+.title {
+  font-size: 2em;
+}
+
+.subtitle {
+  margin-top: 0.5em;
+  font-size: 1em;
+}
+
+mat-card {
+  min-width: 400px;
+  padding: 2em;
+  margin: 2em auto;
+  margin-bottom: 10em;
+  text-align: center;
+}
+
+mat-form-field {
+  display: block;
+}
+
+.clickable-link {
+  color: rgb(29, 161, 242);
+  cursor: pointer;
+  text-decoration: underline;
+}
