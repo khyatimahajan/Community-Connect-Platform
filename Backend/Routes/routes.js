@@ -403,4 +403,25 @@ router.put("/change-password", async (req, res) => {
   }
 });
 
+router.get("/feeds/:username", async (req, res) => {
+    let username = req.params.username;
+    if (username != null) {
+      const user = await User.findOne({
+          "username" : username
+      });
+      if (user) {
+        let group = user.group_id;
+        let entireFeeds = await Feeds.find({
+          "visible_to.groups": { $in: group },
+        }).populate("parent_id").populate("comments");
+  
+        res.send(entireFeeds);
+      } else {
+        res.status(404).send({ status: "User Not Found" })
+      }
+    } else {
+      res.status(400).send({ status: "Bad Request" });
+    }
+  });
+
 module.exports = router;
