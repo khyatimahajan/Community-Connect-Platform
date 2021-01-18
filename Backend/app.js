@@ -3,13 +3,11 @@ const _ = require("lodash");
 const bodyParser = require("body-parser");
 var cors = require("cors");
 const { MongoClient } = require("mongodb");
+const mongoose = require('mongoose');
+const User = require("../model/User");
 
-const uri_fake =
-  "mongodb+srv://<username>:<password>@<your-cluster-url>/test?retryWrites=true&w=majority";
+const URI = "mongodb://localhost:27017";
 
-const URI = "mongodb://localhost:27017/test";
-
-const client = new MongoClient(URI);
 // await client.connect();
 
 var app = express();
@@ -22,16 +20,7 @@ app.get("/server/status", (req, res) => {
 });
 
 app.get("/server/test/db", async (req, res) => {
-  try {
-    await client.connect();
-    await listDatabases(client);
-    res.send("Successfull Connected");
-  } catch (e) {
-    console.error(e);
-    res.send("Error!");
-  } finally {
-    client.close();
-  }
+
 });
 
 async function listDatabases(client) {
@@ -52,4 +41,37 @@ app.use(function (req, res, next) {
 
 app.listen(port, () => {
   console.log(`Server started at Port No: ${port}`);
+  mongoose
+  .connect(URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+  })
+  .then(async () => {
+      console.log('Connected to DB');
+      /* New admin creation */
+      let isAdminExist = await User.findOne({ isAdmin: true });
+      if (!isAdminExist) {
+          const hashPassword = await bcrypt.hash('bla123456', saltRounds);
+          new User({
+              EmailID: 'admin@gmail.com',
+              password: hashPassword,
+              isAdmin: true,
+              name: 'admin',
+              user_id: 'admin',
+              group_id: ["Admin"],
+              username: 'admin',
+              bio: 'Hello admin',
+          })
+              .save()
+              .then(() => {
+                  console.log('Admin Created');
+              })
+              .catch((err) => console.log(err));
+      } else {
+          console.log('Admin found: ', isAdminExist);
+      }
+  })
+  .catch((err) => {
+      console.log(err);
+  });
 });

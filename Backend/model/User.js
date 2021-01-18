@@ -1,7 +1,7 @@
-import { Schema, model } from 'mongoose';
+const mongoose = require('mongoose');
 
 // Users model
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
 	user_id: {
 		type: String,
 	},
@@ -50,7 +50,7 @@ const userSchema = new Schema({
 
 // Get user's group members
 userSchema.methods.getUserGroupMembers = async (currentUserID, cb) => {
-	let currentUser = await model('user').findById(currentUserID);
+	let currentUser = await mongoose.model('user').findById(currentUserID);
 	// Get user group
 	let userGroups = currentUser.group_id;
 
@@ -60,10 +60,12 @@ userSchema.methods.getUserGroupMembers = async (currentUserID, cb) => {
 		var feedNotificationProcessed = 0;
 		//find all group member in which user belongs
 		userGroups.forEach(async (userGroup, index, array) => {
-			let group = await model('Group')
+			let group = await mongoose
+				.model('Group')
 				.findOne({ group_name: userGroup });
 			if (group) groups.push(group.group_name);
-			let group_users = await model('user')
+			let group_users = await mongoose
+				.model('user')
 				.find({
 					group_id: { $in: [group.group_id] },
 					user_id: { $ne: currentUser.user_id },
@@ -93,4 +95,4 @@ userSchema.methods.getUserGroupMembers = async (currentUserID, cb) => {
 	}
 };
 
-export default model('user', userSchema);
+module.exports = mongoose.model('user', userSchema);

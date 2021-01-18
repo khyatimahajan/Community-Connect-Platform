@@ -3,4 +3,4 @@ var auth = (req, res, next) => {
     next();
 }
 
-export default{ auth };
+module.exports = { auth };
