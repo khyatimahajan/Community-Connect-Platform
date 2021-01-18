@@ -8,7 +8,7 @@ const Logger = require("./../model/Logger");
 const router = express.Router();
 const validation = require("./../validation");
 const bcrypt = require("bcryptjs");
-const { urlify } = require('./../utils');
+const { urlify } = require("./../utils");
 
 // Get all users
 router.get("/users", async (req, res) => {
@@ -127,8 +127,8 @@ router.get("/feeds", async (req, res) => {
       let group = user.group_id;
       let entireFeeds = await Feeds.find({
         "visible_to.groups": { $in: group },
-      }).populate('parent_id');
-    
+      }).populate("parent_id");
+
       res.send(entireFeeds);
     }
   } else {
@@ -137,127 +137,149 @@ router.get("/feeds", async (req, res) => {
 });
 
 router.post("/feed", async (req, res) => {
-    let user_mentions = [];
-    let post_body_parts = req.body.body.split(' ');
-    post_body_parts.forEach((part) => {
-        if (part.startsWith('@')) {
-            part = part.split('');
-            part.shift();
-            user_mentions.push(part.join('').trim());
-        }
-    });
-
-    const user = await User.findById(req.body.userId);
-    groupUsers = [];
-    groups = user.group_id
-
-    // Create new feed with type 'tweet'
-    let feed = {
-        user_id: user.user_id,
-        body: urlify(req.body.body),
-        created_at: Date.now(),
-        liked_by: [],
-        like_count: 0,
-        retweet_count: 0,
-        reply_count: 0,
-        quote_count: 0,
-        post_type: 'tweet',
-        parent_id: null,
-        conversation_id: null,
-        mentions: [...new Set(user_mentions)],
-        visible_to: { users: groupUsers, groups },
-        image: user.profile_pic ? user.profile_pic : 'null',
-
-        author: user.username,
-        author_image: user.profile_pic,
-        receiver: user.username,
-        author_id: user._id,
-        count: 0,
-        love_count: 0,
-        com_count: 0,
-        love_people: [],
-        retweet_edit_body: '',
-        retweet_edit_count: 0,
-        notification: '',
-    };
-
-    const newFeed = new Feeds(feed);
-    try {
-        // Save to DB
-        let feed = await newFeed.save();
-        feed.conversation_id = feed._id;
-        // Update to feed
-        await feed.save();
-        res.status(201).send("Created New Feed")
-    } catch (err) {
-        let error = new Error('Something went wrong');
-        res.status(400).send(error)
+  let user_mentions = [];
+  let post_body_parts = req.body.body.split(" ");
+  post_body_parts.forEach((part) => {
+    if (part.startsWith("@")) {
+      part = part.split("");
+      part.shift();
+      user_mentions.push(part.join("").trim());
     }
+  });
 
+  const user = await User.findById(req.body.userId);
+  groupUsers = [];
+  groups = user.group_id;
+
+  // Create new feed with type 'tweet'
+  let feed = {
+    user_id: user.user_id,
+    body: urlify(req.body.body),
+    created_at: Date.now(),
+    liked_by: [],
+    like_count: 0,
+    retweet_count: 0,
+    reply_count: 0,
+    quote_count: 0,
+    post_type: "tweet",
+    parent_id: null,
+    conversation_id: null,
+    mentions: [...new Set(user_mentions)],
+    visible_to: { users: groupUsers, groups },
+    image: user.profile_pic ? user.profile_pic : "null",
+
+    author: user.username,
+    author_image: user.profile_pic,
+    receiver: user.username,
+    author_id: user._id,
+    count: 0,
+    love_count: 0,
+    com_count: 0,
+    love_people: [],
+    retweet_edit_body: "",
+    retweet_edit_count: 0,
+    notification: "",
+  };
+
+  const newFeed = new Feeds(feed);
+  try {
+    // Save to DB
+    let feed = await newFeed.save();
+    feed.conversation_id = feed._id;
+    // Update to feed
+    await feed.save();
+    res.status(201).send("Created New Feed");
+  } catch (err) {
+    let error = new Error("Something went wrong");
+    res.status(400).send(error);
+  }
 });
 
 router.post("/retweet", async (req, res) => {
-    let user_mentions = [];
-    let post_body_parts = req.body.body.split(' ');
-    post_body_parts.forEach((part) => {
-        if (part.startsWith('@')) {
-            part = part.split('');
-            part.shift();
-            user_mentions.push(part.join('').trim());
-        }
-    });
+  let user_mentions = [];
+  let post_body_parts = req.body.body.split(" ");
+  post_body_parts.forEach((part) => {
+    if (part.startsWith("@")) {
+      part = part.split("");
+      part.shift();
+      user_mentions.push(part.join("").trim());
+    }
+  });
 
-    const user = await User.findById(req.body.userId);
-    groupUsers = [];
-    groups = user.group_id
-    var parent_id = req.body.parent_id
+  const user = await User.findById(req.body.userId);
+  groupUsers = [];
+  groups = user.group_id;
+  var parent_id = req.body.parent_id;
 
-    // Create new feed with type 'tweet'
-    let feed = {
-        user_id: user.user_id,
-        body: urlify(req.body.body),
-        created_at: Date.now(),
-        liked_by: [],
-        like_count: 0,
-        retweet_count: 0,
-        reply_count: 0,
-        quote_count: 0,
-        post_type: parent_id? 'retweet': 'tweet',
-        parent_id: parent_id? parent_id : null,
-        conversation_id: null,
-        mentions: [...new Set(user_mentions)],
-        visible_to: { users: groupUsers, groups },
-        image: req.body.image ? req.body.image : 'null',
+  // Create new feed with type 'tweet'
+  let feed = {
+    user_id: user.user_id,
+    body: urlify(req.body.body),
+    created_at: Date.now(),
+    liked_by: [],
+    like_count: 0,
+    retweet_count: 0,
+    reply_count: 0,
+    quote_count: 0,
+    post_type: parent_id ? "retweet" : "tweet",
+    parent_id: parent_id ? parent_id : null,
+    conversation_id: null,
+    mentions: [...new Set(user_mentions)],
+    visible_to: { users: groupUsers, groups },
+    image: req.body.image ? req.body.image : "null",
 
-        author: user.username,
-        author_image: user.profile_pic,
-        receiver: user.username,
-        author_id: user._id,
-        count: 0,
-        love_count: 0,
-        com_count: 0,
-        love_people: [],
-        retweet_edit_body: '',
-        retweet_edit_count: 0,
-        notification: '',
-    };
+    author: user.username,
+    author_image: user.profile_pic,
+    receiver: user.username,
+    author_id: user._id,
+    count: 0,
+    love_count: 0,
+    com_count: 0,
+    love_people: [],
+    retweet_edit_body: "",
+    retweet_edit_count: 0,
+    notification: "",
+  };
 
-    const newFeed = new Feeds(feed);
-    var oldFeed = await Feeds.findById(parent_id)
-    try {
-        // Save to DB
-        let feed = await newFeed.save();
-        feed.conversation_id = feed._id;
+  const newFeed = new Feeds(feed);
+  var oldFeed = await Feeds.findById(parent_id);
+  try {
+    // Save to DB
+    let feed = await newFeed.save();
+    feed.conversation_id = feed._id;
 
-        oldFeed.retweet_count = oldFeed.retweet_count + 1
-        // Update to feed
-        await feed.save();
-        await oldFeed.save();
-        res.status(201).send("Created New Feed")
-    } catch (err) {
-        let error = new Error('Something went wrong');
-        res.status(400).send(error)
+    oldFeed.retweet_count = oldFeed.retweet_count + 1;
+    // Update to feed
+    await feed.save();
+    await oldFeed.save();
+    res.status(201).send("Created New Feed");
+  } catch (err) {
+    let error = new Error("Something went wrong");
+    res.status(400).send(error);
+  }
+});
+
+router.put("/like", async (req, res) => {
+  const user = await User.findById(req.body.userId);
+  const feed = await Feeds.findById(req.body.feedId);
+
+  var username = user.username;
+  var liked_by = feed.liked_by;
+  try {
+    if (liked_by.indexOf(username) >= 0) {
+      feed.like_count = feed.like_count - 1;
+      var index = liked_by.indexOf(username);
+      feed.liked_by.splice(index, 1);
+    } else {
+      feed.like_count = feed.like_count + 1;
+      feed.liked_by.push(username);
     }
 
+    await feed.save();
+    res.status(200).send("Liked Feed");
+  } catch (err) {
+    let error = new Error("Something went wrong");
+    res.status(400).send(error);
+  }
 });
 module.exports = router;
