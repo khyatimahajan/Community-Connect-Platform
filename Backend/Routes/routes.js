@@ -32,18 +32,17 @@ router.post("/login", async (req, res) => {
       if (!validPass) {
         res.status(401).send({ status: "Unauthorized" });
       } else {
-
         var response = {
-            "group_id": user.group_id,
-            "isAdmin": user.isAdmin,
-            "id": user._id,
-            "name": user.name,
-            "user_id": user.user_id,
-            "EmailID": user.EmailID,
-            "username": user.username,
-            "bio": user.bio,
-            "profile_pic": user.profile_pic,
-        }
+          group_id: user.group_id,
+          isAdmin: user.isAdmin,
+          id: user._id,
+          name: user.name,
+          user_id: user.user_id,
+          EmailID: user.EmailID,
+          username: user.username,
+          bio: user.bio,
+          profile_pic: user.profile_pic,
+        };
         res.send(response);
 
         //Logger for user login time
@@ -68,31 +67,71 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/profile", async (req, res) => {
-    let userId = req.headers.id
-    if (userId != null) {
-        const user = await User.findById(userId);
-        if (user) {
-            let notificationCount = await Notifications.find({
-                outconn_id: user._id,
-                seen: false,
-            }).countDocuments();
+  let userId = req.headers.id;
+  if (userId != null) {
+    const user = await User.findById(userId);
+    if (user) {
+      let notificationCount = await Notifications.find({
+        outconn_id: user._id,
+        seen: false,
+      }).countDocuments();
 
-            var response = {
-                "group_id": user.group_id,
-                "isAdmin": user.isAdmin,
-                "id": user._id,
-                "name": user.name,
-                "user_id": user.user_id,
-                "EmailID": user.EmailID,
-                "username": user.username,
-                "bio": user.bio,
-                "notification_count": notificationCount || 0,
-                "profile_pic": user.profile_pic
-            }
-            res.send(response)
-        }
-    } else {
-        res.status(404).send({ status: "Bad Request" });
+      var response = {
+        group_id: user.group_id,
+        isAdmin: user.isAdmin,
+        id: user._id,
+        name: user.name,
+        user_id: user.user_id,
+        EmailID: user.EmailID,
+        username: user.username,
+        bio: user.bio,
+        notification_count: notificationCount || 0,
+        profile_pic: user.profile_pic,
+      };
+      res.send(response);
     }
+  } else {
+    res.status(404).send({ status: "Bad Request" });
+  }
+});
+
+router.post("/logout", async (req, res) => {
+  let userId = req.headers.id;
+  if (userId != null) {
+    let log = await Logger.findOne({ "user.id": req.user._id }).sort([
+      ["loggedInAt", -1],
+    ]);
+
+    if (log) {
+      res.status(201).send("Logged Out");
+
+      log.loggedOutAt.serverTime = new Date();
+      log.loggedOutAt.userTime = new Date().toLocaleString("en-US", {
+        timeZone: req.body.timezone || "America/New_York",
+      });
+      log.save();
+    } else {
+      res.status(400).send("Could not log");
+    }
+  } else {
+    res.status(400).send({ status: "Bad Request" });
+  }
+});
+
+router.get("/feeds", async (req, res) => {
+  let userId = req.headers.id;
+  if (userId != null) {
+    const user = await User.findById(userId);
+    if (user) {
+      let group = user.group_id;
+      let entireFeeds = await Feeds.find({
+        "visible_to.groups": { $in: group },
+      }).populate('parent_id');
+    
+      res.send(entireFeeds);
+    }
+  } else {
+    res.status(404).send({ status: "Bad Request" });
+  }
 });
 module.exports = router;

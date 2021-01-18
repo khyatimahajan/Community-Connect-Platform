@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Feeds = require('../../model/Feeds');
 
 // Feeds model
 const feedSchema = new mongoose.Schema({
@@ -38,6 +39,9 @@ const feedSchema = new mongoose.Schema({
 	parent_id: {
 		type: mongoose.Types.ObjectId,
 		ref: 'Feeds',
+	},
+	parent_post: {
+		type: Object
 	},
 	conversation_id: {
 		type: mongoose.Types.ObjectId,
