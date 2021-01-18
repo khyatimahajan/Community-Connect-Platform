@@ -335,7 +335,7 @@ router.put("/comment", async (req, res) => {
     // Save to DB
     let feed = await newFeed.save();
     feed.conversation_id = feed._id;
-    oldFeed.comments.push(feed._id)
+    oldFeed.comments.push(feed._id);
     oldFeed.reply_count = oldFeed.reply_count + 1;
     // Update to feed
     await feed.save();
@@ -344,6 +344,32 @@ router.put("/comment", async (req, res) => {
   } catch (err) {
     let error = new Error("Something went wrong");
     res.status(400).send(error);
+  }
+});
+
+router.get("/connections", async (req, res) => {
+  const userId = req.header('userId');
+  if (userId != null) {
+    const user = await User.findById(userId);
+    if (user) {
+      let group = user.group_id;
+      
+      const users = await User.find({
+          "group_id": { $in: group}
+      })
+
+      var response = []
+      users.forEach(user => {
+          response.push({
+            'username' : user.username,
+            'profile_pic': user.profile_pic
+        })
+      })
+
+      res.send(response);
+    }
+  } else {
+    res.status(400).send({ status: "Bad Request" });
   }
 });
 module.exports = router;
