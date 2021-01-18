@@ -127,7 +127,7 @@ router.get("/feeds", async (req, res) => {
       let group = user.group_id;
       let entireFeeds = await Feeds.find({
         "visible_to.groups": { $in: group },
-      }).populate("parent_id");
+      }).populate("parent_id").populate("comments");
 
       res.send(entireFeeds);
     }
