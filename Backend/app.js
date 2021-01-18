@@ -2,9 +2,10 @@ const express = require("express");
 const _ = require("lodash");
 const bodyParser = require("body-parser");
 var cors = require("cors");
-const { mongoose } = require('./dbconfig/mongoose');
 const User = require("../model/User");
 const validation = require("./../validation");
+const { MongoClient } = require("mongodb");
+const uri = "mongodb://localhost:27017/test";
 
 var app = express();
 app.use(bodyParser.json());
@@ -28,25 +29,52 @@ app.listen(port, () => {
   console.log(`Server started at Port No: ${port}`);
 });
 
-app.post("/login", async function (req, res) {
+app.post("/login", function (req, res) {
   console.log("postLogin in controllers/admin");
   const { email, password } = req.body;
-  var validationResult = { error : false }
-//   const validationResult = validation.loginValidation(req.body);
+  var validationResult = { error: false };
+  //   const validationResult = validation.loginValidation(req.body);
   if (validationResult.error) {
     res.status(401).send({ status: "Unauthorized" });
   } else {
-    let user = await User.findOne({ EmailID: email });
-    if (!user) {
-      res.status(403).send({ status: "Forbidden" });
-    } else {
-      // compare password if equal or not
-      let isMatch = await bcrypt.compare(password, user.password);
-      if (isMatch) {
-        res.send(user);
-      } else {
-        res.status(401).send({ status: "Unauthorized" });
+    User.findOne({ EmailID: email }).then(
+      (model) => {
+        if (!model) {
+          res.status(403).send({ status: "Forbidden" });
+        } else {
+          // compare password if equal or not
+          let isMatch = bcrypt.compare(password, user.password);
+          if (isMatch) {
+            res.send(user);
+          } else {
+            res.status(401).send({ status: "Unauthorized" });
+          }
+        }
+      },
+      (error) => {
+        res.status(500).send("Internal Server Error");
       }
-    }
+    );
   }
+});
+
+app.get("/server/test", async (req, res) => {
+  const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  try {
+    // Connect to the MongoDB cluster
+    await client.connect();
+
+    // Make the appropriate DB calls
+    databasesList = await client.db().admin().listDatabases();
+    console.log("Databases:");
+    databasesList.databases.forEach((db) => console.log(` - ${db.name}`));
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await client.close();
+  }
+  res.status(200).send("Server OK");
 });
