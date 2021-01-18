@@ -1,14 +1,13 @@
 const express = require("express");
 const User = require("./../model/User");
-const Feeds = require('./../model/Feeds');
-const Comments = require('./../model/Comments');
-const Notifications = require('./../model/Notifications');
-const Group = require('./../model/Group');
-const Logger = require('./../model/Logger');
+const Feeds = require("./../model/Feeds");
+const Comments = require("./../model/Comments");
+const Notifications = require("./../model/Notifications");
+const Group = require("./../model/Group");
+const Logger = require("./../model/Logger");
 const router = express.Router();
 const validation = require("./../validation");
-const bcrypt = require('bcryptjs');
-
+const bcrypt = require("bcryptjs");
 
 // Get all users
 router.get("/users", async (req, res) => {
@@ -16,7 +15,7 @@ router.get("/users", async (req, res) => {
   res.send(users);
 });
 
-router.get("/login", async (req, res) => {
+router.post("/login", async (req, res) => {
   const { error } = validation.loginValidation(req.body);
   if (error) {
     res.status(404).send({ status: "Bad Request" });
@@ -33,6 +32,20 @@ router.get("/login", async (req, res) => {
       if (!validPass) {
         res.status(401).send({ status: "Unauthorized" });
       } else {
+
+        var response = {
+            "group_id": user.group_id,
+            "isAdmin": user.isAdmin,
+            "id": user._id,
+            "name": user.name,
+            "user_id": user.user_id,
+            "EmailID": user.EmailID,
+            "username": user.username,
+            "bio": user.bio,
+            "profile_pic": user.profile_pic,
+        }
+        res.send(response);
+
         //Logger for user login time
         let log = new Logger({
           user: {
@@ -49,21 +62,37 @@ router.get("/login", async (req, res) => {
         });
         // Save it to DB
         log.save();
-
-        currentUserData = {
-            username: user.username,
-            name: user.name,
-            bio: user.bio,
-            location: user.location,
-            connection: user.connection,
-            image_src: user.profile_pic,
-            user_id: user.user_id,
-        };
-
-        res.send(currentUserData)
       }
     }
   }
 });
 
+router.get("/profile", async (req, res) => {
+    let userId = req.headers.id
+    if (userId != null) {
+        const user = await User.findById(userId);
+        if (user) {
+            let notificationCount = await Notifications.find({
+                outconn_id: user._id,
+                seen: false,
+            }).countDocuments();
+
+            var response = {
+                "group_id": user.group_id,
+                "isAdmin": user.isAdmin,
+                "id": user._id,
+                "name": user.name,
+                "user_id": user.user_id,
+                "EmailID": user.EmailID,
+                "username": user.username,
+                "bio": user.bio,
+                "notification_count": notificationCount || 0,
+                "profile_pic": user.profile_pic
+            }
+            res.send(response)
+        }
+    } else {
+        res.status(404).send({ status: "Bad Request" });
+    }
+});
 module.exports = router;
