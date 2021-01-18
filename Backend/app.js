@@ -2,15 +2,13 @@ const express = require("express");
 const _ = require("lodash");
 const bodyParser = require("body-parser");
 var cors = require("cors");
-const User = require("../model/User");
-const validation = require("./../validation");
 const uri = "mongodb://localhost:27017/test";
 const mongoose = require("mongoose");
 const port = 3000;
 const routes = require("./Routes/routes");
 
 mongoose
-  .connect("mongodb://localhost:27017/test", {
+  .connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
