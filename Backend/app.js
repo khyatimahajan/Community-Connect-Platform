@@ -3,8 +3,9 @@ const _ = require("lodash");
 const bodyParser = require("body-parser");
 var cors = require("cors");
 const { MongoClient } = require("mongodb");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const User = require("../model/User");
+const validation = require("./../validation");
 
 const URI = "mongodb://localhost:27017";
 
@@ -17,10 +18,6 @@ const port = 3000;
 
 app.get("/server/status", (req, res) => {
   res.status(200).send("Server OK");
-});
-
-app.get("/server/test/db", async (req, res) => {
-
 });
 
 async function listDatabases(client) {
@@ -42,36 +39,58 @@ app.use(function (req, res, next) {
 app.listen(port, () => {
   console.log(`Server started at Port No: ${port}`);
   mongoose
-  .connect(URI, {
+    .connect(URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-  })
-  .then(async () => {
-      console.log('Connected to DB');
+    })
+    .then(async () => {
+      console.log("Connected to DB");
       /* New admin creation */
       let isAdminExist = await User.findOne({ isAdmin: true });
       if (!isAdminExist) {
-          const hashPassword = await bcrypt.hash('bla123456', saltRounds);
-          new User({
-              EmailID: 'admin@gmail.com',
-              password: hashPassword,
-              isAdmin: true,
-              name: 'admin',
-              user_id: 'admin',
-              group_id: ["Admin"],
-              username: 'admin',
-              bio: 'Hello admin',
+        const hashPassword = await bcrypt.hash("bla123456", saltRounds);
+        new User({
+          EmailID: "admin@gmail.com",
+          password: hashPassword,
+          isAdmin: true,
+          name: "admin",
+          user_id: "admin",
+          group_id: ["Admin"],
+          username: "admin",
+          bio: "Hello admin",
+        })
+          .save()
+          .then(() => {
+            console.log("Admin Created");
           })
-              .save()
-              .then(() => {
-                  console.log('Admin Created');
-              })
-              .catch((err) => console.log(err));
+          .catch((err) => console.log(err));
       } else {
-          console.log('Admin found: ', isAdminExist);
+        console.log("Admin found: ", isAdminExist);
       }
-  })
-  .catch((err) => {
+    })
+    .catch((err) => {
       console.log(err);
-  });
+    });
+});
+
+route.post("/login", async function (req, res) {
+  console.log("postLogin in controllers/admin");
+  const { email, password } = req.body;
+  const validationResult = validation.loginValidation(req.body);
+  if (validationResult.error) {
+    res.status(401).send({ status: "Unauthorized" });
+  } else {
+    let user = await User.findOne({ EmailID: email });
+    if (!user) {
+      res.status(403).send({ status: "Forbidden" });
+    } else {
+      // compare password if equal or not
+      let isMatch = await bcrypt.compare(password, user.password);
+      if (isMatch) {
+        res.send(user);
+      } else {
+        res.status(401).send({ status: "Unauthorized" });
+      }
+    }
+  }
 });
