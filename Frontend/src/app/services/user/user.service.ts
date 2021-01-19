@@ -3,6 +3,7 @@ import {Observable, of} from 'rxjs';
 import {UserProfile} from '../../model/UserProfile';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {UserProfileShortened} from '../../model/UserProfileShortened';
+import { Feed } from 'src/app/model/Feed';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,11 @@ export class UserService {
   getConnections(userId: string): Observable<Array<UserProfileShortened>> {
     const headers = { userId };
     return this.http.get<any>('http://' + this.link + '/connections', { headers });
+  }
+
+  getFeeds(id: string): Observable<Array<Feed>> {
+    const headers = { id };
+    return this.http.get<any>('http://' + this.link + '/feeds', { headers });
   }
 
 

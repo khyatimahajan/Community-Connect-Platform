@@ -18,8 +18,10 @@
   <div class="feeds">
     <app-feed-header></app-feed-header>
     <div class="feeds-posts">
+      <div style="margin-top: 1em;">
         <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
-        <app-feed-item *ngFor="let item of feedList; let i = index"></app-feed-item>
+        <app-feed-item *ngFor="let item of feedList; let i = index" [feed]="item"></app-feed-item>
+      </div>
     </div>
   </div>
   <div class="connections">
@@ -31,7 +33,7 @@
           class="connections-item"
         >
           <img [src]="user.profile_pic" alt="Image Source" class="icon-image">
-          <div style="margin-left: 1.5em;">@{{ user.username }}</div>
+          <div style="margin-left: 1.5em;">{{ user.username }}</div>
           <mat-divider></mat-divider>
         </mat-list-item>
       </mat-list>

@@ -1,10 +1,14 @@
 <div class="tweet-container">
   <mat-card class="tweet-card">
     <div class="tweet-info">
-      <div class="profile-pic">Profile Pic</div>
+      <div class="profile-pic">
+        <img *ngIf="feed.profile_pic" [src]="feed.profile_pic" alt="Image Source" class="icon-image">
+        <mat-icon *ngIf="!feed.profile_pic">face</mat-icon>
+      </div>
       <div class="tweet">
-        <div class="text">Tweet text</div>
-        <div class="image">Tweet image</div>
+        <div class="name">{{feed.username}}</div>
+        <div class="text">{{feed.tweet.body}}</div>
+        <img class="image" *ngIf="feed.tweet.image != null" [src]="feed.tweet.image" alt="Image Source">
       </div>
     </div>
 
@@ -17,7 +21,7 @@
         >
           <mat-icon>add_comment</mat-icon>
         </button>
-        <div>10</div>
+        <div>{{feed.tweet.reply_count}}</div>
       </div>
       <div class="action-button repost">
         <button
@@ -27,7 +31,7 @@
         >
           <mat-icon>repeat</mat-icon>
         </button>
-        <div>10</div>
+        <div>{{feed.tweet.retweet_count + feed.tweet.quote_count}}</div>
       </div>
       <div class="action-button like">
         <button
@@ -37,7 +41,7 @@
         >
           <mat-icon>favorite_border</mat-icon>
         </button>
-        <div>10</div>
+        <div>{{feed.tweet.like_count}}</div>
       </div>
     </div>
   </mat-card>
