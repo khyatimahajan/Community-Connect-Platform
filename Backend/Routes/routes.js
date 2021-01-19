@@ -121,7 +121,7 @@ router.post("/logout", async (req, res) => {
 
 router.get("/feeds", async (req, res) => {
   let userId = req.headers.id;
-  let filters = '_id parent_id user_id body created_at like_count retweet_count reply_count quote_count post_type image';
+  let filters = '_id parent_id user_id body created_at like_count retweet_count reply_count quote_count post_type image liked_by';
   if (userId != null) {
     const user = await User.findById(userId);
     if (user) {
@@ -135,7 +135,7 @@ router.get("/feeds", async (req, res) => {
       var response = [];
       entireFeeds.forEach(f => {
         response.push({
-          "tweet" : f, "profile_pic": null, "username": null
+          "tweet" : f, "profile_pic": null, "username": null, "is_liked": false,
         })
       })
 
@@ -146,6 +146,9 @@ router.get("/feeds", async (req, res) => {
           if (feed.tweet.user_id === tempuser.user_id) {
             feed.profile_pic = tempuser.profile_pic;
             feed.username = tempuser.username;
+            if (tempuser.user_id in feed.tweet.liked_by) {
+              feed.is_liked = true;
+            }
           }
         }
       }
