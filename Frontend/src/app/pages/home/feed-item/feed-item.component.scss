@@ -1,9 +1,70 @@
 .tweet-card {
-    box-shadow: rgba(0, 0, 0, 0.50) 0px 3px 8px;
-    padding-top: 4em;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 8px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+.tweet-card:hover {
+  background-color: rgb(247, 247, 247);
+  cursor: pointer;
+}
+
+.tweet-info {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  display: flex;
+  .profile-pic {
+    min-width: 60px;
+    min-height: 60px;
+    margin-left: 1em;
+    margin-right: 2em;
+  }
+  .tweet {
+    flex: 1;
+    margin-right: 2em;
+    display: block;
+    .text {
+
+    }
+    .image {
+        margin-top: 1em;
+    }
+  }
 }
 
 .actions {
-    display: flex;
-    justify-content: space-around;
+  display: flex;
+  justify-content: space-around;
+  .action-button {
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+  }
+  .repost {
+    color: rgb(0, 64, 95);
+  }
+  .like {
+    color: rgb(0, 64, 95);
+  }
+  .reply {
+    color: rgb(0, 64, 95);
+  }
+  .repost:hover {
+    color: rgb(73, 183, 97);
+    .repost-button {
+        background-color: rgb(231, 241, 233);
+    }
+  }
+  .like:hover {
+    color: rgb(204, 38, 86);
+    .like-button {
+        background-color: rgb(243, 228, 232);
+    }
+  }
+  .reply:hover {
+    color: rgb(35, 151, 234);
+    .reply-button {
+        background-color: rgb(230, 238, 246);
+    }
+  }
 }

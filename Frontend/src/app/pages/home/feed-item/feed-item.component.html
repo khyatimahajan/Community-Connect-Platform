@@ -1,13 +1,44 @@
 <div class="tweet-container">
-
   <mat-card class="tweet-card">
-    <div>Tweet #</div>
+    <div class="tweet-info">
+      <div class="profile-pic">Profile Pic</div>
+      <div class="tweet">
+        <div class="text">Tweet text</div>
+        <div class="image">Tweet image</div>
+      </div>
+    </div>
 
     <div class="actions">
-      <span class="material-icons"> add_comment </span>
-      <span class="material-icons"> repeat </span>
-      <div>
-      <span class="material-icons"> favorite_border </span>  1</div>
+      <div class="action-button reply">
+        <button
+          mat-icon-button
+          class="reply-button"
+          aria-label="Example icon button with a home icon"
+        >
+          <mat-icon>add_comment</mat-icon>
+        </button>
+        <div>10</div>
+      </div>
+      <div class="action-button repost">
+        <button
+          mat-icon-button
+          class="repost-button"
+          aria-label="Example icon button with a home icon"
+        >
+          <mat-icon>repeat</mat-icon>
+        </button>
+        <div>10</div>
+      </div>
+      <div class="action-button like">
+        <button
+          mat-icon-button
+          class="like-button"
+          aria-label="Example icon button with a home icon"
+        >
+          <mat-icon>favorite_border</mat-icon>
+        </button>
+        <div>10</div>
+      </div>
     </div>
   </mat-card>
 </div>
