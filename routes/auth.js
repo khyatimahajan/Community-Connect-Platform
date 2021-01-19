@@ -86,6 +86,7 @@ async function getAllPosts(userID) {
 	for (var curPost = 0; curPost < allPosts.length; curPost++) {
 		var feedComments = await allPosts[curPost]['_id'];
 		allPosts[curPost].comments = feedComments;
+		console.log(feedComments)
 	}
 
 	allPosts = allPosts.concat(entireFeeds);

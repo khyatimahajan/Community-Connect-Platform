@@ -1,10 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-
-html, body {
-  margin: 0;
-  height: 100%;
-}
-
 h1 {
   text-align: center;
 }
@@ -19,23 +13,29 @@ h1 {
 // have to load a single css file for Angular Material in your app.
 
 // Fonts
+@import url("https://fonts.googleapis.com/css?family=Montserrat:300,400,500");
 @import 'https://fonts.googleapis.com/css?family=Material+Icons';
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
-     
+   
+html, body {
+  margin: 0;
+  height: 100%;
+  font-family: 'Montserrat', sans-serif;
+}
+
 $fontConfig: (
-  display-4: mat-typography-level(112px, 112px, 300, 'Roboto', -0.0134em),
-  display-3: mat-typography-level(56px, 56px, 400, 'Roboto', -0.0089em),
-  display-2: mat-typography-level(45px, 48px, 400, 'Roboto', 0.0000em),
-  display-1: mat-typography-level(34px, 40px, 400, 'Roboto', 0.0074em),
-  headline: mat-typography-level(24px, 32px, 400, 'Roboto', 0.0000em),
-  title: mat-typography-level(20px, 32px, 500, 'Roboto', 0.0075em),
-  subheading-2: mat-typography-level(16px, 28px, 400, 'Roboto', 0.0094em),
-  subheading-1: mat-typography-level(15px, 24px, 500, 'Roboto', 0.0067em),
-  body-2: mat-typography-level(14px, 24px, 500, 'Roboto', 0.0179em),
-  body-1: mat-typography-level(14px, 20px, 400, 'Roboto', 0.0179em),
-  button: mat-typography-level(14px, 14px, 500, 'Roboto', 0.0893em),
-  caption: mat-typography-level(12px, 20px, 400, 'Roboto', 0.0333em),
-  input: mat-typography-level(inherit, 1.125, 400, 'Roboto', 1.5px)
+  display-4: mat-typography-level(112px, 112px, 300, 'Montserrat', -0.0134em),
+  display-3: mat-typography-level(56px, 56px, 400, 'Montserrat', -0.0089em),
+  display-2: mat-typography-level(45px, 48px, 400, 'Montserrat', 0.0000em),
+  display-1: mat-typography-level(34px, 40px, 400, 'Montserrat', 0.0074em),
+  headline: mat-typography-level(24px, 32px, 400, 'Montserrat', 0.0000em),
+  title: mat-typography-level(20px, 32px, 500, 'Montserrat', 0.0075em),
+  subheading-2: mat-typography-level(16px, 28px, 400, 'Montserrat', 0.0094em),
+  subheading-1: mat-typography-level(15px, 24px, 500, 'Montserrat', 0.0067em),
+  body-2: mat-typography-level(14px, 24px, 500, 'Montserrat', 0.0179em),
+  body-1: mat-typography-level(14px, 20px, 400, 'Montserrat', 0.0179em),
+  button: mat-typography-level(14px, 14px, 500, 'Montserrat', 0.0893em),
+  caption: mat-typography-level(12px, 20px, 400, 'Montserrat', 0.0333em),
+  input: mat-typography-level(inherit, 1.125, 400, 'Montserrat', 1.5px)
 );
 
 // Foreground Elements
@@ -252,7 +252,7 @@ $altTheme: mat-dark-theme($theme-primary, $theme-accent, $theme-warn);
   font-size: 24px;
   font-family: 'Material Icons', 'Material Icons';  
   .mat-badge-content {
-    font-family: 'Roboto';
+    font-family: 'Montserrat';
   }
 }
 

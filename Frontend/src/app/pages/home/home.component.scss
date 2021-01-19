@@ -1,0 +1,76 @@
+.homepage {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.sidebar {
+  flex: 1;
+  margin-top: 2em;
+  margin-left: 1em;
+  margin-right: 1em;
+  margin-bottom: 4em;
+  display: flex;
+  flex-direction: column;
+
+  .sidebar-item {
+    background-color: rgb(237, 245, 253);
+    color: black;
+    padding-top:0.5em;
+    padding-bottom:0.5em;
+    cursor: pointer;
+    .text {
+        margin-left: 1em;
+    }
+    font-size: 1.25em;
+  }
+  .sidebar-item:hover {
+    background-color: rgb(135, 201, 245, 0.65);
+    color: black;
+  }
+  .selected {
+    background-color: rgb(74, 160, 235);
+      color: white;
+  }
+  .selected:hover {
+    background-color: rgb(74, 160, 235);
+    color: white;
+  }
+}
+
+.sidebar-container {
+  flex: 1;
+}
+
+.feeds {
+  background-color: green;
+  flex: 3;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  flex-direction: column;
+  .feeds-header {
+    flex: 1.5;
+    background-color: red;
+  }
+  .feeds-posts {
+    flex: 4;
+    background-color: pink;
+  }
+}
+
+.connections {
+  flex: 1;
+  .title {
+      margin-left: 0.5em;
+      font-size: x-large ;
+  }
+  .connections-item {
+    cursor: pointer;
+  }
+
+  .connections-item:hover {
+    background-color: rgb(164, 207, 245, 0.3);
+  }
+}
