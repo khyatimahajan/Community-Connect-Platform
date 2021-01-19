@@ -13,19 +13,19 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MatToolbarModule } from '@angular/material/toolbar'
-import { MatMenuModule } from '@angular/material/menu'
-import { MatIconModule } from '@angular/material/icon'
-import { MatButtonModule } from '@angular/material/button'
-import { MatTableModule } from '@angular/material/table'
-import { MatDividerModule } from '@angular/material/divider'
-import { MatListModule } from '@angular/material/list'
-import { MatProgressBarModule } from '@angular/material/progress-bar'
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
-import { MatInputModule } from '@angular/material/input'
-import { MatCardModule } from '@angular/material/card'
-import { MatSlideToggleModule } from '@angular/material/slide-toggle'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { SidebarComponent } from './pages/home/sidebar/sidebar.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -33,7 +33,7 @@ import { ConnectionsComponent } from './pages/home/connections/connections.compo
 import { FeedHeaderComponent } from './pages/home/feed-header/feed-header.component';
 import { FeedListComponent } from './pages/home/feed-list/feed-list.component';
 import { NotificationComponent } from './pages/home/notification/notification.component';
-import { ProfileComponent } from './pages/home/profile/profile.component'
+import { ProfileComponent } from './pages/home/profile/profile.component';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FeedItemComponent } from './pages/home/feed-item/feed-item.component';
@@ -54,7 +54,7 @@ import { FeedItemComponent } from './pages/home/feed-item/feed-item.component';
     FeedItemComponent
   ],
   imports: [
-    BrowserModule, 
+    BrowserModule,
     HttpClientModule,
     AppRoutingModule,
     FlexLayoutModule,

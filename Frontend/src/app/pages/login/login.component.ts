@@ -1,4 +1,3 @@
-import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,8 +17,7 @@ export class LoginComponent implements OnInit {
   private formSubmitAttempt: boolean;
   private signUpFormSubmitAttempt: boolean;
 
-  private returnUrl: string;
-  showLogin: boolean = true;
+  showLogin = true;
 
   constructor(
     private fb: FormBuilder,
@@ -27,11 +25,11 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private authService: AuthService
   ) {
-    
+
   }
 
   toggleLogin() {
-    this.showLogin = !this.showLogin
+    this.showLogin = !this.showLogin;
   }
 
   async ngOnInit() {
@@ -42,7 +40,7 @@ export class LoginComponent implements OnInit {
 
     this.signupForm = this.fb.group({
       accessCode: ['', Validators.required]
-    })
+    });
   }
 
   onSubmit() {
@@ -53,8 +51,8 @@ export class LoginComponent implements OnInit {
         const username = this.form.get('username').value;
         const password = this.form.get('password').value;
         this.authService.login(username, password).subscribe(response => {
-          if (response['username'] == null) {
-            this.loginInvalid = true
+          if (response.username == null) {
+            this.loginInvalid = true;
           } else {
             this.router.navigate(['/home']);
           }
@@ -75,9 +73,9 @@ export class LoginComponent implements OnInit {
         const code = this.form.get('accessCode').value;
         this.authService.signup(code).subscribe(response => {
           if (response == null) {
-            this.loginCodeInvalid = true
+            this.loginCodeInvalid = true;
           } else {
-            // TODO --> GO TO NEXT STEP OF SIGN UP 
+            // TODO --> GO TO NEXT STEP OF SIGN UP
           }
         });
       } catch (err) {
