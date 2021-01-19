@@ -20,6 +20,7 @@ import { MatButtonModule } from '@angular/material/button'
 import { MatTableModule } from '@angular/material/table'
 import { MatDividerModule } from '@angular/material/divider'
 import { MatListModule } from '@angular/material/list'
+import { MatProgressBarModule } from '@angular/material/progress-bar'
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatInputModule } from '@angular/material/input'
@@ -35,6 +36,7 @@ import { NotificationComponent } from './pages/home/notification/notification.co
 import { ProfileComponent } from './pages/home/profile/profile.component'
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FeedItemComponent } from './pages/home/feed-item/feed-item.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     FeedHeaderComponent,
     FeedListComponent,
     NotificationComponent,
-    ProfileComponent
+    ProfileComponent,
+    FeedItemComponent
   ],
   imports: [
     BrowserModule, 
@@ -71,6 +74,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     MatSidenavModule,
     MatListModule,
     FontAwesomeModule,
+    MatProgressBarModule,
     MatProgressSpinnerModule
   ],
   providers: [],

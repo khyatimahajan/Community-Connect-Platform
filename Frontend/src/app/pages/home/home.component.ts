@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit {
   sidebarIconList = [faHome, faSmileBeam, faBell, faSignOutAlt]
   sidebarList = ["Home", "Profile", "Notifications", "Logout"]
   connectionList = ["Capricorn", "Cancer", "Virgo"]
+  feedList = ["", "", ""]
   ngOnInit(): void {
   }
 

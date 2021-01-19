@@ -16,7 +16,10 @@
   </div>
   <div class="feeds">
     <app-feed-header></app-feed-header>
-    <div class="feeds-posts">posts</div>
+    <div class="feeds-posts">
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        <app-feed-item *ngFor="let item of feedList; let i = index"></app-feed-item>
+    </div>
   </div>
   <div class="connections">
     <div class="sidebar">
