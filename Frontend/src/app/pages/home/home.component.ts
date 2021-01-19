@@ -5,6 +5,7 @@ import {UserProfile} from '../../model/UserProfile';
 import {DomSanitizer} from '@angular/platform-browser';
 import {UserService} from '../../services/user/user.service';
 import {UserProfileShortened} from '../../model/UserProfileShortened';
+import { Feed } from 'src/app/model/Feed';
 
 @Component({
     selector: 'app-home',
@@ -25,8 +26,8 @@ export class HomeComponent implements OnInit {
     sidebarIconList = ['home', 'face', 'notifications', 'login'];
     sidebarList = ['Home', 'Profile', 'Notifications', 'Logout'];
     connectionList: Array<UserProfileShortened> = [];
-    feedList = ['', '', ''];
-    isLoading = false;
+    feedList: Array<Feed> = [];
+    isLoading = true;
     imageSource = null;
 
     ngOnInit(): void {
@@ -40,6 +41,13 @@ export class HomeComponent implements OnInit {
             this.userService.getConnections(this.currentUser.id).subscribe(response => {
                 if (response) {
                     this.connectionList = response;
+                }
+            });
+
+            this.userService.getFeeds(this.currentUser.id).subscribe(response => {
+                if (response) {
+                    this.isLoading = false;
+                    this.feedList = response;
                 }
             });
         }
