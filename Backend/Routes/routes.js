@@ -271,7 +271,7 @@ router.post("/repost", async (req, res) => {
   groups = user.group_id;
   var parent_id = req.body.parent_id;
 
-  // Create new feed with type 'tweet'
+  // Create new feed
   let feed = {
     user_id: user.user_id,
     body: req.body.body? urlify(req.body.body) : null,
@@ -281,7 +281,7 @@ router.post("/repost", async (req, res) => {
     retweet_count: 0,
     reply_count: 0,
     quote_count: 0,
-    post_type: parent_id && req.body.body ? "quote" : parent_id? "retweet" : "tweet",
+    post_type: parent_id && req.body.body ? "quote" : parent_id? "retweet" : "error",
     parent_id: parent_id ? parent_id : null,
     conversation_id: null,
     mentions: [...new Set(user_mentions)],
@@ -300,25 +300,28 @@ router.post("/repost", async (req, res) => {
     retweet_edit_count: 0,
     notification: "",
   };
-
-  const newFeed = new Feeds(feed);
-  var oldFeed = await Feeds.findById(parent_id);
-  try {
-    // Save to DB
-    let feed = await newFeed.save();
-    feed.conversation_id = oldFeed.conversation_id;
-    if (req.body.body) {
-        oldFeed.quote_count = oldFeed.quote_count + 1;
-    } else {
-        oldFeed.retweet_count = oldFeed.retweet_count + 1;
-    }
-    // Update to feed
-    await feed.save();
-    await oldFeed.save();
-    res.status(201).send({status: "Created New Retweet"});
-  } catch (err) {
-    // let error = new Error({"Something went wrong"});
+  if (feed.post_type === "error") {
     res.status(400).send({status: "Something went wrong"});
+  } else {
+    const newFeed = new Feeds(feed);
+    var oldFeed = await Feeds.findById(parent_id);
+    try {
+      // Save to DB
+      let feed = await newFeed.save();
+      feed.conversation_id = oldFeed.conversation_id;
+      if (req.body.body) {
+          oldFeed.quote_count = oldFeed.quote_count + 1;
+      } else {
+          oldFeed.retweet_count = oldFeed.retweet_count + 1;
+      }
+      // Update to feed
+      await feed.save();
+      await oldFeed.save();
+      res.status(201).send({status: "Created New Retweet"});
+    } catch (err) {
+      // let error = new Error({"Something went wrong"});
+      res.status(400).send({status: "Something went wrong"});
+    }
   }
 });
 
