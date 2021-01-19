@@ -135,7 +135,7 @@ router.get("/feeds", async (req, res) => {
       var response = [];
       entireFeeds.forEach(f => {
         response.push({
-          "tweet" : f, "profile_pic": null, "username": null, "is_liked": false,
+          "tweet" : f, "author_profile_pic": null, "author_name": null, "is_liked": false,
         })
       })
 
@@ -144,10 +144,10 @@ router.get("/feeds", async (req, res) => {
       for (feed of response) {
         for (tempuser of allUsers) {
           if (feed.tweet.user_id === tempuser.user_id) {
-            feed.profile_pic = tempuser.profile_pic;
-            feed.username = tempuser.username;
-            if (tempuser.user_id in feed.tweet.liked_by) {
-              feed.is_liked = true;
+            feed["author_profile_pic"] = tempuser.profile_pic;
+            feed["author_name"] = tempuser.username;
+            if (feed.tweet.liked_by.includes(user.user_id)) {
+              feed["is_liked"] = true;
             }
           }
         }
