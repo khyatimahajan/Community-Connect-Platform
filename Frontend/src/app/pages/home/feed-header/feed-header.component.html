@@ -16,7 +16,10 @@
             align-items: center;
           "
         >
-          <div mat-card-avatar class="example-header-image"></div>
+          <div class="example-header-image">
+            <img *ngIf="currentUser.profile_pic" [src]="currentUser.profile_pic" alt="Image Source" class="icon-image">
+            <mat-icon *ngIf="!currentUser.profile_pic">face</mat-icon>
+          </div>
         </div>
         <div style="margin-top: 1em; flex: 10; display: flex">
           <mat-form-field
@@ -25,6 +28,7 @@
           >
             <mat-label>What's on your mind? </mat-label>
             <textarea
+              [(ngModel)]='messageStuff'
               #message
               matInput
               placeholder="Ex. I am feeling..."
@@ -46,7 +50,7 @@
         </button>
       </mat-card-actions>
       <mat-card-actions>
-        <button class="post-button" mat-button>POST</button>
+        <button class="post-button" mat-button (click)="addPost()">POST</button>
       </mat-card-actions>
     </div>
   </mat-card>

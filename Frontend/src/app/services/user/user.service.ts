@@ -36,6 +36,9 @@ export class UserService {
     return this.http.get<any>('http://' + this.link + '/feeds', { headers });
   }
 
+  postFeed(body: any): Observable<any> {
+    return this.http.post<any>('http://' + this.link + '/feed', body);
+  }
 
   /**
    * Handle Http operation that failed.
