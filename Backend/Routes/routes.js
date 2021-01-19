@@ -487,7 +487,7 @@ router.get("/feeds/:feed_id", async (req, res) => {
     if (user) {
       let group = user.group_id;
       let allUsers = await User.find({}, 'user_id username profile_pic');
-      let filters = '_id parent_id user_id body created_at like_count retweet_count reply_count quote_count post_type image';
+      let filters = '_id parent_id user_id body created_at like_count retweet_count reply_count quote_count post_type image liked_by';
       var entireFeeds = await Feeds.findOne({
         "_id": feed_id,
         "visible_to.groups": { $in: group }
@@ -501,12 +501,12 @@ router.get("/feeds/:feed_id", async (req, res) => {
       var response = [];
       
       response.push({
-          "feed" : entireFeeds, "profile_pic": null, "username": null
+          "feed" : entireFeeds, "author_profile_pic": null, "author_username": null, "is_liked": false
       });
       
       entireCommentsForFeed.forEach(f => {
         response.push({
-          "children" : f, "profile_pic": null, "username": null
+          "children" : f, "author_profile_pic": null, "author_username": null, "is_liked": false
         })
       })
 
@@ -515,12 +515,18 @@ router.get("/feeds/:feed_id", async (req, res) => {
       for (feed of response) {
         for (tempuser of allUsers) {
           if (feed.feed && feed.feed.user_id === tempuser.user_id) {
-            feed.profile_pic = tempuser.profile_pic;
-            feed.username = tempuser.username;
+            feed["author_profile_pic"] = tempuser.profile_pic;
+            feed["author_username"] = tempuser.username;
+            if (feed.feed.liked_by.includes(user.user_id)) {
+              feed["is_liked"] = true;
+            }
           }
           if (feed.children && feed.children.user_id === tempuser.user_id) {
-            feed.profile_pic = tempuser.profile_pic;
-            feed.username = tempuser.username;
+            feed["author_profile_pic"] = tempuser.profile_pic;
+            feed["author_username"] = tempuser.username;
+            if (feed.children.liked_by.includes(user.user_id)) {
+              feed["is_liked"] = true;
+            }
           }
         }
       }
