@@ -14,7 +14,7 @@ h1 {
 
 // Fonts
 @import url("https://fonts.googleapis.com/css?family=Montserrat:300,400,500");
-@import 'https://fonts.googleapis.com/css?family=Material+Icons';
+@import url('https://fonts.googleapis.com/css?family=Material+Icons');
    
 html, body {
   margin: 0;
@@ -250,9 +250,9 @@ $altTheme: mat-dark-theme($theme-primary, $theme-accent, $theme-warn);
 
 .material-icons {
   font-size: 24px;
-  font-family: 'Material Icons', 'Material Icons';  
+  font-family: 'Material Icons', 'Material Icons', sans-serif;
   .mat-badge-content {
-    font-family: 'Montserrat';
+    font-family: 'Montserrat', sans-serif;
   }
 }
 
