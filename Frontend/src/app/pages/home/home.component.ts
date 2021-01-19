@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { faHome, faBell, faSignOutAlt, faSmileBeam } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faBell, faSignOutAlt, faSmileBeam, faImage, faSmile } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-home',
@@ -8,6 +8,8 @@ import { faHome, faBell, faSignOutAlt, faSmileBeam } from '@fortawesome/free-sol
 })
 export class HomeComponent implements OnInit {
 
+  faImage = faImage
+  faSmile = faSmile
   constructor() { }
 
   isSelectedItem = 0

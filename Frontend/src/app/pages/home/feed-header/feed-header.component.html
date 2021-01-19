@@ -1,0 +1,61 @@
+<div class="feeds-header">
+  <mat-card class="example-card" style="display: flex; flex: 1">
+    <div style="flex: 1">
+      <mat-card-header>
+        <mat-card-title style="font-size: x-large">HOME</mat-card-title>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+    </div>
+    <div class="center-stuff">
+      <mat-card-content class="feed-post">
+        <div
+          style="
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          "
+        >
+          <div mat-card-avatar class="example-header-image"></div>
+        </div>
+        <div style="margin-top: 1em; flex: 10; display: flex">
+          <mat-form-field
+            class="example-full-width"
+            style="flex: 1; margin-right: 2em"
+          >
+            <mat-label>What's on your mind? </mat-label>
+            <textarea
+              #message
+              matInput
+              placeholder="Ex. I am feeling..."
+              maxlength="280"
+              rows="5"
+            ></textarea>
+            <mat-hint align="end"> {{ message.value.length }} / 280 </mat-hint>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </div>
+    <div class="end-stuff">
+      <mat-card-actions>
+        <button class="post-img-button" mat-button>
+          <fa-icon
+            class="icon far"
+            [icon]="faImage"
+            style="font-size: xx-large"
+          ></fa-icon>
+        </button>
+        <button class="post-img-button" mat-button>
+          <fa-icon
+            class="icon far"
+            [icon]="faSmile"
+            style="font-size: x-large"
+          ></fa-icon>
+        </button>
+      </mat-card-actions>
+      <mat-card-actions>
+        <button class="post-button" mat-button>POST</button>
+      </mat-card-actions>
+    </div>
+  </mat-card>
+</div>

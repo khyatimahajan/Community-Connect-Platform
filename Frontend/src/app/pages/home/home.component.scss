@@ -17,11 +17,11 @@
   .sidebar-item {
     background-color: rgb(237, 245, 253);
     color: black;
-    padding-top:0.5em;
-    padding-bottom:0.5em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
     cursor: pointer;
     .text {
-        margin-left: 1em;
+      margin-left: 1em;
     }
     font-size: 1.25em;
   }
@@ -31,7 +31,7 @@
   }
   .selected {
     background-color: rgb(74, 160, 235);
-      color: white;
+    color: white;
   }
   .selected:hover {
     background-color: rgb(74, 160, 235);
@@ -44,7 +44,6 @@
 }
 
 .feeds {
-  background-color: green;
   flex: 3;
   display: flex;
   align-items: stretch;
@@ -52,7 +51,6 @@
   flex-direction: column;
   .feeds-header {
     flex: 1.5;
-    background-color: red;
   }
   .feeds-posts {
     flex: 4;
@@ -63,8 +61,8 @@
 .connections {
   flex: 1;
   .title {
-      margin-left: 0.5em;
-      font-size: x-large ;
+    margin-left: 0.5em;
+    font-size: x-large;
   }
   .connections-item {
     cursor: pointer;
@@ -73,4 +71,50 @@
   .connections-item:hover {
     background-color: rgb(164, 207, 245, 0.3);
   }
+}
+
+.example-card {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.example-header-image {
+  background-image: url("https://material.angular.io/assets/img/examples/shiba1.jpg");
+  background-size: cover;
+}
+
+.feed-post {
+    flex: 1;
+  display: flex;
+}
+
+.post-button {
+    background-color: #1da1f2;
+    color: white
+}
+
+.post-img-button {
+    color: black
+}
+
+.post-button:hover {
+    background-color: #007bff;
+}
+
+.center-stuff {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.end-stuff {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 2em;
+    margin-right: 2em;
 }

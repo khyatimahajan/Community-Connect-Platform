@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { faImage, faSmile } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-feed-header',
@@ -7,6 +8,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FeedHeaderComponent implements OnInit {
 
+  faImage = faImage
+  faSmile = faSmile
   constructor() { }
 
   ngOnInit(): void {
