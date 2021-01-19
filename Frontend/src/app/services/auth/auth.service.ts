@@ -17,7 +17,7 @@ export class AuthService {
 
   localLink = 'localhost:3000/api';
   link = this.localLink;
-  currentUser = null;
+  currentUser: UserProfile = null;
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

@@ -7,7 +7,8 @@
         [ngClass]="{ selected: i === isSelectedItem }"
         (click)="menuSelect(i)"
       >
-        <fa-icon class="icon" [icon]="sidebarIconList[i]"></fa-icon>
+        <mat-icon *ngIf="i!==1" class="icon">{{sidebarIconList[i]}}</mat-icon>
+        <img *ngIf="i===1" [src]="imageSource" alt="Image Source" class="icon-image">
         <div class="text">
           {{ item }}
         </div>
@@ -17,7 +18,7 @@
   <div class="feeds">
     <app-feed-header></app-feed-header>
     <div class="feeds-posts">
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
         <app-feed-item *ngFor="let item of feedList; let i = index"></app-feed-item>
     </div>
   </div>
