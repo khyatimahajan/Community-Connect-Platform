@@ -339,10 +339,10 @@ router.put("/like", async (req, res) => {
     }
 
     await feed.save();
-    res.status(200).send("Liked Feed");
+    res.status(200).send({status: "Liked Feed"});
   } catch (err) {
-    let error = new Error("Something went wrong");
-    res.status(400).send(error);
+    // let error = new Error("Something went wrong");
+    res.status(400).send({ status: error });
   }
 });
 
