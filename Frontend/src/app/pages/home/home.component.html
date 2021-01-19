@@ -30,9 +30,8 @@
           *ngFor="let user of connectionList"
           class="connections-item"
         >
-          <div>
-            {{ user }}
-          </div>
+          <img [src]="user.profile_pic" alt="Image Source" class="icon-image">
+          <div style="margin-left: 1.5em;">@{{ user.username }}</div>
           <mat-divider></mat-divider>
         </mat-list-item>
       </mat-list>
