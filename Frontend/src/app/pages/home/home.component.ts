@@ -43,16 +43,20 @@ export class HomeComponent implements OnInit {
                     this.connectionList = response;
                 }
             });
-
-            this.userService.getFeeds(this.currentUser.id).subscribe(response => {
-                if (response) {
-                    this.isLoading = false;
-                    this.feedList = response;
-                    console.log('Updating Feeds');
-                }
-            });
+            this.loadPosts();
         }
 
+    }
+
+    loadPosts() {
+        this.isLoading = true;
+        this.userService.getFeeds(this.currentUser.id).subscribe(response => {
+            if (response) {
+                this.isLoading = false;
+                this.feedList = response;
+                console.log('Updating Feeds');
+            }
+        });
     }
 
     menuSelect(i: number) {

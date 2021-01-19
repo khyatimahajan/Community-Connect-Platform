@@ -50,7 +50,7 @@
         </button>
       </mat-card-actions>
       <mat-card-actions>
-        <button class="post-button" mat-button (click)="addPost()">POST</button>
+        <button class="post-button" mat-button (click)="addPost()" [disabled]="buttonDisabled || messageStuff? messageStuff.length === 0: false">POST</button>
       </mat-card-actions>
     </div>
   </mat-card>
