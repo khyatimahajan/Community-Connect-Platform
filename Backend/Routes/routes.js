@@ -19,7 +19,7 @@ router.get("/users", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { error } = validation.loginValidation(req.body);
   if (error) {
-    res.status(404).send({ status: "Bad Request" });
+    res.status(400).send({ status: "Bad Request" });
   } else {
     const { email, password } = req.body;
     const user = await User.findOne({
@@ -126,10 +126,28 @@ router.get("/feeds", async (req, res) => {
     const user = await User.findById(userId);
     if (user) {
       let group = user.group_id;
-      let entireFeeds = await Feeds.find({
+      let allUsers = await User.find({}, 'user_id profile_pic');
+      var entireFeeds = await Feeds.find({
         "visible_to.groups": { $in: group },
         "post_type": { $ne: "reply" },
       }, filters).populate("parent_id", filters);
+
+      var response = [];
+      entireFeeds.forEach(f => {
+        response.push({
+          "tweet" : f, "profile_pic": null,
+        })
+      })
+
+      // need to update in future release, should convert user_id to actual _id in mdb
+      var feed;
+      for (feed of response) {
+        for (tempuser of allUsers) {
+          if (feed.tweet.user_id === tempuser.user_id) {
+            feed.profile_pic = tempuser.profile_pic;
+          }
+        }
+      }
 
       // var parent;
       // var this_feed_id;
@@ -165,10 +183,10 @@ router.get("/feeds", async (req, res) => {
 
       // return feeds at the end
 
-      res.send(entireFeeds);
+      res.send(response);
     }
   } else {
-    res.status(404).send({ status: "Bad Request" });
+    res.status(400).send({ status: "Bad Request" });
   }
 });
 
@@ -231,7 +249,7 @@ router.post("/feed", async (req, res) => {
   }
 });
 
-router.post("/retweet", async (req, res) => {
+router.post("/repost", async (req, res) => {
   let user_mentions = [];
   const body_parts = req.body.body? req.body.body : ""
   let post_body_parts = body_parts.split(" ");
@@ -443,7 +461,7 @@ router.put("/change-password", async (req, res) => {
   }
 });
 
-router.get("/feeds/:username", async (req, res) => {
+router.get("/user/:username", async (req, res) => {
     let username = req.params.username;
     if (username != null) {
       const user = await User.findOne({
@@ -463,5 +481,56 @@ router.get("/feeds/:username", async (req, res) => {
       res.status(400).send({ status: "Bad Request" });
     }
   });
+
+router.get("/feeds/:feed_id", async (req, res) => {
+  let feed_id = req.params.feed_id;
+  const user = await User.findById(req.header("userId"));
+
+  if (feed_id != null) {
+    if (user) {
+      let group = user.group_id;
+      let allUsers = await User.find({}, 'user_id profile_pic');
+      let filters = '_id parent_id user_id body created_at like_count retweet_count reply_count quote_count post_type image';
+      var entireFeeds = await Feeds.findOne({
+        "_id": feed_id,
+        "visible_to.groups": { $in: group }
+      }, filters).populate("parent_id", filters);
+
+      var entireCommentsForFeed = await Feeds.find({
+        "parent_id": feed_id,
+        "visible_to.groups": { $in: group }
+      }, filters);
+
+      var response = [];
+      
+      response.push({
+          "feed" : entireFeeds, "profile_pic": null,
+      });
+      
+      entireCommentsForFeed.forEach(f => {
+        response.push({
+          "children" : f, "profile_pic": null,
+        })
+      })
+
+      // need to update in future release, should convert user_id to actual _id in mdb
+      var feed;
+      for (feed of response) {
+        for (tempuser of allUsers) {
+          if (feed.feed && feed.feed.user_id === tempuser.user_id) {
+            feed.profile_pic = tempuser.profile_pic;
+          }
+          if (feed.children && feed.children.user_id === tempuser.user_id) {
+            feed.profile_pic = tempuser.profile_pic;
+          }
+        }
+      }
+
+      res.send(response);
+    }
+  } else {
+    res.status(400).send({ status: "Bad Request" });
+  }
+});
 
 module.exports = router;
