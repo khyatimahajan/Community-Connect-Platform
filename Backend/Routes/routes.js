@@ -410,22 +410,15 @@ router.get("/connections", async (req, res) => {
   const userId = req.header("userId");
   if (userId != null) {
     const user = await User.findById(userId);
+    let filters = '_id username profile_pic';
     if (user) {
       let group = user.group_id;
 
       const users = await User.find({
         group_id: { $in: group },
-      });
+      }, filters);
 
-      var response = [];
-      users.forEach((user) => {
-        response.push({
-          username: user.username,
-          profile_pic: user.profile_pic,
-        });
-      });
-
-      res.send(response);
+      res.send(users);
     }
   } else {
     res.status(400).send({ status: "Bad Request" });
