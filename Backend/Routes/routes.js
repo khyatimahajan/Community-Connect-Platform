@@ -126,7 +126,7 @@ router.get("/feeds", async (req, res) => {
     const user = await User.findById(userId);
     if (user) {
       let group = user.group_id;
-      let allUsers = await User.find({}, 'user_id profile_pic');
+      let allUsers = await User.find({}, 'user_id username profile_pic');
       var entireFeeds = await Feeds.find({
         "visible_to.groups": { $in: group },
         "post_type": { $ne: "reply" },
@@ -135,7 +135,7 @@ router.get("/feeds", async (req, res) => {
       var response = [];
       entireFeeds.forEach(f => {
         response.push({
-          "tweet" : f, "profile_pic": null,
+          "tweet" : f, "profile_pic": null, "username": null
         })
       })
 
@@ -145,6 +145,7 @@ router.get("/feeds", async (req, res) => {
         for (tempuser of allUsers) {
           if (feed.tweet.user_id === tempuser.user_id) {
             feed.profile_pic = tempuser.profile_pic;
+            feed.username = tempuser.username;
           }
         }
       }
@@ -489,7 +490,7 @@ router.get("/feeds/:feed_id", async (req, res) => {
   if (feed_id != null) {
     if (user) {
       let group = user.group_id;
-      let allUsers = await User.find({}, 'user_id profile_pic');
+      let allUsers = await User.find({}, 'user_id username profile_pic');
       let filters = '_id parent_id user_id body created_at like_count retweet_count reply_count quote_count post_type image';
       var entireFeeds = await Feeds.findOne({
         "_id": feed_id,
@@ -504,12 +505,12 @@ router.get("/feeds/:feed_id", async (req, res) => {
       var response = [];
       
       response.push({
-          "feed" : entireFeeds, "profile_pic": null,
+          "feed" : entireFeeds, "profile_pic": null, "username": null
       });
       
       entireCommentsForFeed.forEach(f => {
         response.push({
-          "children" : f, "profile_pic": null,
+          "children" : f, "profile_pic": null, "username": null
         })
       })
 
@@ -519,9 +520,11 @@ router.get("/feeds/:feed_id", async (req, res) => {
         for (tempuser of allUsers) {
           if (feed.feed && feed.feed.user_id === tempuser.user_id) {
             feed.profile_pic = tempuser.profile_pic;
+            feed.username = tempuser.username;
           }
           if (feed.children && feed.children.user_id === tempuser.user_id) {
             feed.profile_pic = tempuser.profile_pic;
+            feed.username = tempuser.username;
           }
         }
       }
