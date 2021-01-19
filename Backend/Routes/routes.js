@@ -130,7 +130,7 @@ router.get("/feeds", async (req, res) => {
       var entireFeeds = await Feeds.find({
         "visible_to.groups": { $in: group },
         "post_type": { $ne: "reply" },
-      }, filters).populate("parent_id", filters);
+      }, filters, { sort: { "created_at" : "descending" }}).populate("parent_id", filters);
 
       var response = [];
       entireFeeds.forEach(f => {
@@ -140,6 +140,7 @@ router.get("/feeds", async (req, res) => {
       })
 
       // need to update in future release, should convert user_id to actual _id in mdb
+      // also figure out how to mark a retweeted post's parent as retweeted in feed
       var feed;
       for (feed of response) {
         for (tempuser of allUsers) {
@@ -150,9 +151,6 @@ router.get("/feeds", async (req, res) => {
               feed["is_liked"] = true;
             }
           }
-          // if (feed.tweet.parent_id && feed.tweet.post_type == "retweet") {
-          //   feed["is_retweeted"] = true;
-          // }
         }
       }
 
@@ -514,6 +512,7 @@ router.get("/feeds/:feed_id", async (req, res) => {
       })
 
       // need to update in future release, should convert user_id to actual _id in mdb
+      // also figure out how to mark a retweeted post's parent as retweeted in feed
       var feed;
       for (feed of response) {
         for (tempuser of allUsers) {
@@ -532,12 +531,6 @@ router.get("/feeds/:feed_id", async (req, res) => {
             }
           }
         }
-        // if (feed.feed && feed.feed.parent_id && feed.feed.post_type == "retweet") {
-        //   feed["is_retweeted"] = true;
-        // }
-        // if (feed.children && feed.children.parent_id && feed.children.post_type == "retweet") {
-        //   feed["is_retweeted"] = true;
-        // }
       }
 
       res.send(response);
