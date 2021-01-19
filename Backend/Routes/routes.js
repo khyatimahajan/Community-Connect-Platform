@@ -135,7 +135,7 @@ router.get("/feeds", async (req, res) => {
       var response = [];
       entireFeeds.forEach(f => {
         response.push({
-          "tweet" : f, "author_profile_pic": null, "author_name": null, "is_liked": false, "is_retweeted": false
+          "tweet" : f, "author_profile_pic": null, "author_name": null, "is_liked": false, "is_retweeted": false, "parent_info": null
         })
       })
 
@@ -150,6 +150,9 @@ router.get("/feeds", async (req, res) => {
             if (feed.tweet.liked_by.includes(user.user_id)) {
               feed["is_liked"] = true;
             }
+          }
+          if (feed.tweet.parent_id && feed.tweet.parent_id.user_id === tempuser.user_id) {
+            feed["parent_info"] = {"parent_profile_pic": tempuser.profile_pic, "parent_name": tempuser.user_id};
           }
         }
       }
@@ -505,12 +508,12 @@ router.get("/feeds/:feed_id", async (req, res) => {
       var response = [];
       
       response.push({
-          "feed" : entireFeeds, "author_profile_pic": null, "author_username": null, "is_liked": false, "is_retweeted": false
+          "feed" : entireFeeds, "author_profile_pic": null, "author_username": null, "is_liked": false, "is_retweeted": false, "parent_info": null
       });
       
       entireCommentsForFeed.forEach(f => {
         response.push({
-          "children" : f, "author_profile_pic": null, "author_username": null, "is_liked": false, "is_retweeted": false
+          "children" : f, "author_profile_pic": null, "author_username": null, "is_liked": false, "is_retweeted": false, "parent_info": null
         })
       })
 
@@ -526,12 +529,18 @@ router.get("/feeds/:feed_id", async (req, res) => {
               feed["is_liked"] = true;
             }
           }
+          if (feed.feed && feed.feed.parent_id && feed.feed.parent_id.user_id === tempuser.user_id) {
+            feed["parent_info"] = {"parent_profile_pic": tempuser.profile_pic, "parent_name": tempuser.user_id};
+          }
           if (feed.children && feed.children.user_id === tempuser.user_id) {
             feed["author_profile_pic"] = tempuser.profile_pic;
             feed["author_username"] = tempuser.username;
             if (feed.children.liked_by.includes(user.user_id)) {
               feed["is_liked"] = true;
             }
+          }
+          if (feed.children && feed.children.parent_id && feed.children.parent_id.user_id === tempuser.user_id) {
+            feed["parent_info"] = {"parent_profile_pic": tempuser.profile_pic, "parent_name": tempuser.user_id};
           }
         }
       }
