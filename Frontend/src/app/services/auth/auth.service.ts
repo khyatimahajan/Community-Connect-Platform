@@ -15,8 +15,9 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
-  localLink = 'localhost:3000';
+  localLink = 'localhost:3000/api';
   link = this.localLink;
+  currentUser = null;
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -27,14 +28,11 @@ export class AuthService {
     console.log(`Auth Service: ${message}`);
   }
 
-  login(username: string, password: string): Observable<UserProfile> {
+  login(email: string, password: string): Observable<UserProfile> {
     const body = {
-      username, password
+      email, password, timezone: 'EST'
     };
-    return this.http.post<any>('http://' + this.link + '/login', body)
-      .pipe(
-        catchError(this.handleError('login'))
-      );
+    return this.http.post<any>('http://' + this.link + '/login', body);
   }
 
   signup(code: string): Observable<UserSignupInfo> {
@@ -43,6 +41,10 @@ export class AuthService {
       .pipe(
         catchError(this.handleError('signup'))
       );
+  }
+
+  setUser(user: UserProfile) {
+     this.currentUser = user;
   }
 
   /**

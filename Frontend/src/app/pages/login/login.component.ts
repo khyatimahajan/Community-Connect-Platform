@@ -51,10 +51,11 @@ export class LoginComponent implements OnInit {
         const username = this.form.get('username').value;
         const password = this.form.get('password').value;
         this.authService.login(username, password).subscribe(response => {
-          if (response.username == null) {
-            this.loginInvalid = true;
-          } else {
+          if (response) {
+            this.authService.setUser(response);
             this.router.navigate(['/home']);
+          } else {
+            this.loginInvalid = true;
           }
         });
       } catch (err) {
