@@ -121,13 +121,49 @@ router.post("/logout", async (req, res) => {
 
 router.get("/feeds", async (req, res) => {
   let userId = req.headers.id;
+  let filters = '_id parent_id user_id body created_at like_count retweet_count reply_count quote_count post_type image';
   if (userId != null) {
     const user = await User.findById(userId);
     if (user) {
       let group = user.group_id;
       let entireFeeds = await Feeds.find({
         "visible_to.groups": { $in: group },
-      }).populate("parent_id").populate("comments");
+        "post_type": { $ne: "reply" },
+      }, filters).populate("parent_id", filters);
+
+      // var parent;
+      // var this_feed_id;
+      // let feedMap = {}              // maps _ids to parent_ids for all posts
+      // let nextLevelIDs = [];        // saves all _ids of posts which have parents
+      // let feedChains = {};
+      // for (feed of entireFeeds) {
+      //   feedMap[feed._id] = feed.parent_id;
+      // }
+      // for (feed of entireFeeds) {
+      //   nextLevelIDs.push(feed._id);
+      //   if (feed.post_type != "reply") {
+      //     feedChains[feed._id] = {};
+      //   }
+      // }
+
+      // for (this_feed_id of nextLevelIDs) {
+      //   let chain = [this_feed_id];
+      //   this_feed_id_parents_exists = feedMap[this_feed_id];
+      //   while (this_feed_id_parents_exists) {
+      //     chain.splice(0, 0, this_feed_id_parents_exists);
+      //     this_feed_id_parents_exists = feedMap[this_feed_id_parents_exists];
+      //   }
+      //   feedChains[chain[0]] = chain;
+      // }
+
+      // 1. 'feeds' -> find main main feeds - done
+      // 2. 'comments' -> find all comments - done
+      // 3. for each comment .. iterrate through feeds and find parent
+      //      if parent is found remove the comment from the list and attach it to parent
+      //      if parent is NOT found then iterate through comments and find parent and attach it
+      //      if it is a ROGUE comment .. just let it be allahuakhbar
+
+      // return feeds at the end
 
       res.send(entireFeeds);
     }
@@ -166,7 +202,7 @@ router.post("/feed", async (req, res) => {
     conversation_id: null,
     mentions: [...new Set(user_mentions)],
     visible_to: { users: groupUsers, groups },
-    image: req.body.image ? req.body.image : "null",
+    image: req.body.image ? req.body.image : null,
 
     author: user.username,
     author_image: user.profile_pic,
@@ -227,7 +263,7 @@ router.post("/retweet", async (req, res) => {
     conversation_id: null,
     mentions: [...new Set(user_mentions)],
     visible_to: { users: groupUsers, groups },
-    image: req.body.image ? req.body.image : "null",
+    image: req.body.image ? req.body.image : null,
 
     author: user.username,
     author_image: user.profile_pic,
@@ -313,12 +349,12 @@ router.put("/comment", async (req, res) => {
     retweet_count: 0,
     reply_count: 0,
     quote_count: 0,
-    post_type: parent_id ? "comment" : "tweet",
+    post_type: parent_id ? "reply" : "tweet",
     parent_id: parent_id ? parent_id : null,
     conversation_id: null,
     mentions: [...new Set(user_mentions)],
     visible_to: { users: groupUsers, groups },
-    image: req.body.image ? req.body.image : "null",
+    image: req.body.image ? req.body.image : null,
 
     author: user.username,
     author_image: user.profile_pic,
