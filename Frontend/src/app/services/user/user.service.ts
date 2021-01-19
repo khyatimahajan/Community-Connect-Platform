@@ -40,6 +40,10 @@ export class UserService {
     return this.http.post<any>('http://' + this.link + '/feed', body);
   }
 
+  putLike(body: any): Observable<any> {
+    return this.http.put<any>('http://' + this.link + '/like', body);
+  }
+
   /**
    * Handle Http operation that failed.
    * Let the app continue.

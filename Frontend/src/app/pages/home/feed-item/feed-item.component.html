@@ -33,7 +33,7 @@
         </button>
         <div>{{feed.tweet.retweet_count + feed.tweet.quote_count}}</div>
       </div>
-      <div class="action-button like">
+      <div class="action-button like" [ngClass]="{ liked: feed.is_liked }" (click)="toggleLike()">
         <button
           mat-icon-button
           class="like-button"
