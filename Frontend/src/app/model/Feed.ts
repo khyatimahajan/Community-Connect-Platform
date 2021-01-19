@@ -25,6 +25,8 @@ export class Feed {
             image: string
         },
     };
-    profile_pic: string;
-    username: string;
+    author_profile_pic: string;
+    author_name: string;
+    is_liked: boolean;
+    is_retweeted: boolean;
 }
