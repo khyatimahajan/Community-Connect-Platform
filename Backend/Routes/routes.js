@@ -112,7 +112,7 @@ router.post("/logout", async (req, res) => {
       });
       log.save();
     } else {
-      res.status(400).send("Could not log");
+      res.status(400).send({status: "Could not log"});
     }
   } else {
     res.status(400).send({ status: "Bad Request" });
@@ -135,7 +135,7 @@ router.get("/feeds", async (req, res) => {
       var response = [];
       entireFeeds.forEach(f => {
         response.push({
-          "tweet" : f, "author_profile_pic": null, "author_name": null, "is_liked": false,
+          "tweet" : f, "author_profile_pic": null, "author_name": null, "is_liked": false, "is_retweeted": false
         })
       })
 
@@ -150,6 +150,9 @@ router.get("/feeds", async (req, res) => {
               feed["is_liked"] = true;
             }
           }
+          // if (feed.tweet.parent_id && feed.tweet.post_type == "retweet") {
+          //   feed["is_retweeted"] = true;
+          // }
         }
       }
 
@@ -246,10 +249,10 @@ router.post("/feed", async (req, res) => {
     feed.conversation_id = feed._id;
     // Update to feed
     await feed.save();
-    res.status(201).send("Created New Feed");
+    res.status(201).send({status: "Created New Feed"});
   } catch (err) {
-    let error = new Error("Something went wrong");
-    res.status(400).send(error);
+    // let error = new Error("Something went wrong");
+    res.status(400).send({status:"Something went wrong"});
   }
 });
 
@@ -314,10 +317,10 @@ router.post("/repost", async (req, res) => {
     // Update to feed
     await feed.save();
     await oldFeed.save();
-    res.status(201).send("Created New Retweet");
+    res.status(201).send({status: "Created New Retweet"});
   } catch (err) {
-    let error = new Error("Something went wrong");
-    res.status(400).send(error);
+    // let error = new Error({"Something went wrong"});
+    res.status(400).send({status: "Something went wrong"});
   }
 });
 
@@ -496,17 +499,17 @@ router.get("/feeds/:feed_id", async (req, res) => {
       var entireCommentsForFeed = await Feeds.find({
         "parent_id": feed_id,
         "visible_to.groups": { $in: group }
-      }, filters);
+      }, filters).populate("parent_id", filters);
 
       var response = [];
       
       response.push({
-          "feed" : entireFeeds, "author_profile_pic": null, "author_username": null, "is_liked": false
+          "feed" : entireFeeds, "author_profile_pic": null, "author_username": null, "is_liked": false, "is_retweeted": false
       });
       
       entireCommentsForFeed.forEach(f => {
         response.push({
-          "children" : f, "author_profile_pic": null, "author_username": null, "is_liked": false
+          "children" : f, "author_profile_pic": null, "author_username": null, "is_liked": false, "is_retweeted": false
         })
       })
 
@@ -529,6 +532,12 @@ router.get("/feeds/:feed_id", async (req, res) => {
             }
           }
         }
+        // if (feed.feed && feed.feed.parent_id && feed.feed.post_type == "retweet") {
+        //   feed["is_retweeted"] = true;
+        // }
+        // if (feed.children && feed.children.parent_id && feed.children.post_type == "retweet") {
+        //   feed["is_retweeted"] = true;
+        // }
       }
 
       res.send(response);
