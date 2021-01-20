@@ -6,6 +6,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {UserService} from '../../services/user/user.service';
 import {UserProfileShortened} from '../../model/UserProfileShortened';
 import { Feed } from 'src/app/model/Feed';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-home',
@@ -18,6 +19,8 @@ export class HomeComponent implements OnInit {
         private router: Router,
         private authService: AuthService,
         private userService: UserService,
+        // tslint:disable-next-line:variable-name
+        private _snackBar: MatSnackBar,
         private sanitizer: DomSanitizer) {
     }
     currentUser: UserProfile = null;
@@ -42,6 +45,8 @@ export class HomeComponent implements OnInit {
                 if (response) {
                     this.connectionList = response;
                 }
+            }, error => {
+                this.openSnackBar(error.error.status);
             });
             this.loadPosts();
         }
@@ -55,6 +60,8 @@ export class HomeComponent implements OnInit {
                 this.isLoading = false;
                 this.feedList = response;
             }
+        }, error => {
+            this.openSnackBar(error.error.status);
         });
     }
 
@@ -72,5 +79,13 @@ export class HomeComponent implements OnInit {
                 this.router.navigate(['/login']);
                 break;
         }
+    }
+
+    openSnackBar(message: string) {
+        this._snackBar.open(message, null, {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+        });
     }
 }

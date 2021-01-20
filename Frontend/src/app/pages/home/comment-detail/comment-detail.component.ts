@@ -7,6 +7,7 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog
 import {UserService} from '../../../services/user/user.service';
 import {AuthService} from '../../../services/auth/auth.service';
 import {FeedDetailComponent} from '../feed-detail/feed-detail.component';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-comment-detail',
@@ -25,6 +26,7 @@ export class CommentDetailComponent implements OnInit {
   constructor(
       private userService: UserService,
       private authService: AuthService,
+      private snackBar: MatSnackBar,
       public dialog: MatDialog
   ) { }
 
@@ -50,6 +52,8 @@ export class CommentDetailComponent implements OnInit {
         }
         this.updateFeedFromComment(this.comment);
       }
+    }, error => {
+      this.openSnackBar(error.error.status);
     });
   }
 
@@ -68,9 +72,9 @@ export class CommentDetailComponent implements OnInit {
   }
 
   repost() {
-    var feedID;
+    let feedID;
     if (this.comment.children) {
-        if (this.comment.children.post_type === "retweet") {
+        if (this.comment.children.post_type === 'retweet') {
           feedID = this.comment.children.conversation_id;
         } else {
           feedID = this.comment.children._id;
@@ -88,6 +92,8 @@ export class CommentDetailComponent implements OnInit {
         this.updateFeedFromComment(this.comment);
         this.loadDataEmitter.emit(true);
       }
+    }, error => {
+      this.openSnackBar(error.error.status);
     });
   }
 
@@ -122,5 +128,13 @@ export class CommentDetailComponent implements OnInit {
 
   goInsideComment() {
     this.loadNewFeedEmitter.emit(this.feed);
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message, null, {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
   }
 }

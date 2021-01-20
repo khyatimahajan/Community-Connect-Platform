@@ -4,6 +4,7 @@ import {AuthService} from '../../../services/auth/auth.service';
 import {UserService} from '../../../services/user/user.service';
 import {UserProfileShortened} from '../../../model/UserProfileShortened';
 import {UserProfile} from '../../../model/UserProfile';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-feed-header',
@@ -20,6 +21,7 @@ export class FeedHeaderComponent implements OnInit {
 
   constructor(
       private router: Router,
+      private snackBar: MatSnackBar,
       private userService: UserService
   ) { }
 
@@ -46,8 +48,19 @@ export class FeedHeaderComponent implements OnInit {
         } else {
           console.log('There was an error posting this post');
         }
+      }, error => {
+        this.openSnackBar(error.error.status);
       });
     }
+  }
+
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message, null, {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
   }
 
 }

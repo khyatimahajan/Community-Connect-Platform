@@ -6,6 +6,7 @@ import {AddCommentComponent} from '../add-comment/add-comment.component';
 import {MatDialog} from '@angular/material/dialog';
 import {AddQuoteComponent} from '../add-quote/add-quote.component';
 import {FeedDetailComponent} from '../feed-detail/feed-detail.component';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-feed-item',
@@ -17,7 +18,9 @@ export class FeedItemComponent implements OnInit {
   @Input() feed: Feed;
   @Output() feedStatusChange = new EventEmitter<boolean>();
 
-  constructor(private userService: UserService, private authService: AuthService, public dialog: MatDialog) { }
+  constructor(private userService: UserService, private authService: AuthService, public dialog: MatDialog,
+              private snackBar: MatSnackBar,
+  ) { }
 
   ngOnInit(): void {
   }
