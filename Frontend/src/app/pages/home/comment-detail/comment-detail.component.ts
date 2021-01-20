@@ -96,7 +96,7 @@ export class CommentDetailComponent implements OnInit {
   }
 
   updateFeedFromComment(comment: FeedDetailItem): Feed {
-    if (comment && comment.children != null) {
+    if (comment && comment.children != null && comment.children.post_type === 'reply') {
       this.feed = {
         tweet: comment.children,
         author_profile_pic: comment.author_profile_pic,
