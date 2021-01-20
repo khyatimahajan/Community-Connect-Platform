@@ -409,9 +409,9 @@ router.put("/comment", async (req, res) => {
     // Update to feed
     await feed.save();
     await oldFeed.save();
-    res.status(201).send("Created New Comment");
+    res.status(201).send({status: "Created New Comment"});
   } catch (err) {
-    let error = new Error("Something went wrong");
+    let error = new Error({status: "Something went wrong"});
     res.status(400).send(error);
   }
 });
