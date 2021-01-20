@@ -23,8 +23,8 @@ export class HomeComponent implements OnInit {
     currentUser: UserProfile = null;
 
     isSelectedItem = 0;
-    sidebarIconList = ['home', 'face', 'notifications', 'login'];
-    sidebarList = ['Home', 'Profile', 'Notifications', 'Logout'];
+    sidebarIconList = ['home', 'face', 'login'];
+    sidebarList = ['Home', 'Profile', 'Logout'];
     connectionList: Array<UserProfileShortened> = [];
     feedList: Array<Feed> = [];
     isLoading = true;

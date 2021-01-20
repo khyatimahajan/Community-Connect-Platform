@@ -33,6 +33,11 @@
   .post-button:hover {
       background-color: #007bff;
   }
+
+.post-button:disabled {
+  background-color: rgb(247, 247, 247);
+  color: white
+}
   
   .center-stuff {
       display: flex;

@@ -51,7 +51,7 @@ export class FeedDetailItem {
         }
     };
     author_profile_pic: string;
-    author_name: string;
+    author_username: string;
     is_liked: boolean;
     is_retweeted: boolean;
     parent_info: {

@@ -42,6 +42,7 @@ import { AddCommentComponent } from './pages/home/add-comment/add-comment.compon
 import { AddQuoteComponent } from './pages/home/add-quote/add-quote.component';
 import { FeedItemMinimizedComponent } from './pages/home/feed-item-minimized/feed-item-minimized.component';
 import { FeedDetailComponent } from './pages/home/feed-detail/feed-detail.component';
+import { CommentDetailComponent } from './pages/home/comment-detail/comment-detail.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { FeedDetailComponent } from './pages/home/feed-detail/feed-detail.compon
     AddQuoteComponent,
     FeedItemMinimizedComponent,
     FeedDetailComponent,
+    CommentDetailComponent,
   ],
   imports: [
     BrowserModule,

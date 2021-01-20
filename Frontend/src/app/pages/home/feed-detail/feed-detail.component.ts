@@ -69,6 +69,7 @@ export class FeedDetailComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'Comment Added') {
         this.feed.tweet.reply_count++;
+        this.loadData();
       }
     });
   }
@@ -97,5 +98,17 @@ export class FeedDetailComponent implements OnInit {
         this.loadData();
       }
     });
+  }
+
+  isFeed(comment: FeedDetailItem): boolean {
+    return comment.feed == null;
+  }
+
+  loadNewFeed($event: any) {
+    this.thisDialogRef.close($event);
+  }
+
+  loadDataAgain() {
+    this.loadData();
   }
 }
