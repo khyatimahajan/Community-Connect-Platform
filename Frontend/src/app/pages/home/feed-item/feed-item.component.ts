@@ -80,10 +80,12 @@ export class FeedItemComponent implements OnInit {
   openDetailModal() {
     const dialogRef = this.dialog.open(FeedDetailComponent, {
       width: '800px',
-      data: this.feed.tweet._id
+      data: this.feed
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.feedStatusChange.emit(true);
+      if (result === 'Load') {
+        this.feedStatusChange.emit(true);
+      }
     });
   }
 }

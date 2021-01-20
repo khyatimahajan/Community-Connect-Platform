@@ -54,7 +54,6 @@ export class HomeComponent implements OnInit {
             if (response) {
                 this.isLoading = false;
                 this.feedList = response;
-                console.log('Updating Feeds');
             }
         });
     }

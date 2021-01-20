@@ -1,0 +1,78 @@
+.icon-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.tweet-info {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  display: flex;
+  .profile-pic {
+    min-width: 50px;
+    min-height: 50px;
+    margin-left: 1em;
+    margin-right: 0.5em;
+  }
+  .tweet {
+    flex: 1;
+    margin-right: 0.5em;
+    display: block;
+    .name {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .text {
+      min-width: 60px;
+    }
+    .image {
+      margin-top: 1em;
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: space-around;
+  .action-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .repost {
+    color: rgb(0, 64, 95);
+  }
+  .like {
+    color: rgb(0, 64, 95);
+  }
+  .reply {
+    color: rgb(0, 64, 95);
+  }
+  .liked {
+    color: rgb(204, 38, 86);
+  }
+  .repost:hover {
+    color: rgb(73, 183, 97);
+    .repost-button {
+      background-color: rgb(231, 241, 233);
+    }
+  }
+  .like:hover {
+    color: rgb(204, 38, 86);
+    .like-button {
+      background-color: rgb(243, 228, 232);
+    }
+  }
+  .reply:hover {
+    color: rgb(35, 151, 234);
+    .reply-button {
+      background-color: rgb(230, 238, 246);
+    }
+  }
+}
+
+.comment-area {
+  display: flex;
+  justify-content: stretch;
+  margin-top: 0.5em;
+}

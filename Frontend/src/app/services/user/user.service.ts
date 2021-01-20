@@ -4,6 +4,7 @@ import {UserProfile} from '../../model/UserProfile';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {UserProfileShortened} from '../../model/UserProfileShortened';
 import { Feed } from 'src/app/model/Feed';
+import {FeedDetailItem} from '../../model/FeedDetailItem';
 
 @Injectable({
   providedIn: 'root'
@@ -52,7 +53,7 @@ export class UserService {
     return this.http.post<any>('http://' + this.link + '/repost', body);
   }
 
-  getDetailsForAFeed(userId: string, feedId: string): Observable<Array<any>> {
+  getDetailsForAFeed(userId: string, feedId: string): Observable<Array<FeedDetailItem>> {
     const headers = { userId };
     return this.http.get<any>('http://' + this.link + '/feeds/' + feedId, { headers });
   }
