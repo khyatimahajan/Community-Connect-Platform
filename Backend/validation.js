@@ -53,7 +53,7 @@ const resetPassword = (data) => {
 		cnewPassword: Joi.any()
 			.valid(Joi.ref('newPassword'))
 			.required()
-			.label('Passwords are not matching'),
+			.label('New passwords do not match'),
 	});
 	return schema.validate(data);
 };

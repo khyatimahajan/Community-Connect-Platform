@@ -13,13 +13,17 @@ const { urlify } = require("./../utils");
 // Get all users
 router.get("/users", async (req, res) => {
   const users = await User.find();
-  res.send(users);
+  if (users) {
+    res.send(users);
+  } else {
+    res.status(500).send({status: "Internal server error - no users found"});
+  }
 });
 
 router.post("/login", async (req, res) => {
   const { error } = validation.loginValidation(req.body);
   if (error) {
-    res.status(400).send({ status: "Bad Request" });
+    res.status(400).send({ status: "Email and/or password empty" });
   } else {
     const { email, password } = req.body;
     const user = await User.findOne({
@@ -27,11 +31,11 @@ router.post("/login", async (req, res) => {
     });
 
     if (!user) {
-      res.status(403).send({ status: "Forbidden" });
+      res.status(403).send({ status: "Could not find user matching entered email" });
     } else {
       const validPass = await bcrypt.compare(req.body.password, user.password);
       if (!validPass) {
-        res.status(401).send({ status: "Unauthorized" });
+        res.status(401).send({ status: "Wrong password entered" });
       } else {
         var response = {
           group_id: user.group_id,
@@ -44,7 +48,7 @@ router.post("/login", async (req, res) => {
           bio: user.bio,
           profile_pic: user.profile_pic,
         };
-        res.send(response);
+        res.status(200).send(response);
 
         //Logger for user login time
         let log = new Logger({
@@ -71,7 +75,9 @@ router.get("/profile", async (req, res) => {
   let userId = req.headers.id;
   if (userId != null) {
     const user = await User.findById(userId);
-    if (user) {
+    if (!user) {
+      res.status(404).send({ status: "No matching user exists" });
+    } else {
       let notificationCount = await Notifications.find({
         outconn_id: user._id,
         seen: false,
@@ -89,10 +95,8 @@ router.get("/profile", async (req, res) => {
         notification_count: notificationCount || 0,
         profile_pic: user.profile_pic,
       };
-      res.send(response);
+      res.status(200).send(response);
     }
-  } else {
-    res.status(404).send({ status: "Bad Request" });
   }
 });
 
@@ -104,7 +108,7 @@ router.post("/logout", async (req, res) => {
     ]);
 
     if (log) {
-      res.status(201).send("Logged Out");
+      res.status(201).send("Logged out");
 
       log.loggedOutAt.serverTime = new Date();
       log.loggedOutAt.userTime = new Date().toLocaleString("en-US", {
@@ -112,10 +116,10 @@ router.post("/logout", async (req, res) => {
       });
       log.save();
     } else {
-      res.status(400).send({status: "Could not log"});
+      res.status(400).send({status: "Could not log logout"});
     }
   } else {
-    res.status(400).send({ status: "Bad Request" });
+    res.status(400).send({ status: "No user ID was received for logging out" });
   }
 });
 
@@ -191,10 +195,10 @@ router.get("/feeds", async (req, res) => {
 
       // return feeds at the end
 
-      res.send(response);
+      res.status(200).send(response);
     }
   } else {
-    res.status(400).send({ status: "Bad Request" });
+    res.status(400).send({ status: "No user ID was received for getting feeds" });
   }
 });
 
@@ -250,10 +254,10 @@ router.post("/feed", async (req, res) => {
     feed.conversation_id = feed._id;
     // Update to feed
     await feed.save();
-    res.status(201).send({status: "Created New Feed"});
+    res.status(201).send({status: "Created new post successfully!"});
   } catch (err) {
     // let error = new Error("Something went wrong");
-    res.status(400).send({status:"Something went wrong"});
+    res.status(400).send({status:"Could not save post to DB"});
   }
 });
 
@@ -304,7 +308,7 @@ router.post("/repost", async (req, res) => {
     notification: "",
   };
   if (feed.post_type === "error") {
-    res.status(400).send({status: "Something went wrong"});
+    res.status(400).send({status: "Invalid post request"});
   } else {
     const newFeed = new Feeds(feed);
     var oldFeed = await Feeds.findById(parent_id);
@@ -320,10 +324,19 @@ router.post("/repost", async (req, res) => {
       // Update to feed
       await feed.save();
       await oldFeed.save();
-      res.status(201).send({status: "Created New Retweet"});
+      if (feed.post_type === "retweet") {
+        res.status(201).send({status: "Created new repost successfully!"});
+      }
+      else if (feed.post_type === "quote") {
+       res.status(201).send({status: "Created new quote successfully!"}); 
+      }
     } catch (err) {
       // let error = new Error({"Something went wrong"});
-      res.status(400).send({status: "Something went wrong"});
+      if (feed.post_type === "retweet") {
+        res.status(400).send({status: "Could not save repost to DB"});
+      } else if (feed.post_type === "quote") {
+        res.status(400).send({status: "Could not save quote to DB"});
+      }
     }
   }
 });
@@ -345,10 +358,9 @@ router.put("/like", async (req, res) => {
     }
 
     await feed.save();
-    res.status(200).send({status: "Liked Feed"});
+    res.status(200).send({status: "Post liked successfully!"});
   } catch (err) {
-    // let error = new Error("Something went wrong");
-    res.status(400).send({ status: error });
+    res.status(400).send({ status: "Could not like post" });
   }
 });
 
@@ -409,10 +421,9 @@ router.put("/comment", async (req, res) => {
     // Update to feed
     await feed.save();
     await oldFeed.save();
-    res.status(201).send({status: "Created New Comment"});
+    res.status(201).send({status: "Created new comment successfully!"});
   } catch (err) {
-    let error = new Error({status: "Something went wrong"});
-    res.status(400).send(error);
+    res.status(400).send({status: "Could not post comment"});
   }
 });
 
@@ -431,7 +442,7 @@ router.get("/connections", async (req, res) => {
       res.send(users);
     }
   } else {
-    res.status(400).send({ status: "Bad Request" });
+    res.status(400).send({ status: "No userid provided to make request" });
   }
 });
 
@@ -441,7 +452,7 @@ router.put("/change-password", async (req, res) => {
   const validationResult = validation.resetPassword(req.body);
 
   if (validationResult.error) {
-    res.status(400).send({ status: "Bad Request" });
+    res.status(400).send({ status: "New passwords do not match" });
   } else {
     try {
       const user = await User.findById(userId);
@@ -454,13 +465,13 @@ router.put("/change-password", async (req, res) => {
         user.password = hashPassword;
         // save changes to db
         await user.save();
-        res.status(200).send({ status: "Password Changed Successfully" });
+        res.status(200).send({ status: "Password changed successfully!" });
       } else {
-        res.status(400).send({ status: "Old Password is Wrong" });
+        res.status(400).send({ status: "Old password is wrong" });
       }
     } catch (err) {
       console.log(err);
-      res.status(500).send({ status: "Internal Error" });
+      res.status(500).send({ status: "Internal error - please reload page" });
     }
   }
 });
@@ -479,10 +490,10 @@ router.get("/user/:username", async (req, res) => {
   
         res.send(entireFeeds);
       } else {
-        res.status(404).send({ status: "User Not Found" })
+        res.status(404).send({ status: "User not found" })
       }
     } else {
-      res.status(400).send({ status: "Bad Request" });
+      res.status(400).send({ status: "No username provided" });
     }
 });
 
@@ -545,10 +556,10 @@ router.get("/feeds/:feed_id", async (req, res) => {
         }
       }
 
-      res.send(response);
+      res.status(200).send(response);
     }
   } else {
-    res.status(400).send({ status: "Bad Request" });
+    res.status(400).send({ status: "No feed ID provided" });
   }
 });
 
@@ -556,7 +567,7 @@ router.get("/signup", async (req, res) => {
   let filters = 'name username image_src EmailID bio location'
   const user = await User.findById(req.header("userId"), filters);
   if (!user) {
-    res.status(400).send({ status: "Bad Request" });
+    res.status(400).send({ status: "Could not find any user matching that userid" });
   } else {
     res.status(200).send(user);
   }
@@ -565,7 +576,7 @@ router.get("/signup", async (req, res) => {
 router.post("/create-user", async (req, res) => {
   const { error } = validation.registerValidation(req.body);
   if (error) {
-    res.status(400).send({ status: "Bad Request" });
+    res.status(400).send({ status: "Did not receive all required user info" });
   } else {
     const { image_src, name, email, username, location, bio, password, password_conf, id } = req.body;
     const user = await User.findOne({
@@ -585,7 +596,7 @@ router.post("/create-user", async (req, res) => {
       user.isAdmin = false;
       user.username = username ? username : user.username;
       user.save();
-      res.send(user);
+      res.status(201).send({status: "New user credentials created!"});
     }
   }
 });
