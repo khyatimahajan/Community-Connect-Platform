@@ -52,6 +52,10 @@ export class UserService {
     return this.http.post<any>('http://' + this.link + '/repost', body);
   }
 
+  getDetailsForAFeed(userId: string, feedId: string): Observable<Array<any>> {
+    const headers = { userId };
+    return this.http.get<any>('http://' + this.link + '/feeds/' + feedId, { headers });
+  }
   /**
    * Handle Http operation that failed.
    * Let the app continue.

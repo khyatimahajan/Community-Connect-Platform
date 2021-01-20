@@ -41,6 +41,7 @@ import { FeedItemComponent } from './pages/home/feed-item/feed-item.component';
 import { AddCommentComponent } from './pages/home/add-comment/add-comment.component';
 import { AddQuoteComponent } from './pages/home/add-quote/add-quote.component';
 import { FeedItemMinimizedComponent } from './pages/home/feed-item-minimized/feed-item-minimized.component';
+import { FeedDetailComponent } from './pages/home/feed-detail/feed-detail.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { FeedItemMinimizedComponent } from './pages/home/feed-item-minimized/fee
     AddCommentComponent,
     AddQuoteComponent,
     FeedItemMinimizedComponent,
+    FeedDetailComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,10 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import {Feed} from '../../../model/Feed';
 import {UserService} from '../../../services/user/user.service';
 import {AuthService} from '../../../services/auth/auth.service';
 import {AddCommentComponent} from '../add-comment/add-comment.component';
 import {MatDialog} from '@angular/material/dialog';
 import {AddQuoteComponent} from '../add-quote/add-quote.component';
+import {FeedDetailComponent} from '../feed-detail/feed-detail.component';
 
 @Component({
   selector: 'app-feed-item',
@@ -14,6 +15,7 @@ import {AddQuoteComponent} from '../add-quote/add-quote.component';
 export class FeedItemComponent implements OnInit {
 
   @Input() feed: Feed;
+  @Output() feedStatusChange = new EventEmitter<boolean>();
 
   constructor(private userService: UserService, private authService: AuthService, public dialog: MatDialog) { }
 
@@ -57,6 +59,7 @@ export class FeedItemComponent implements OnInit {
     this.userService.postQuoteOrRepost(body).subscribe(response => {
       if (response) {
         this.feed.tweet.retweet_count++;
+        this.feedStatusChange.emit(true);
       }
     });
   }
@@ -69,7 +72,18 @@ export class FeedItemComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
         if (result === 'Quote Added') {
           this.feed.tweet.quote_count++;
+          this.feedStatusChange.emit(true);
         }
       });
+  }
+
+  openDetailModal() {
+    const dialogRef = this.dialog.open(FeedDetailComponent, {
+      width: '800px',
+      data: this.feed.tweet._id
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.feedStatusChange.emit(true);
+    });
   }
 }

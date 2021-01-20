@@ -1,66 +1,72 @@
 <div class="tweet-container">
-  <mat-card class="tweet-card">
-    <div class="tweet-info">
-      <div class="profile-pic">
-        <img *ngIf="feed.author_profile_pic" [src]="feed.author_profile_pic" alt="Image Source" class="icon-image">
-        <mat-icon *ngIf="!feed.author_profile_pic">face</mat-icon>
-      </div>
-      <div class="tweet">
-        <div class="name">{{feed.author_name}}</div>
-        <div class="text">{{feed.tweet.body}}</div>
-        <img class="image" *ngIf="feed.tweet.image != null" [src]="feed.tweet.image" alt="Image Source">
-        <div style="margin-top: 1em;">
-          <app-feed-item-minimized *ngIf="feed.tweet.parent_id"
-                                   [authorImage]="feed.parent_info.parent_profile_pic" [authorName]="feed.parent_info.parent_name"
-                                   [body]="feed.tweet.parent_id.body" [image]="feed.tweet.parent_id.image"></app-feed-item-minimized>
+    <mat-card class="tweet-card" (click)="openDetailModal()">
+        <div class="tweet-info">
+            <div class="profile-pic">
+                <img *ngIf="feed.author_profile_pic" [src]="feed.author_profile_pic" alt="Image Source"
+                     class="icon-image">
+                <mat-icon *ngIf="!feed.author_profile_pic">face</mat-icon>
+            </div>
+            <div class="tweet">
+                <div class="name">{{feed.author_name}}</div>
+                <div class="text">{{feed.tweet.body}}</div>
+                <img class="image" *ngIf="feed.tweet.image != null" [src]="feed.tweet.image" alt="Image Source">
+                <div style="margin-top: 1em;">
+                    <app-feed-item-minimized
+                            *ngIf="feed.tweet.parent_id"
+                            [authorImage]="feed.parent_info.parent_profile_pic"
+                            [authorName]="feed.parent_info.parent_name"
+                            [body]="feed.tweet.parent_id.body" [image]="feed.tweet.parent_id.image"
+                            (click)="$event.stopPropagation()">
+                    </app-feed-item-minimized>
+                </div>
+
+            </div>
         </div>
 
-      </div>
-    </div>
-
-    <div class="actions">
-      <div class="action-button reply" (click)="showCommentModal()">
-        <button
-          mat-icon-button
-          class="reply-button"
-          aria-label="Example icon button with a home icon"
-        >
-          <mat-icon>insert_comment</mat-icon>
-        </button>
-        <div>{{feed.tweet.reply_count}}</div>
-      </div>
-      <div class="action-button repost" [matMenuTriggerFor]="menu">
-        <button
-          mat-icon-button
-          class="repost-button"
-          aria-label="Example icon button with a home icon"
-        >
-          <mat-icon>repeat</mat-icon>
-        </button>
-        <div>{{feed.tweet.retweet_count + feed.tweet.quote_count}}</div>
-      </div>
-      <div class="action-button like" [ngClass]="{ liked: feed.is_liked }" (click)="toggleLike()">
-        <button
-          mat-icon-button
-          class="like-button"
-          aria-label="Example icon button with a home icon"
-        >
-          <mat-icon>favorite_border</mat-icon>
-        </button>
-        <div>{{feed.tweet.like_count}}</div>
-      </div>
-    </div>
-  </mat-card>
+        <div class="actions">
+            <div class="action-button reply" (click)="showCommentModal(); $event.stopPropagation()">
+                <button
+                        mat-icon-button
+                        class="reply-button"
+                        aria-label="Example icon button with a home icon"
+                >
+                    <mat-icon>insert_comment</mat-icon>
+                </button>
+                <div>{{feed.tweet.reply_count}}</div>
+            </div>
+            <div class="action-button repost" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+                <button
+                        mat-icon-button
+                        class="repost-button"
+                        aria-label="Example icon button with a home icon"
+                >
+                    <mat-icon>repeat</mat-icon>
+                </button>
+                <div>{{feed.tweet.retweet_count + feed.tweet.quote_count}}</div>
+            </div>
+            <div class="action-button like" [ngClass]="{ liked: feed.is_liked }"
+                 (click)="toggleLike(); $event.stopPropagation()">
+                <button
+                        mat-icon-button
+                        class="like-button"
+                        aria-label="Example icon button with a home icon"
+                >
+                    <mat-icon>favorite_border</mat-icon>
+                </button>
+                <div>{{feed.tweet.like_count}}</div>
+            </div>
+        </div>
+    </mat-card>
 </div>
 
 
 <mat-menu #menu="matMenu">
-  <button mat-menu-item (click)="repost()">
-    <mat-icon>repeat</mat-icon>
-    <span>Repost</span>
-  </button>
-  <button mat-menu-item (click)="openQuoteModal()">
-    <mat-icon>create</mat-icon>
-    <span>Quote</span>
-  </button>
+    <button mat-menu-item (click)="repost(); $event.stopPropagation()">
+        <mat-icon>repeat</mat-icon>
+        <span>Repost</span>
+    </button>
+    <button mat-menu-item (click)="openQuoteModal(); $event.stopPropagation()">
+        <mat-icon>create</mat-icon>
+        <span>Quote</span>
+    </button>
 </mat-menu>
