@@ -37,7 +37,6 @@ export class FeedItemComponent implements OnInit {
   }
 
   showCommentModal() {
-    console.log('Show Comment Modal');
     const dialogRef = this.dialog.open(AddCommentComponent, {
       width: '600px',
       data: this.feed
@@ -46,8 +45,6 @@ export class FeedItemComponent implements OnInit {
       if (result === 'Comment Added') {
         this.feed.tweet.reply_count++;
       }
-
-      console.log(`Dialog closed: ${result}`);
     });
   }
 }
