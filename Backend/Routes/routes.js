@@ -552,6 +552,16 @@ router.get("/feeds/:feed_id", async (req, res) => {
   }
 });
 
+router.get("/signup", async (req, res) => {
+  let filters = 'name username image_src EmailID bio location'
+  const user = await User.findById(req.header("userId"), filters);
+  if (!user) {
+    res.status(400).send({ status: "Bad Request" });
+  } else {
+    res.status(200).send(user);
+  }
+});
+
 router.post("/create-user", async (req, res) => {
   const { error } = validation.registerValidation(req.body);
   if (error) {
