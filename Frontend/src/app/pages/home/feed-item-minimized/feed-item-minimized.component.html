@@ -8,7 +8,7 @@
         <div class="tweet">
           <div class="name">{{authorName}}</div>
           <div class="text">{{body}}</div>
-          <img class="image" *ngIf="image != null" [src]="image" alt="Image Source">
+          <img class="image" *ngIf="image != null && image != 'null'" [src]="image" alt="Image Source">
         </div>
       </div>
     </mat-card>

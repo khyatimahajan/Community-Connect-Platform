@@ -17,7 +17,7 @@
           "
         >
           <div class="example-header-image">
-            <img *ngIf="currentUser && currentUser.profile_pic" [src]="currentUser.profile_pic" alt="Image Source" class="icon-image">
+            <img *ngIf="currentUser && currentUser.profile_pic && currentUser.profile_pic != 'null'" [src]="currentUser.profile_pic" alt="Image Source" class="icon-image">
             <mat-icon *ngIf="!currentUser || !currentUser.profile_pic">face</mat-icon>
           </div>
         </div>
