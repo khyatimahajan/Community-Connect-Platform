@@ -58,7 +58,14 @@
         </div>
     </div>
     <mat-divider style="margin-top: 1em;"></mat-divider>
-
+    <app-comment-detail
+            *ngFor="let com of comments"
+            [comment]="com"
+            [showUI]="isFeed(com)"
+            (loadDataEmitter)="loadDataAgain()"
+            (loadNewFeedEmitter)="loadNewFeed($event)"
+    >
+    </app-comment-detail>
 </div>
 
 
@@ -74,5 +81,9 @@
 </mat-menu>
 
 
-
-<button class="cancel-button" mat-button (click)="close()">CANCEL</button>
+<mat-dialog-actions class="separated-buttons">
+    <button class="comment-button" mat-button (click)="showCommentModal()"
+            [disabled]="">ADD COMMENT
+    </button>
+    <button class="cancel-button" mat-button (click)="close()">CANCEL</button>
+</mat-dialog-actions>
