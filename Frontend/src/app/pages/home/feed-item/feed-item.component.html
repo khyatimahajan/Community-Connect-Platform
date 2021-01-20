@@ -9,7 +9,12 @@
         <div class="name">{{feed.author_name}}</div>
         <div class="text">{{feed.tweet.body}}</div>
         <img class="image" *ngIf="feed.tweet.image != null" [src]="feed.tweet.image" alt="Image Source">
-<!--        <app-feed-item-minimized *ngIf="feed.tweet.parent_id" [feed]="feed.tweet.parent_id"></app-feed-item-minimized>-->
+        <div style="margin-top: 1em;">
+          <app-feed-item-minimized *ngIf="feed.tweet.parent_id"
+                                   [authorImage]="feed.parent_info.parent_profile_pic" [authorName]="feed.parent_info.parent_name"
+                                   [body]="feed.tweet.parent_id.body" [image]="feed.tweet.parent_id.image"></app-feed-item-minimized>
+        </div>
+
       </div>
     </div>
 

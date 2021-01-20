@@ -8,8 +8,11 @@ import { Feed } from 'src/app/model/Feed';
 })
 export class FeedItemMinimizedComponent implements OnInit {
 
-  @Input() feed: Feed; 
-  
+  @Input() authorName: string;
+  @Input() authorImage: string;
+  @Input() body: string;
+  @Input() image: string;
+
   constructor() { }
 
   ngOnInit(): void {

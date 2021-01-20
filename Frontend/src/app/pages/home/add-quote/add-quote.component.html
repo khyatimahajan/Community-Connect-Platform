@@ -16,8 +16,8 @@
             <mat-hint align="end"> {{ message.value.length }} / 280</mat-hint>
         </mat-form-field>
     </div>
-    <app-feed-item-minimized [feed]="data"></app-feed-item-minimized>
-<!--    <app-feed-item [feed]="data"></app-feed-item>-->
+    <app-feed-item-minimized [authorImage]="data.author_profile_pic" [authorName]="data.author_name"
+                             [body]="data.tweet.body" [image]="data.tweet.image"></app-feed-item-minimized>
     <mat-dialog-actions class="separated-buttons">
         <button class="comment-button" mat-button (click)="onCloseConfirm()"
                 [disabled]="buttonDisabled || quoteStr? quoteStr.length === 0: true">CONFIRM

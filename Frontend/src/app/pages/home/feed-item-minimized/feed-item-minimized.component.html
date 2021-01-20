@@ -2,13 +2,13 @@
     <mat-card class="tweet-card">
       <div class="tweet-info">
         <div class="profile-pic">
-          <img *ngIf="feed.author_profile_pic" [src]="feed.author_profile_pic" alt="Image Source" class="icon-image">
-          <mat-icon *ngIf="!feed.author_profile_pic">face</mat-icon>
+          <img *ngIf="authorImage" [src]="authorImage" alt="Image Source" class="icon-image">
+          <mat-icon *ngIf="!authorImage">face</mat-icon>
         </div>
         <div class="tweet">
-          <div class="name">{{feed.author_name}}</div>
-          <div class="text">{{feed.tweet.body}}</div>
-          <img class="image" *ngIf="feed.tweet.image != null" [src]="feed.tweet.image" alt="Image Source">
+          <div class="name">{{authorName}}</div>
+          <div class="text">{{body}}</div>
+          <img class="image" *ngIf="image != null" [src]="image" alt="Image Source">
         </div>
       </div>
     </mat-card>

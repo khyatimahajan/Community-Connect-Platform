@@ -1,6 +1,7 @@
 <div>
     <h2>Replying to {{data.author_name}}</h2>
-    <app-feed-item-minimized [feed]="data"></app-feed-item-minimized>
+    <app-feed-item-minimized [authorImage]="data.author_profile_pic" [authorName]="data.author_name"
+                             [body]="data.tweet.body" [image]="data.tweet.image"></app-feed-item-minimized>
     <div class="comment-area">
         <mat-form-field
                 style="flex: 1;"
