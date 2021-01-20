@@ -77,14 +77,16 @@ export class FeedItemComponent implements OnInit {
       });
   }
 
-  openDetailModal() {
+  openDetailModal(f: Feed) {
     const dialogRef = this.dialog.open(FeedDetailComponent, {
       width: '800px',
-      data: this.feed
+      data: f
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'Load') {
         this.feedStatusChange.emit(true);
+      } else if (result !== 'Cancel') {
+        this.openDetailModal(result);
       }
     });
   }

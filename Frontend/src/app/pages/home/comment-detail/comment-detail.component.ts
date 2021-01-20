@@ -19,7 +19,7 @@ export class CommentDetailComponent implements OnInit {
   @Input() comment: FeedDetailItem;
   @Input() showUI: boolean;
   @Output() loadDataEmitter = new EventEmitter<boolean>();
-  @Output() loadNewFeedEmitter = new EventEmitter<string>();
+  @Output() loadNewFeedEmitter = new EventEmitter<Feed>();
 
 
   constructor(
@@ -100,7 +100,7 @@ export class CommentDetailComponent implements OnInit {
       this.feed = {
         tweet: comment.children,
         author_profile_pic: comment.author_profile_pic,
-        author_name: comment.author_name,
+        author_name: comment.author_username,
         is_liked: comment.is_liked,
         is_retweeted: comment.is_retweeted,
         parent_info: comment.parent_info,
@@ -111,6 +111,6 @@ export class CommentDetailComponent implements OnInit {
   }
 
   goInsideComment() {
-    this.loadNewFeedEmitter.emit(this.comment.children._id);
+    this.loadNewFeedEmitter.emit(this.feed);
   }
 }

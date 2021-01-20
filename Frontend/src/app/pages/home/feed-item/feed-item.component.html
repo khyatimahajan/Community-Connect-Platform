@@ -1,5 +1,5 @@
 <div class="tweet-container">
-    <mat-card class="tweet-card" (click)="openDetailModal()">
+    <mat-card class="tweet-card" (click)="openDetailModal(feed)">
         <div class="tweet-info">
             <div class="profile-pic">
                 <img *ngIf="feed.author_profile_pic" [src]="feed.author_profile_pic" alt="Image Source"

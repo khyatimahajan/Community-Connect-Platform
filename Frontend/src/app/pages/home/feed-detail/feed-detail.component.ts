@@ -22,21 +22,18 @@ export class FeedDetailComponent implements OnInit {
       private authService: AuthService,
       public dialog: MatDialog
   ) {
-    this.loadData(this.feed.tweet._id);
+    this.loadData();
   }
 
   ngOnInit(): void {
 
   }
 
-  loadData(feedId: string) {
+  loadData() {
     console.log('We come here .. ');
-    if (feedId != null && this.authService.currentUser != null) {
-      this.userService.getDetailsForAFeed(this.authService.currentUser.id, feedId).subscribe(response => {
+    if (this.feed.tweet._id != null && this.authService.currentUser != null) {
+      this.userService.getDetailsForAFeed(this.authService.currentUser.id, this.feed.tweet._id).subscribe(response => {
         this.comments = response;
-        if (this.comments.length > 0) {
-          // this.feed = this.getFeedFromComment(this.comments[0]);
-        }
       });
     } else {
       close();
@@ -72,7 +69,7 @@ export class FeedDetailComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'Comment Added') {
         this.feed.tweet.reply_count++;
-        this.loadData(this.feed.tweet._id);
+        this.loadData();
       }
     });
   }
@@ -85,7 +82,7 @@ export class FeedDetailComponent implements OnInit {
     this.userService.postQuoteOrRepost(body).subscribe(response => {
       if (response) {
         this.feed.tweet.retweet_count++;
-        this.loadData(this.feed.tweet._id);
+        this.loadData();
       }
     });
   }
@@ -98,7 +95,7 @@ export class FeedDetailComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'Quote Added') {
         this.feed.tweet.quote_count++;
-        this.loadData(this.feed.tweet._id);
+        this.loadData();
       }
     });
   }
@@ -107,27 +104,11 @@ export class FeedDetailComponent implements OnInit {
     return comment.feed == null;
   }
 
-  loadNewFeed($event: string) {
-    console.log('emit: ' + $event)
-    this.loadData($event);
+  loadNewFeed($event: any) {
+    this.thisDialogRef.close($event);
   }
 
   loadDataAgain() {
-    this.loadData(this.feed.tweet._id);
-  }
-
-  getFeedFromComment(comment: FeedDetailItem): Feed {
-    if (comment && comment.feed != null) {
-      this.feed = {
-        tweet: comment.children,
-        author_profile_pic: comment.author_profile_pic,
-        author_name: comment.author_name,
-        is_liked: comment.is_liked,
-        is_retweeted: comment.is_retweeted,
-        parent_info: comment.parent_info,
-      };
-    }
-    else { return null; }
-
+    this.loadData();
   }
 }
