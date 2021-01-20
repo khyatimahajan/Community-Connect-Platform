@@ -1,13 +1,12 @@
 <div>
-    <h2>Replying to {{data.author_name}}</h2>
-    <app-feed-item-minimized [feed]="data"></app-feed-item-minimized>
+    <h2>Quoting to {{data.author_name}}</h2>
     <div class="comment-area">
         <mat-form-field
                 style="flex: 1;"
         >
-            <mat-label>Add Reply</mat-label>
+            <mat-label>Add Quote</mat-label>
             <textarea
-                    [(ngModel)]='commentStr'
+                    [(ngModel)]='quoteStr'
                     #message
                     matInput
                     placeholder="Ex. I am feeling..."
@@ -17,9 +16,11 @@
             <mat-hint align="end"> {{ message.value.length }} / 280</mat-hint>
         </mat-form-field>
     </div>
+    <app-feed-item-minimized [feed]="data"></app-feed-item-minimized>
+<!--    <app-feed-item [feed]="data"></app-feed-item>-->
     <mat-dialog-actions class="separated-buttons">
         <button class="comment-button" mat-button (click)="onCloseConfirm()"
-                [disabled]="buttonDisabled || commentStr? commentStr.length === 0: true">CONFIRM
+                [disabled]="buttonDisabled || quoteStr? quoteStr.length === 0: true">CONFIRM
         </button>
         <button class="cancel-button" mat-button (click)="onCloseCancel()">CANCEL</button>
     </mat-dialog-actions>

@@ -9,6 +9,7 @@
         <div class="name">{{feed.author_name}}</div>
         <div class="text">{{feed.tweet.body}}</div>
         <img class="image" *ngIf="feed.tweet.image != null" [src]="feed.tweet.image" alt="Image Source">
+<!--        <app-feed-item-minimized *ngIf="feed.tweet.parent_id" [feed]="feed.tweet.parent_id"></app-feed-item-minimized>-->
       </div>
     </div>
 
@@ -19,11 +20,11 @@
           class="reply-button"
           aria-label="Example icon button with a home icon"
         >
-          <mat-icon>add_comment</mat-icon>
+          <mat-icon>insert_comment</mat-icon>
         </button>
         <div>{{feed.tweet.reply_count}}</div>
       </div>
-      <div class="action-button repost">
+      <div class="action-button repost" [matMenuTriggerFor]="menu">
         <button
           mat-icon-button
           class="repost-button"
@@ -48,6 +49,13 @@
 </div>
 
 
-<ng-template #mymodal>
-  <div> Hello World </div>
-</ng-template>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="repost()">
+    <mat-icon>repeat</mat-icon>
+    <span>Repost</span>
+  </button>
+  <button mat-menu-item (click)="openQuoteModal()">
+    <mat-icon>create</mat-icon>
+    <span>Quote</span>
+  </button>
+</mat-menu>

@@ -1,0 +1,43 @@
+.tweet-card {
+  box-shadow: rgba(0, 0, 0, 0.5) 0 3px 8px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+.icon-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.tweet-card:hover {
+  background-color: rgb(247, 247, 247);
+  cursor: pointer;
+}
+
+.tweet-info {
+  margin-top: 0.5em;
+  margin-bottom: 2em;
+  display: flex;
+  .profile-pic {
+    min-width: 50px;
+    min-height: 50px;
+    margin-left: 1em;
+    margin-right: 0.5em;
+  }
+  .tweet {
+    flex: 1;
+    margin-right: 0.5em;
+    display: block;
+    .name {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .text {
+      min-width: 60px;
+    }
+    .image {
+      margin-top: 1em;
+    }
+  }
+}

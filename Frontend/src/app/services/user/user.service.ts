@@ -48,6 +48,10 @@ export class UserService {
     return this.http.put<any>('http://' + this.link + '/comment', body);
   }
 
+  postQuoteOrRepost(body: any): Observable<any> {
+    return this.http.post<any>('http://' + this.link + '/repost', body);
+  }
+
   /**
    * Handle Http operation that failed.
    * Let the app continue.

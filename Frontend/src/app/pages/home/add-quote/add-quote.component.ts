@@ -1,21 +1,20 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatDialogRef } from '@angular/material/dialog';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Feed} from '../../../model/Feed';
 import {UserService} from '../../../services/user/user.service';
 import {AuthService} from '../../../services/auth/auth.service';
 
 @Component({
-  selector: 'app-add-comment',
-  templateUrl: './add-comment.component.html',
-  styleUrls: ['./add-comment.component.scss']
+  selector: 'app-add-quote',
+  templateUrl: './add-quote.component.html',
+  styleUrls: ['./add-quote.component.scss']
 })
-export class AddCommentComponent implements OnInit {
+export class AddQuoteComponent implements OnInit {
 
-  commentStr = '';
+  quoteStr = '';
   buttonDisabled = false;
   constructor(
-      public thisDialogRef: MatDialogRef<AddCommentComponent>,
+      public thisDialogRef: MatDialogRef<AddQuoteComponent>,
       @Inject(MAT_DIALOG_DATA) public data: Feed,
       private userService: UserService,
       private authService: AuthService
@@ -24,17 +23,17 @@ export class AddCommentComponent implements OnInit {
   ngOnInit() {
   }
   onCloseConfirm() {
-    if (this.commentStr.length > 0) {
+    if (this.quoteStr.length > 0) {
       const body = {
-        body: this.commentStr,
+        body: this.quoteStr,
         userId: this.authService.currentUser.id,
         parent_id: this.data.tweet._id
       };
       this.buttonDisabled = true;
-      this.userService.putComment(body).subscribe(response => {
+      this.userService.postQuoteOrRepost(body).subscribe(response => {
         if (response) {
           this.buttonDisabled = false;
-          this.thisDialogRef.close('Comment Added');
+          this.thisDialogRef.close('Quote Added');
         }
       });
     }

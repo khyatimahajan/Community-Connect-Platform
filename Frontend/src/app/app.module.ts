@@ -39,6 +39,8 @@ import { ProfileComponent } from './pages/home/profile/profile.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FeedItemComponent } from './pages/home/feed-item/feed-item.component';
 import { AddCommentComponent } from './pages/home/add-comment/add-comment.component';
+import { AddQuoteComponent } from './pages/home/add-quote/add-quote.component';
+import { FeedItemMinimizedComponent } from './pages/home/feed-item-minimized/feed-item-minimized.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +57,8 @@ import { AddCommentComponent } from './pages/home/add-comment/add-comment.compon
     ProfileComponent,
     FeedItemComponent,
     AddCommentComponent,
+    AddQuoteComponent,
+    FeedItemMinimizedComponent,
   ],
   imports: [
     BrowserModule,
