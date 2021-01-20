@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
+// tslint:disable:variable-name
 export class LoginComponent implements OnInit {
   form: FormGroup;
   signupForm: FormGroup;
@@ -23,6 +25,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
+    private _snackBar: MatSnackBar,
     private authService: AuthService
   ) {
 
@@ -57,6 +60,9 @@ export class LoginComponent implements OnInit {
           } else {
             this.loginInvalid = true;
           }
+        }, error => {
+          this.openSnackBar(error.error.status);
+          this.loginInvalid = true;
         });
       } catch (err) {
         this.loginInvalid = true;
@@ -86,4 +92,13 @@ export class LoginComponent implements OnInit {
       this.formSubmitAttempt = true;
     }
   }
+
+  openSnackBar(message: string) {
+    this._snackBar.open(message, null, {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
+  }
+
 }

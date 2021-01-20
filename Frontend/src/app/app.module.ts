@@ -23,6 +23,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDialogActions } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
@@ -87,6 +88,7 @@ import { CommentDetailComponent } from './pages/home/comment-detail/comment-deta
     FontAwesomeModule,
     MatProgressBarModule,
     MatDialogModule,
+    MatSnackBarModule,
     MatProgressSpinnerModule
   ],
   providers: [],
