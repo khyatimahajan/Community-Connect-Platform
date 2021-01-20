@@ -68,9 +68,19 @@ export class CommentDetailComponent implements OnInit {
   }
 
   repost() {
+    var feedID;
+    if (this.comment.children) {
+        if (this.comment.children.post_type === "retweet") {
+          feedID = this.comment.children.conversation_id;
+        } else {
+          feedID = this.comment.children._id;
+        }
+    } else {
+      feedID = this.comment.children._id;
+    }
     const body = {
       userId: this.authService.currentUser.id,
-      parent_id: this.feed.tweet.conversation_id
+      parent_id: feedID
     };
     this.userService.postQuoteOrRepost(body).subscribe(response => {
       if (response) {

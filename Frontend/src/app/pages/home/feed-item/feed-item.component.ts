@@ -52,9 +52,19 @@ export class FeedItemComponent implements OnInit {
   }
 
   repost() {
+    var feedID;
+    if (this.feed.tweet) {
+        if (this.feed.tweet.post_type === "retweet") {
+          feedID = this.feed.tweet.conversation_id;
+        } else {
+          feedID = this.feed.tweet._id;
+        }
+    } else {
+      feedID = this.feed.tweet._id;
+    }
     const body = {
       userId: this.authService.currentUser.id,
-      parent_id: this.feed.tweet.conversation_id
+      parent_id: feedID
     };
     this.userService.postQuoteOrRepost(body).subscribe(response => {
       if (response) {
@@ -85,7 +95,7 @@ export class FeedItemComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'Load') {
         this.feedStatusChange.emit(true);
-      } else if (result !== 'Cancel') {
+      } else if (result !== 'Cancel' && result != null && result.length > 5) {
         this.openDetailModal(result);
       }
     });

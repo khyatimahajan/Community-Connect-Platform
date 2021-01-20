@@ -24,10 +24,21 @@ export class AddQuoteComponent implements OnInit {
   }
   onCloseConfirm() {
     if (this.quoteStr.length > 0) {
+
+      var feedID;
+      if (this.data.tweet.parent_id) {
+        if (this.data.tweet.parent_id.post_type === "retweet") {
+          feedID = this.data.tweet.conversation_id;
+        } else {
+          feedID = this.data.tweet._id;
+        }
+      } else {
+        feedID = this.data.tweet._id;
+      }
       const body = {
         body: this.quoteStr,
         userId: this.authService.currentUser.id,
-        parent_id: this.data.tweet.conversation_id
+        parent_id: feedID
       };
       this.buttonDisabled = true;
       this.userService.postQuoteOrRepost(body).subscribe(response => {
