@@ -130,7 +130,7 @@ router.get("/feeds", async (req, res) => {
       var entireFeeds = await Feeds.find({
         "visible_to.groups": { $in: group },
         "post_type": { $ne: "reply" },
-      }, filters, { sort: { "created_at" : "descending" }}).populate("parent_id", filters);
+      }, filters, { sort: { "created_at" : "descending" }}).limit(50).populate("parent_id", filters);
 
       var response = [];
       entireFeeds.forEach(f => {
