@@ -484,7 +484,7 @@ router.get("/user/:username", async (req, res) => {
     } else {
       res.status(400).send({ status: "Bad Request" });
     }
-  });
+});
 
 router.get("/feeds/:feed_id", async (req, res) => {
   let feed_id = req.params.feed_id;
@@ -549,6 +549,44 @@ router.get("/feeds/:feed_id", async (req, res) => {
     }
   } else {
     res.status(400).send({ status: "Bad Request" });
+  }
+});
+
+router.get("/signup", async (req, res) => {
+  let filters = 'name username image_src EmailID bio location'
+  const user = await User.findById(req.header("userId"), filters);
+  if (!user) {
+    res.status(400).send({ status: "Bad Request" });
+  } else {
+    res.status(200).send(user);
+  }
+});
+
+router.post("/create-user", async (req, res) => {
+  const { error } = validation.registerValidation(req.body);
+  if (error) {
+    res.status(400).send({ status: "Bad Request" });
+  } else {
+    const { image_src, name, email, username, location, bio, password, password_conf, id } = req.body;
+    const user = await User.findOne({
+      EmailID: email,
+      username: username,
+    });
+    if (!user) {
+      res.status(404).send({ status: "User not found" });
+    } else {
+      let salt = await bcrypt.genSalt(10);
+      // generate new hashed password
+      const hashPassword = await bcrypt.hash(password, salt);
+      user.bio = bio;
+      user.profile_pic = image_src;
+      user.location = location;
+      user.password = hashPassword;
+      user.isAdmin = false;
+      user.username = username ? username : user.username;
+      user.save();
+      res.send(user);
+    }
   }
 });
 
