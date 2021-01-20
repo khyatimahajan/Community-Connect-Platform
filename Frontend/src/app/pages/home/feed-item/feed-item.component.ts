@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import {Feed} from '../../../model/Feed';
 import {UserService} from '../../../services/user/user.service';
 import {AuthService} from '../../../services/auth/auth.service';
+import {AddCommentComponent} from '../add-comment/add-comment.component';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-feed-item',
@@ -12,7 +14,7 @@ export class FeedItemComponent implements OnInit {
 
   @Input() feed: Feed;
 
-  constructor(private userService: UserService, private authService: AuthService) { }
+  constructor(private userService: UserService, private authService: AuthService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
@@ -31,6 +33,21 @@ export class FeedItemComponent implements OnInit {
           this.feed.tweet.like_count--;
         }
       }
+    });
+  }
+
+  showCommentModal() {
+    console.log('Show Comment Modal');
+    const dialogRef = this.dialog.open(AddCommentComponent, {
+      width: '600px',
+      data: this.feed
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'Comment Added') {
+        this.feed.tweet.reply_count++;
+      }
+
+      console.log(`Dialog closed: ${result}`);
     });
   }
 }

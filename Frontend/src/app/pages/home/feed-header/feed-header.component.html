@@ -17,8 +17,8 @@
           "
         >
           <div class="example-header-image">
-            <img *ngIf="currentUser.profile_pic" [src]="currentUser.profile_pic" alt="Image Source" class="icon-image">
-            <mat-icon *ngIf="!currentUser.profile_pic">face</mat-icon>
+            <img *ngIf="currentUser && currentUser.profile_pic" [src]="currentUser.profile_pic" alt="Image Source" class="icon-image">
+            <mat-icon *ngIf="!currentUser || !currentUser.profile_pic">face</mat-icon>
           </div>
         </div>
         <div style="margin-top: 1em; flex: 10; display: flex">
@@ -50,7 +50,7 @@
         </button>
       </mat-card-actions>
       <mat-card-actions>
-        <button class="post-button" mat-button (click)="addPost()" [disabled]="buttonDisabled || messageStuff? messageStuff.length === 0: false">POST</button>
+        <button class="post-button" mat-button (click)="addPost()" [disabled]="buttonDisabled || messageStuff? messageStuff.length === 0: true">POST</button>
       </mat-card-actions>
     </div>
   </mat-card>

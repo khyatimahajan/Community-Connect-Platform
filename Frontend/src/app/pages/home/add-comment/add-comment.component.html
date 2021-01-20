@@ -1,0 +1,26 @@
+<div>
+    <h2>Replying to {{data.author_name}}</h2>
+    <app-feed-item [feed]="data"></app-feed-item>
+    <div class="comment-area">
+        <mat-form-field
+                style="flex: 1;"
+        >
+            <mat-label>Add Comment</mat-label>
+            <textarea
+                    [(ngModel)]='commentStr'
+                    #message
+                    matInput
+                    placeholder="Ex. I am feeling..."
+                    maxlength="280"
+                    rows="5"
+            ></textarea>
+            <mat-hint align="end"> {{ message.value.length }} / 280</mat-hint>
+        </mat-form-field>
+    </div>
+    <mat-dialog-actions class="separated-buttons">
+        <button class="comment-button" mat-button (click)="onCloseConfirm()"
+                [disabled]="buttonDisabled || commentStr? commentStr.length === 0: true">CONFIRM
+        </button>
+        <button class="cancel-button" mat-button (click)="onCloseCancel()">CANCEL</button>
+    </mat-dialog-actions>
+</div>

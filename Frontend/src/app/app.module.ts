@@ -21,7 +21,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogActions } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
@@ -37,6 +38,7 @@ import { ProfileComponent } from './pages/home/profile/profile.component';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FeedItemComponent } from './pages/home/feed-item/feed-item.component';
+import { AddCommentComponent } from './pages/home/add-comment/add-comment.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,8 @@ import { FeedItemComponent } from './pages/home/feed-item/feed-item.component';
     FeedListComponent,
     NotificationComponent,
     ProfileComponent,
-    FeedItemComponent
+    FeedItemComponent,
+    AddCommentComponent,
   ],
   imports: [
     BrowserModule,
@@ -75,6 +78,7 @@ import { FeedItemComponent } from './pages/home/feed-item/feed-item.component';
     MatListModule,
     FontAwesomeModule,
     MatProgressBarModule,
+    MatDialogModule,
     MatProgressSpinnerModule
   ],
   providers: [],

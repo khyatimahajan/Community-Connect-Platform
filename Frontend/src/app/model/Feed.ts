@@ -11,19 +11,8 @@ export class Feed {
         reply_count: number,
         quote_count: number,
         post_type: string,
-        image: string
-        parent_id: {
-            _id: string,
-            user_id: string,
-            body: string,
-            created_at: DateTimeFormat,
-            like_count: number,
-            retweet_count: number,
-            reply_count: number,
-            quote_count: number,
-            post_type: string,
-            image: string
-        },
+        image: string,
+        parent_id: Feed
     };
     author_profile_pic: string;
     author_name: string;
