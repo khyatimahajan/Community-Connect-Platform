@@ -70,7 +70,7 @@ export class CommentDetailComponent implements OnInit {
   repost() {
     const body = {
       userId: this.authService.currentUser.id,
-      parent_id: this.feed.tweet._id
+      parent_id: this.feed.tweet.conversation_id
     };
     this.userService.postQuoteOrRepost(body).subscribe(response => {
       if (response) {

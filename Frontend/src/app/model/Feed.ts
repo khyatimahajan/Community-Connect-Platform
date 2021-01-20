@@ -12,6 +12,7 @@ export class Feed {
         quote_count: number,
         post_type: string,
         image: string,
+        conversation_id: string,
         parent_id: {
             _id: string,
             user_id: string,
@@ -21,6 +22,7 @@ export class Feed {
             retweet_count: number,
             reply_count: number,
             quote_count: number,
+            conversation_id: string,
             post_type: string,
             image: string,
         }

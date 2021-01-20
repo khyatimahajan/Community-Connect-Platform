@@ -121,7 +121,7 @@ router.post("/logout", async (req, res) => {
 
 router.get("/feeds", async (req, res) => {
   let userId = req.headers.id;
-  let filters = '_id parent_id user_id body created_at like_count retweet_count reply_count quote_count post_type image liked_by';
+  let filters = '_id parent_id user_id body created_at like_count retweet_count reply_count quote_count post_type image liked_by conversation_id';
   if (userId != null) {
     const user = await User.findById(userId);
     if (user) {
@@ -152,7 +152,7 @@ router.get("/feeds", async (req, res) => {
             }
           }
           if (feed.tweet.parent_id && feed.tweet.parent_id.user_id === tempuser.user_id) {
-            feed["parent_info"] = {"parent_profile_pic": tempuser.profile_pic, "parent_name": tempuser.user_id};
+            feed["parent_info"] = {"parent_profile_pic": tempuser.profile_pic, "parent_name": tempuser.username};
           }
         }
       }
@@ -494,7 +494,7 @@ router.get("/feeds/:feed_id", async (req, res) => {
     if (user) {
       let group = user.group_id;
       let allUsers = await User.find({}, 'user_id username profile_pic');
-      let filters = '_id parent_id user_id body created_at like_count retweet_count reply_count quote_count post_type image liked_by';
+      let filters = '_id parent_id user_id body created_at like_count retweet_count reply_count quote_count post_type image liked_by conversation_id';
       var entireFeeds = await Feeds.findOne({
         "_id": feed_id,
         "visible_to.groups": { $in: group }
@@ -530,7 +530,7 @@ router.get("/feeds/:feed_id", async (req, res) => {
             }
           }
           if (feed.feed && feed.feed.parent_id && feed.feed.parent_id.user_id === tempuser.user_id) {
-            feed["parent_info"] = {"parent_profile_pic": tempuser.profile_pic, "parent_name": tempuser.user_id};
+            feed["parent_info"] = {"parent_profile_pic": tempuser.profile_pic, "parent_name": tempuser.username};
           }
           if (feed.children && feed.children.user_id === tempuser.user_id) {
             feed["author_profile_pic"] = tempuser.profile_pic;
@@ -540,7 +540,7 @@ router.get("/feeds/:feed_id", async (req, res) => {
             }
           }
           if (feed.children && feed.children.parent_id && feed.children.parent_id.user_id === tempuser.user_id) {
-            feed["parent_info"] = {"parent_profile_pic": tempuser.profile_pic, "parent_name": tempuser.user_id};
+            feed["parent_info"] = {"parent_profile_pic": tempuser.profile_pic, "parent_name": tempuser.username};
           }
         }
       }

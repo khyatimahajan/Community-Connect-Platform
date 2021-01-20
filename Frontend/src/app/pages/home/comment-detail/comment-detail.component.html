@@ -9,7 +9,7 @@
                 </div>
                 <div class="tweet">
                     <div class="name">{{feed.author_name}}</div>
-                    <div class="text">{{feed.tweet.body}}</div>
+                    <div class="text"  [innerHtml]="feed.tweet.body"></div>
                     <img class="image" *ngIf="feed.tweet.image != null && feed.tweet.image != 'null'" [src]="feed.tweet.image" alt="Image Source">
                 </div>
             </div>

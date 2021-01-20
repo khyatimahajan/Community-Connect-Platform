@@ -13,6 +13,7 @@ export class FeedDetailItem {
         quote_count: number,
         post_type: string,
         image: string,
+        conversation_id: string,
         parent_id: {
             _id: string,
             user_id: string,
@@ -23,6 +24,7 @@ export class FeedDetailItem {
             reply_count: number,
             quote_count: number,
             post_type: string,
+            conversation_id: string,
             image: string
         }
     };
@@ -37,12 +39,14 @@ export class FeedDetailItem {
         quote_count: number,
         post_type: string,
         image: string,
+        conversation_id: string,
         parent_id: {
             _id: string,
             user_id: string,
             body: string,
             created_at: DateTimeFormat,
             like_count: number,
+            conversation_id: string,
             retweet_count: number,
             reply_count: number,
             quote_count: number,

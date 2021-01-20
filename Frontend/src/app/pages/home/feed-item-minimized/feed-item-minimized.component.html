@@ -1,5 +1,5 @@
 <div class="tweet-container">
-    <mat-card class="tweet-card">
+    <div class="tweet-card">
       <div class="tweet-info">
         <div class="profile-pic">
           <img *ngIf="authorImage" [src]="authorImage" alt="Image Source" class="icon-image">
@@ -7,9 +7,9 @@
         </div>
         <div class="tweet">
           <div class="name">{{authorName}}</div>
-          <div class="text">{{body}}</div>
+          <div class="text" [innerHtml]="body"></div>
           <img class="image" *ngIf="image != null && image != 'null'" [src]="image" alt="Image Source">
         </div>
       </div>
-    </mat-card>
+    </div>
 </div>

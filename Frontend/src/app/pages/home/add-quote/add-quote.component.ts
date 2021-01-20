@@ -27,7 +27,7 @@ export class AddQuoteComponent implements OnInit {
       const body = {
         body: this.quoteStr,
         userId: this.authService.currentUser.id,
-        parent_id: this.data.tweet._id
+        parent_id: this.data.tweet.conversation_id
       };
       this.buttonDisabled = true;
       this.userService.postQuoteOrRepost(body).subscribe(response => {
