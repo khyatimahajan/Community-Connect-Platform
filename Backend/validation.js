@@ -9,7 +9,7 @@ const firstLoginValidation = (data) => {
 	return schema.validate(data);
 };
 
-// Registeration
+// Registration
 const registerValidation = (data) => {
 	const schema = Joi.object({
 		image_src: Joi.string().required(),
