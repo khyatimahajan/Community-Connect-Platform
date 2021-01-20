@@ -103,4 +103,12 @@ export class FeedItemComponent implements OnInit {
       }
     });
   }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message ? message : 'Error' ? message : 'Error', null, {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
+  }
 }

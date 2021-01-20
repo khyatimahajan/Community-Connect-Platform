@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Feed} from '../../../model/Feed';
 import {UserService} from '../../../services/user/user.service';
 import {AuthService} from '../../../services/auth/auth.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-add-quote',
@@ -17,6 +18,7 @@ export class AddQuoteComponent implements OnInit {
       public thisDialogRef: MatDialogRef<AddQuoteComponent>,
       @Inject(MAT_DIALOG_DATA) public data: Feed,
       private userService: UserService,
+      private snackBar: MatSnackBar,
       private authService: AuthService
   ) { }
 
@@ -25,9 +27,9 @@ export class AddQuoteComponent implements OnInit {
   onCloseConfirm() {
     if (this.quoteStr.length > 0) {
 
-      var feedID;
+      let feedID;
       if (this.data.tweet.parent_id) {
-        if (this.data.tweet.parent_id.post_type === "retweet") {
+        if (this.data.tweet.parent_id.post_type === 'retweet') {
           feedID = this.data.tweet.conversation_id;
         } else {
           feedID = this.data.tweet._id;
@@ -46,10 +48,20 @@ export class AddQuoteComponent implements OnInit {
           this.buttonDisabled = false;
           this.thisDialogRef.close('Quote Added');
         }
+      }, error => {
+        this.openSnackBar(error.error.status);
       });
     }
   }
   onCloseCancel() {
     this.thisDialogRef.close('Cancel');
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message ? message : 'Error' ? message : 'Error', null, {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
   }
 }

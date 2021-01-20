@@ -4,6 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import {Feed} from '../../../model/Feed';
 import {UserService} from '../../../services/user/user.service';
 import {AuthService} from '../../../services/auth/auth.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-add-comment',
@@ -18,6 +19,7 @@ export class AddCommentComponent implements OnInit {
       public thisDialogRef: MatDialogRef<AddCommentComponent>,
       @Inject(MAT_DIALOG_DATA) public data: Feed,
       private userService: UserService,
+      private snackBar: MatSnackBar,
       private authService: AuthService
   ) { }
 
@@ -36,10 +38,20 @@ export class AddCommentComponent implements OnInit {
           this.buttonDisabled = false;
           this.thisDialogRef.close('Comment Added');
         }
+      }, error => {
+        this.openSnackBar(error.error.status);
       });
     }
   }
   onCloseCancel() {
     this.thisDialogRef.close('Cancel');
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message ? message : 'Error' ? message : 'Error', null, {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
   }
 }

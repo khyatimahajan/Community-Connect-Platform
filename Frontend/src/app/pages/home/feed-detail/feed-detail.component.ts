@@ -6,6 +6,7 @@ import {Feed} from '../../../model/Feed';
 import {AddCommentComponent} from '../add-comment/add-comment.component';
 import {AddQuoteComponent} from '../add-quote/add-quote.component';
 import {FeedDetailItem} from '../../../model/FeedDetailItem';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-feed-detail',
@@ -20,6 +21,7 @@ export class FeedDetailComponent implements OnInit {
       @Inject(MAT_DIALOG_DATA) public feed: Feed,
       private userService: UserService,
       private authService: AuthService,
+      private snackBar: MatSnackBar,
       public dialog: MatDialog
   ) {
     this.loadData();
@@ -58,6 +60,8 @@ export class FeedDetailComponent implements OnInit {
           this.feed.tweet.like_count--;
         }
       }
+    }, error => {
+      this.openSnackBar(error.error.status);
     });
   }
 
@@ -75,9 +79,9 @@ export class FeedDetailComponent implements OnInit {
   }
 
   repost() {
-    var feedID;
+    let feedID;
     if (this.feed.tweet) {
-        if (this.feed.tweet.post_type === "retweet") {
+        if (this.feed.tweet.post_type === 'retweet') {
           feedID = this.feed.tweet.conversation_id;
         } else {
           feedID = this.feed.tweet._id;
@@ -94,6 +98,8 @@ export class FeedDetailComponent implements OnInit {
         this.feed.tweet.retweet_count++;
         this.loadData();
       }
+    }, error => {
+      this.openSnackBar(error.error.status);
     });
   }
 
@@ -120,5 +126,13 @@ export class FeedDetailComponent implements OnInit {
 
   loadDataAgain() {
     this.loadData();
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open( message ? message : 'Error' ? message : 'Error', null, {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
   }
 }

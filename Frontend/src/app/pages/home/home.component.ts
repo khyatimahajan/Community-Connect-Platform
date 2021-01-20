@@ -82,7 +82,7 @@ export class HomeComponent implements OnInit {
     }
 
     openSnackBar(message: string) {
-        this._snackBar.open(message, null, {
+        this._snackBar.open(message ? message : 'Error', null, {
             duration: 5000,
             horizontalPosition: 'center',
             verticalPosition: 'top',
