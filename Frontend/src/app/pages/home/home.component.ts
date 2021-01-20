@@ -66,7 +66,7 @@ export class HomeComponent implements OnInit {
             case 1:
                 break;
             case 2:
-                break;
+               // break;
             case 3:
                 this.authService.setUser(null);
                 this.router.navigate(['/login']);

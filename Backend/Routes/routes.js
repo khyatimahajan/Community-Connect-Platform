@@ -147,7 +147,7 @@ router.get("/feeds", async (req, res) => {
           if (feed.tweet.user_id === tempuser.user_id) {
             feed["author_profile_pic"] = tempuser.profile_pic;
             feed["author_name"] = tempuser.username;
-            if (feed.tweet.liked_by.includes(user.user_id)) {
+            if (feed.tweet.liked_by.includes(user.username)) {
               feed["is_liked"] = true;
             }
           }
@@ -525,7 +525,7 @@ router.get("/feeds/:feed_id", async (req, res) => {
           if (feed.feed && feed.feed.user_id === tempuser.user_id) {
             feed["author_profile_pic"] = tempuser.profile_pic;
             feed["author_username"] = tempuser.username;
-            if (feed.feed.liked_by.includes(user.user_id)) {
+            if (feed.feed.liked_by.includes(user.username)) {
               feed["is_liked"] = true;
             }
           }
@@ -535,7 +535,7 @@ router.get("/feeds/:feed_id", async (req, res) => {
           if (feed.children && feed.children.user_id === tempuser.user_id) {
             feed["author_profile_pic"] = tempuser.profile_pic;
             feed["author_username"] = tempuser.username;
-            if (feed.children.liked_by.includes(user.user_id)) {
+            if (feed.children.liked_by.includes(user.username)) {
               feed["is_liked"] = true;
             }
           }

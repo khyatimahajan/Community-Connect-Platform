@@ -31,7 +31,7 @@ export class FeedDetailComponent implements OnInit {
 
   loadData() {
     console.log('We come here .. ');
-    if (this.feed.tweet._id != null && this.authService.currentUser != null) {
+    if (this.feed != null && this.feed.tweet != null && this.feed.tweet._id != null && this.authService.currentUser != null) {
       this.userService.getDetailsForAFeed(this.authService.currentUser.id, this.feed.tweet._id).subscribe(response => {
         this.comments = response;
       });
@@ -75,9 +75,19 @@ export class FeedDetailComponent implements OnInit {
   }
 
   repost() {
+    var feedID;
+    if (this.feed.tweet) {
+        if (this.feed.tweet.post_type === "retweet") {
+          feedID = this.feed.tweet.conversation_id;
+        } else {
+          feedID = this.feed.tweet._id;
+        }
+    } else {
+      feedID = this.feed.tweet._id;
+    }
     const body = {
       userId: this.authService.currentUser.id,
-      parent_id: this.feed.tweet.conversation_id
+      parent_id: feedID
     };
     this.userService.postQuoteOrRepost(body).subscribe(response => {
       if (response) {
