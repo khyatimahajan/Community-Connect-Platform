@@ -7,6 +7,8 @@ import {MatDialog} from '@angular/material/dialog';
 import {AddQuoteComponent} from '../add-quote/add-quote.component';
 import {FeedDetailComponent} from '../feed-detail/feed-detail.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
+// @ts-ignore
+const moment = require('moment');
 
 @Component({
   selector: 'app-feed-item',
@@ -15,14 +17,19 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 })
 export class FeedItemComponent implements OnInit {
 
-  @Input() feed: Feed;
-  @Output() feedStatusChange = new EventEmitter<boolean>();
-
   constructor(private userService: UserService, private authService: AuthService, public dialog: MatDialog,
               private snackBar: MatSnackBar,
   ) { }
 
+  @Input() feed: Feed;
+  @Output() feedStatusChange = new EventEmitter<boolean>();
+
+  moment = moment;
+
   ngOnInit(): void {
+    if (this.feed && this.feed.tweet) {
+
+    }
   }
 
   toggleLike() {
@@ -39,6 +46,8 @@ export class FeedItemComponent implements OnInit {
           this.feed.tweet.like_count--;
         }
       }
+    }, error => {
+      this.openSnackBar(error.error.status);
     });
   }
 
@@ -55,9 +64,9 @@ export class FeedItemComponent implements OnInit {
   }
 
   repost() {
-    var feedID;
+    let feedID;
     if (this.feed.tweet) {
-        if (this.feed.tweet.post_type === "retweet") {
+        if (this.feed.tweet.post_type === 'retweet') {
           feedID = this.feed.tweet.conversation_id;
         } else {
           feedID = this.feed.tweet._id;
@@ -74,6 +83,8 @@ export class FeedItemComponent implements OnInit {
         this.feed.tweet.retweet_count++;
         this.feedStatusChange.emit(true);
       }
+    }, error => {
+      this.openSnackBar(error.error.status);
     });
   }
 

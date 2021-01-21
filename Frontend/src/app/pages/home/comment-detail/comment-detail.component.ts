@@ -8,6 +8,8 @@ import {UserService} from '../../../services/user/user.service';
 import {AuthService} from '../../../services/auth/auth.service';
 import {FeedDetailComponent} from '../feed-detail/feed-detail.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
+// @ts-ignore
+const moment = require('moment');
 
 @Component({
   selector: 'app-comment-detail',
@@ -22,6 +24,7 @@ export class CommentDetailComponent implements OnInit {
   @Output() loadDataEmitter = new EventEmitter<boolean>();
   @Output() loadNewFeedEmitter = new EventEmitter<Feed>();
 
+  moment = moment;
 
   constructor(
       private userService: UserService,

@@ -6,7 +6,14 @@
           <mat-icon *ngIf="!authorImage">face</mat-icon>
         </div>
         <div class="tweet">
-          <div class="name">{{authorName}}</div>
+          <div class="name">
+            <div class="actual-name">
+              {{authorName}}
+            </div>
+            <div class="time-stuff">
+              {{moment(created_at).fromNow()}}
+            </div>
+            </div>
           <div class="text" [innerHtml]="body"></div>
           <img class="image" *ngIf="image != null && image != 'null'" [src]="image" alt="Image Source">
         </div>

@@ -7,7 +7,14 @@
                 <mat-icon *ngIf="!feed.author_profile_pic">face</mat-icon>
             </div>
             <div class="tweet">
-                <div class="name">{{feed.author_name}}</div>
+                <div class="name">
+                    <div class="actual-name">
+                        {{feed.author_name}}
+                    </div>
+                    <div class="time-stuff">
+                        {{moment(this.feed.tweet.created_at).fromNow()}}
+                    </div>
+                </div>
                 <div class="text" [innerHtml]="feed.tweet.body"></div>
                 <img class="image" *ngIf="feed.tweet.image != null && feed.tweet.image != 'null'" [src]="feed.tweet.image" alt="Image Source">
                 <div style="margin-top: 1em;">
@@ -15,6 +22,7 @@
                             *ngIf="feed.tweet.parent_id"
                             [authorImage]="feed.parent_info.parent_profile_pic"
                             [authorName]="feed.parent_info.parent_name"
+                            [created_at]="feed.tweet.parent_id.created_at"
                             [body]="feed.tweet.parent_id.body" [image]="feed.tweet.parent_id.image"
                             (click)="$event.stopPropagation()">
                     </app-feed-item-minimized>

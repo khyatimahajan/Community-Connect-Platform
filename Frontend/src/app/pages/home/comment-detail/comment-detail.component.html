@@ -8,7 +8,14 @@
                     <mat-icon *ngIf="!feed.author_profile_pic">face</mat-icon>
                 </div>
                 <div class="tweet">
-                    <div class="name">{{feed.author_name}}</div>
+                    <div class="name">
+                        <div class="actual-name">
+                            {{feed.author_name}}
+                        </div>
+                        <div class="time-stuff">
+                            {{moment(this.feed.tweet.created_at).fromNow()}}
+                        </div>
+                    </div>
                     <div class="text"  [innerHtml]="feed.tweet.body"></div>
                     <img class="image" *ngIf="feed.tweet.image != null && feed.tweet.image != 'null'" [src]="feed.tweet.image" alt="Image Source">
                 </div>

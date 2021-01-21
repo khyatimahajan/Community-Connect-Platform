@@ -43,6 +43,7 @@ export class FeedHeaderComponent implements OnInit {
         if (response) {
           this.messageStuff = '';
           this.buttonDisabled = false;
+          this.openSnackBar(response.status);
           this.postAddedStatusChange.emit(true);
           // this.userService.getFeeds(this.currentUser.id);
         } else {

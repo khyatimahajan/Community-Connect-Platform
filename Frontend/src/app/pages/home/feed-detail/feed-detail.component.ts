@@ -7,6 +7,8 @@ import {AddCommentComponent} from '../add-comment/add-comment.component';
 import {AddQuoteComponent} from '../add-quote/add-quote.component';
 import {FeedDetailItem} from '../../../model/FeedDetailItem';
 import {MatSnackBar} from '@angular/material/snack-bar';
+// @ts-ignore
+const moment = require('moment');
 
 @Component({
   selector: 'app-feed-detail',
@@ -26,6 +28,8 @@ export class FeedDetailComponent implements OnInit {
   ) {
     this.loadData();
   }
+
+  moment = moment;
 
   ngOnInit(): void {
 
