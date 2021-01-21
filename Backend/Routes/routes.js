@@ -564,13 +564,17 @@ router.get("/feeds/:feed_id", async (req, res) => {
 });
 
 router.get("/signup", async (req, res) => {
-  let filters = 'name username EmailID bio location';
+  let filters = 'name username EmailID bio location password profile_pic';
   let user_id = req.header("user_id");
   const user = await User.findOne({user_id}, filters);
   if (!user) {
-    res.status(400).send({ status: "Could not find any user matching that userid" });
+    res.status(404).send({ status: "Could not find any user matching that userid" });
   } else {
-    res.status(200).send(user);
+    if (user.password && user.profile_pic) {
+      res.status(403).send({ status: "Access code has already been redeemed"});
+    } else {
+      res.status(200).send(user);
+    }
   }
 });
 
