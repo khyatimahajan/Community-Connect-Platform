@@ -564,8 +564,9 @@ router.get("/feeds/:feed_id", async (req, res) => {
 });
 
 router.get("/signup", async (req, res) => {
-  let filters = 'name username EmailID bio location'
-  const user = await User.findOne({req.header("user_id")}, filters);
+  let filters = 'name username EmailID bio location';
+  let user_id = req.header("user_id");
+  const user = await User.findOne({user_id}, filters);
   if (!user) {
     res.status(400).send({ status: "Could not find any user matching that userid" });
   } else {
