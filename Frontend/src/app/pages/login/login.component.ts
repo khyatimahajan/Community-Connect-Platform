@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {UserSignupInfo} from '../../model/UserSignupInfo';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,10 @@ export class LoginComponent implements OnInit {
   private formSubmitAttempt: boolean;
   private signUpFormSubmitAttempt: boolean;
 
+  signUpData: UserSignupInfo;
   showLogin = true;
+  accessCodeDataRetrieved = false;
+  showSignUpModal = this.showLogin && this.accessCodeDataRetrieved;
 
   constructor(
     private fb: FormBuilder,
@@ -77,13 +81,16 @@ export class LoginComponent implements OnInit {
     this.signUpFormSubmitAttempt = false;
     if (this.signupForm.valid) {
       try {
-        const code = this.form.get('accessCode').value;
+        const code = this.signupForm.get('accessCode').value;
         this.authService.signup(code).subscribe(response => {
           if (response == null) {
             this.loginCodeInvalid = true;
           } else {
-            // TODO --> GO TO NEXT STEP OF SIGN UP
+            this.signUpData = response;
+            this.showSignUpModal = true;
           }
+        }, error => {
+          this.openSnackBar(error.error.status);
         });
       } catch (err) {
         this.loginInvalid = true;
@@ -95,7 +102,7 @@ export class LoginComponent implements OnInit {
 
   openSnackBar(message: string) {
     this._snackBar.open(message ? message : 'Error', null, {
-      duration: 5000,
+      duration: 10000,
       horizontalPosition: 'center',
       verticalPosition: 'top',
     });

@@ -36,12 +36,10 @@ export class AuthService {
     return this.http.post<any>('http://' + this.link + '/login', body);
   }
 
-  signup(code: string): Observable<UserSignupInfo> {
-    const body = { code };
-    return this.http.post<any>('http://' + this.link + '/signup', body)
-      .pipe(
-        catchError(this.handleError('signup'))
-      );
+  // tslint:disable-next-line:variable-name
+  signup(user_id: string): Observable<UserSignupInfo> {
+    const headers = { user_id };
+    return this.http.get<any>('http://' + this.link + '/signup', { headers });
   }
 
   setUser(user: UserProfile) {
