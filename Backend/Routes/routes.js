@@ -321,6 +321,17 @@ router.post("/repost", async (req, res) => {
       } else {
           oldFeed.retweet_count = oldFeed.retweet_count + 1;
       }
+
+      let visibleTo = oldFeed.visible_to;
+      var g;
+      for (g of groups) {
+        if (!visibleTo.groups.includes(g)) {
+          visibleTo.groups.push(g);
+        }
+      }
+      oldFeed.visible_to = visibleTo;
+      feed.visible_to = visibleTo;
+
       // Update to feed
       await feed.save();
       await oldFeed.save();
@@ -371,6 +382,16 @@ router.post("/repost", async (req, res) => {
 router.put("/like", async (req, res) => {
   const user = await User.findById(req.body.userId);
   const feed = await Feeds.findById(req.body.feedId);
+
+  let groups = user.group_id;
+  let visibleTo = feed.visible_to;
+  var g;
+  for (g of groups) {
+    if (!visibleTo.groups.includes(g)) {
+      visibleTo.groups.push(g);
+    }
+  }
+  feed.visible_to = visibleTo;
 
   var username = user.username;
   var liked_by = feed.liked_by;
@@ -469,6 +490,17 @@ router.put("/comment", async (req, res) => {
     feed.conversation_id = oldFeed.conversation_id;
     oldFeed.comments.push(feed._id);
     oldFeed.reply_count = oldFeed.reply_count + 1;
+
+    let visibleTo = oldFeed.visible_to;
+    var g;
+    for (g of groups) {
+      if (!visibleTo.groups.includes(g)) {
+        visibleTo.groups.push(g);
+      }
+    }
+    oldFeed.visible_to = visibleTo;
+    feed.visible_to = visibleTo;
+
     // Update to feed
     await feed.save();
     await oldFeed.save();
