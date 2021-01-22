@@ -134,7 +134,7 @@ router.get("/feeds", async (req, res) => {
       var entireFeeds = await Feeds.find({
         "visible_to.groups": { $in: group },
         "post_type": { $ne: "reply" },
-      }, filters, { sort: { "created_at" : "descending" }}).limit(50).populate("parent_id", filters);
+      }, filters, { sort: { "created_at" : "descending" }}).limit(30).populate("parent_id", filters);
 
       var response = [];
       entireFeeds.forEach(f => {
@@ -256,7 +256,6 @@ router.post("/feed", async (req, res) => {
     await feed.save();
     res.status(201).send({status: "Created new post successfully!"});
   } catch (err) {
-    // let error = new Error("Something went wrong");
     res.status(400).send({status:"Could not save post to DB"});
   }
 });
@@ -307,6 +306,7 @@ router.post("/repost", async (req, res) => {
     retweet_edit_count: 0,
     notification: "",
   };
+
   if (feed.post_type === "error") {
     res.status(400).send({status: "Invalid post request"});
   } else {
@@ -338,6 +338,33 @@ router.post("/repost", async (req, res) => {
         res.status(400).send({status: "Could not save quote to DB"});
       }
     }
+    try {
+        // create notification for receiver
+        let oldUser = await User.findOne({"user_id": oldFeed.user_id});
+        let str_fromuser = user.username;
+        let str_action = "";
+        if (feed.post_type === "retweet") {
+          str_action = "reposted";
+        } else if (feed.post_type === "quote") {
+          str_action = "quoted";
+        }
+        let notif = new Notifications({
+          inconn_id: user._id,
+          outconn_id: oldUser._id,
+          post_id: parent_id,
+          seen: false,
+          activity: feed.post_type,
+          status: str_fromuser.concat(" ", str_action, " your post.")
+        });
+        // save to DB
+        notif.save();
+      } catch(err) {
+        if (feed.post_type === "retweet") {
+          console.log("Could not save notification for repost to DB for", oldFeed._id);
+        } else if (feed.post_type === "quote") {
+          console.log("Could not save notification for quote to DB", oldFeed._id);
+        }
+      }
   }
 });
 
@@ -347,6 +374,7 @@ router.put("/like", async (req, res) => {
 
   var username = user.username;
   var liked_by = feed.liked_by;
+  var islikepost = false;
   try {
     if (liked_by.indexOf(username) >= 0) {
       feed.like_count = feed.like_count - 1;
@@ -354,6 +382,7 @@ router.put("/like", async (req, res) => {
       feed.liked_by.splice(index, 1);
     } else {
       feed.like_count = feed.like_count + 1;
+      islikepost = true;
       feed.liked_by.push(username);
     }
 
@@ -361,6 +390,28 @@ router.put("/like", async (req, res) => {
     res.status(200).send({status: "Post liked successfully!"});
   } catch (err) {
     res.status(400).send({ status: "Could not like post" });
+  }
+  if (islikepost) {
+    try {
+      // create notification for receiver
+      let oldUser = await User.findOne({"user_id": feed.user_id});
+      let notifexists = await Notifications.findOne({"inconn_id": user._id, "outconn_id": oldUser._id, "post_id": feed._id, "seen": false});
+      if (!notifexists) {
+        let str_fromuser = user.username;
+        let notif = new Notifications({
+          inconn_id: user._id,
+          outconn_id: oldUser._id,
+          post_id: feed._id,
+          seen: false,
+          activity: "like",
+          status: str_fromuser.concat(" liked your post.")
+        });
+        // save to DB
+        notif.save();
+      }
+    } catch(err) {
+      console.log("Could not save notification for like to DB for", feed._id);
+    }
   }
 });
 
@@ -425,6 +476,25 @@ router.put("/comment", async (req, res) => {
   } catch (err) {
     res.status(400).send({status: "Could not post comment"});
   }
+
+  try {
+    // create notification for receiver
+    let oldUser = await User.findOne({"user_id": oldFeed.user_id});
+    let str_fromuser = user.username;
+    let notif = {
+      inconn_id: user._id,
+      outconn_id: oldUser._id,
+      post_id: oldFeed._id, 
+      seen: false,
+      activity: "comment",
+      status: str_fromuser.concat(" commented on your post.")
+    };
+    // save to DB
+    let notifObj = new Notifications(notif);
+    notifObj.save();
+  } catch(err) {
+    console.log("Could not save notification for comment to DB for", oldFeed._id);
+  }
 });
 
 router.get("/connections", async (req, res) => {
@@ -443,6 +513,30 @@ router.get("/connections", async (req, res) => {
     }
   } else {
     res.status(400).send({ status: "No userid provided to make request" });
+  }
+});
+
+router.get("/get-notifications", async (req, res) => {
+  const userId = req.header("userId");
+  const user = await User.findById(userId);
+  if (user) {
+    try {
+      const notifs = await Notifications.find({"outconn_id": user._id}, null, {sort: { "timestamp" : "descending" , "seen": "descending" }}).limit(20);
+
+      let response = {};
+      if (notifs) {
+        response["number_of_notifs"] = notifs.length;
+        response["notifications"] = notifs;
+      } else {
+        response["number_of_notifs"] = 0;
+        response["notifications"] = [];
+      }
+      res.status(200).send(response)
+    } catch(err) {
+      res.status(500).send({status: "Internal server error"})
+    }
+  } else {
+    res.status(404).send({status: "No such user exists"})
   }
 });
 
