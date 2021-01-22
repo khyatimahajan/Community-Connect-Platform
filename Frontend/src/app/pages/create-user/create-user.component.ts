@@ -9,6 +9,8 @@ import {UserSignupInfo} from '../../model/UserSignupInfo';
 export class CreateUserComponent implements OnInit {
 
   @Input() signUpData: UserSignupInfo;
+  password = '';
+  cPassword = '';
 
   constructor() { }
 

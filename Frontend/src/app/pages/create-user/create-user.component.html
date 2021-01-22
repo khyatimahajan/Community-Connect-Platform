@@ -1,3 +1,47 @@
 <mat-card class="create-user-card">
-    <p>create-user works!</p>
+
+    <div class="flex-it image">
+        Profile Pic
+        <div id="svgAvatars"></div>
+    </div>
+
+    <div class="flex-it">
+        <mat-form-field class="card-item">
+            <mat-label>Name</mat-label>
+            <input matInput disabled value="{{signUpData? signUpData.name : 'Error'}}">
+        </mat-form-field>
+        <mat-form-field class="card-item">
+            <mat-label>Username</mat-label>
+            <input matInput disabled value="{{signUpData? signUpData.username : 'Error'}}">
+        </mat-form-field>
+    </div>
+
+    <mat-form-field class="card-item">
+        <mat-label>Email Id</mat-label>
+        <input matInput disabled value="{{signUpData? signUpData.EmailID : 'Error'}}">
+    </mat-form-field>
+
+    <mat-form-field class="card-item">
+        <mat-label>Bio</mat-label>
+        <input matInput disabled value="{{signUpData? signUpData.bio : 'Error'}}">
+    </mat-form-field>
+
+    <mat-form-field class="card-item">
+        <mat-label>Password</mat-label>
+        <input matInput placeholder="Password" value="{{password}}">
+    </mat-form-field>
+
+    <mat-form-field class="card-item">
+        <mat-label>Confirm Password</mat-label>
+        <input matInput placeholder="Confirm Password" value="{{cPassword}}">
+    </mat-form-field>
+
+    <div class="flex-it center">
+        <button
+                mat-raised-button
+                color="primary"
+                style="margin-top: 1em; background-color: rgb(29, 161, 242); width: 100px;">Signup
+        </button>
+    </div>
+
 </mat-card>
