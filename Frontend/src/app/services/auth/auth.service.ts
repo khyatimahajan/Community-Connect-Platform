@@ -47,6 +47,11 @@ export class AuthService {
     return this.http.post<any>('http://' + this.link + '/create-user', body);
   }
 
+  changePassword(body: any, userId: string): Observable<any> {
+     const headers = { userId };
+     return this.http.put<any>('http://' + this.link + '/change-password', body, { headers });
+  }
+
   setUser(user: UserProfile) {
      this.currentUser = user;
   }

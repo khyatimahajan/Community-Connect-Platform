@@ -16,12 +16,15 @@
     </mat-list>
   </div>
   <div class="feeds">
-    <app-feed-header [currentUser]="currentUser" (postAddedStatusChange)="loadPosts()"></app-feed-header>
-    <div class="feeds-posts">
+    <app-feed-header *ngIf="isSelectedItem == 0" [currentUser]="currentUser" (postAddedStatusChange)="loadPosts()"></app-feed-header>
+    <div *ngIf="isSelectedItem == 0" class="feeds-posts">
       <div style="margin-top: 1em;">
         <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
         <app-feed-item *ngFor="let item of feedList; let i = index" [feed]="item" (feedStatusChange)="loadPosts()"></app-feed-item>
       </div>
+    </div>
+    <div *ngIf="isSelectedItem == 1">
+      <app-profile></app-profile>
     </div>
   </div>
   <div class="connections">
