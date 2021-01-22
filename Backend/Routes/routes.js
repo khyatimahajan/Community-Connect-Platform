@@ -553,13 +553,17 @@ router.put("/change-password", async (req, res) => {
       // check if current password entered is correct
       let isMatch = await bcrypt.compare(currentPassword, user.password);
       if (isMatch) {
-        let salt = await bcrypt.genSalt(10);
-        // generate new hashed password
-        const hashPassword = await bcrypt.hash(newPassword, salt);
-        user.password = hashPassword;
-        // save changes to db
-        await user.save();
-        res.status(200).send({ status: "Password changed successfully!" });
+        if (newPassword.length < 6) {
+          res.status(400).send({status: "Password is too short - use 6 or more characters"})
+        } else {
+          let salt = await bcrypt.genSalt(10);
+          // generate new hashed password
+          const hashPassword = await bcrypt.hash(newPassword, salt);
+          user.password = hashPassword;
+          // save changes to db
+          await user.save();
+          res.status(200).send({ status: "Password changed successfully!" });
+        }
       } else {
         res.status(400).send({ status: "Old password is wrong" });
       }
