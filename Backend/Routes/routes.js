@@ -693,7 +693,7 @@ router.post("/create-user", async (req, res) => {
       // generate new hashed password
       const hashPassword = await bcrypt.hash(password, salt);
       user.bio = bio;
-      user.profile_pic = image_src;
+      // user.profile_pic = image_src;
       user.location = location;
       user.password = hashPassword;
       user.isAdmin = false;
