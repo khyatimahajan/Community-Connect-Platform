@@ -256,3 +256,13 @@ $altTheme: mat-dark-theme($theme-primary, $theme-accent, $theme-warn);
   }
 }
 
+#svgAvatars {
+  max-width: 960px; /* you can delete this line to show with full width */
+  margin: 0 auto;
+  border-collapse: separate;
+}
+
+.mat-simple-snackbar span {
+  margin: auto;
+  text-align: center;
+}

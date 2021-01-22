@@ -19,6 +19,7 @@ export class AuthService {
   awsLink = 'www.communityconnect.cc:3000/api';
   link = this.awsLink;
   currentUser: UserProfile = null;
+  currentUserSignUpInfo: UserSignupInfo = null;
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -42,8 +43,16 @@ export class AuthService {
     return this.http.get<any>('http://' + this.link + '/signup', { headers });
   }
 
+  createUser(body: any): Observable<any> {
+    return this.http.post<any>('http://' + this.link + '/create-user', body);
+  }
+
   setUser(user: UserProfile) {
      this.currentUser = user;
+  }
+
+  setSignUpInfo(user: UserSignupInfo) {
+    this.currentUserSignUpInfo = user;
   }
 
   /**

@@ -7,7 +7,7 @@ export class UserSignupInfo {
     bio: string;
 
     image_src: string;
-    email = this.EmailID;
+    email: string;
     password: string;
     password_conf: string;
 }

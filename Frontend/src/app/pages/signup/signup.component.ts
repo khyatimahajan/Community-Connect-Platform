@@ -10,6 +10,14 @@ export class SignupComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.reload();
+  }
+
+  reload() {
+    if (localStorage.getItem('shouldReload') === 'YES') {
+      location.reload();
+      localStorage.setItem('shouldReload', 'NO');
+    }
   }
 
 }

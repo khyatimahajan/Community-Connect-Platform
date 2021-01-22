@@ -28,9 +28,17 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/assets/svgavatars/css/spectrum.css",
+              "src/assets/svgavatars/css/svgavatars.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/svgavatars/js/jquery-3.4.1.min.js",
+              "src/assets/svgavatars/js/svgavatars.tools.js",
+              "src/assets/svgavatars/js/svgavatars.defaults.js",
+              "src/assets/svgavatars/js/languages/svgavatars.en.js",
+              "src/assets/svgavatars/js/svgavatars.core.min.js"
+            ]
           },
           "configurations": {
             "production": {

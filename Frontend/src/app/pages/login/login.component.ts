@@ -4,6 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {UserSignupInfo} from '../../model/UserSignupInfo';
+import {Feed} from '../../model/Feed';
+import {FeedDetailComponent} from '../home/feed-detail/feed-detail.component';
+import {SignupComponent} from '../signup/signup.component';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-login',
@@ -22,8 +26,6 @@ export class LoginComponent implements OnInit {
 
   signUpData: UserSignupInfo;
   showLogin = true;
-  accessCodeDataRetrieved = false;
-  showSignUpModal = this.showLogin && this.accessCodeDataRetrieved;
 
   constructor(
     private fb: FormBuilder,
@@ -60,6 +62,7 @@ export class LoginComponent implements OnInit {
         this.authService.login(username, password).subscribe(response => {
           if (response) {
             this.authService.setUser(response);
+            this._snackBar.dismiss();
             this.router.navigate(['/home']);
           } else {
             this.loginInvalid = true;
@@ -87,7 +90,10 @@ export class LoginComponent implements OnInit {
             this.loginCodeInvalid = true;
           } else {
             this.signUpData = response;
-            this.showSignUpModal = true;
+            this.authService.setSignUpInfo(this.signUpData);
+            localStorage.setItem('user_id', code);
+            localStorage.setItem('shouldReload', 'YES');
+            this.router.navigate(['/signup-p1']);
           }
         }, error => {
           this.openSnackBar(error.error.status);

@@ -26,3 +26,17 @@
   padding-top: 1em;
   padding-bottom: 3em;
 }
+
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url("../../../assets/background.jpg");
+  height: 100%;
+}
+
+.icon-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}

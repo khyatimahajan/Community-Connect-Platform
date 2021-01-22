@@ -6,7 +6,6 @@
         <div class="subtitle">Access Community Connect!</div>
         <br />
         <mat-error *ngIf="loginInvalid">
-          The username and password were not recognised
         </mat-error>
         <mat-form-field class="full-width-input" style="margin-top: 0.5em;">
           <input
@@ -45,7 +44,7 @@
     </div>
   </mat-card>
 
-  <mat-card  *ngIf="!showLogin && !showSignUpModal" class="login-card">
+  <mat-card  *ngIf="!showLogin" class="login-card">
     <mat-card-content>
       <form [formGroup]="signupForm" (ngSubmit)="onSignupSubmit()">
         <div class="title">Community Connect</div>
@@ -79,6 +78,4 @@
       <a class="clickable-link" (click)="toggleLogin()">Access Community Connect here.</a>
     </div>
   </mat-card>
-
-  <app-create-user *ngIf="showSignUpModal" [signUpData]="signUpData"></app-create-user>
 </div>
