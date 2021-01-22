@@ -29,13 +29,12 @@
             <mat-label>What's on your mind? </mat-label>
             <textarea
               [(ngModel)]='messageStuff'
-              #message
               matInput
               placeholder="Ex. I am feeling..."
               maxlength="280"
               rows="5"
             ></textarea>
-            <mat-hint align="end"> {{ message.value.length }} / 280 </mat-hint>
+            <mat-hint align="end"> {{ messageStuff.length }} / 280 </mat-hint>
           </mat-form-field>
         </div>
       </mat-card-content>
@@ -48,6 +47,14 @@
 <!--        <button class="post-img-button" mat-button>-->
 <!--          <span class="material-icons"> insert_emoticon </span>-->
 <!--        </button>-->
+        <i
+          style="cursor: pointer"
+          (click)="toggled = !toggled"
+          [(emojiPickerIf)]="toggled"
+          [emojiPickerDirection]="'bottom' || 'top' || 'left' || 'right'"
+          (emojiPickerSelect)="handleSelection($event)"
+        ><span class="material-icons"> insert_emoticon </span></i
+        >
       </mat-card-actions>
       <mat-card-actions>
         <button class="post-button" mat-button (click)="addPost()" [disabled]="buttonDisabled || messageStuff? messageStuff.length === 0: true">POST</button>

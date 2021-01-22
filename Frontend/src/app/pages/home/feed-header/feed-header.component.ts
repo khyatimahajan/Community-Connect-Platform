@@ -13,17 +13,19 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 })
 export class FeedHeaderComponent implements OnInit {
 
+  constructor(
+      private router: Router,
+      private snackBar: MatSnackBar,
+      private userService: UserService
+  ) { }
+
   buttonDisabled = false;
   messageStuff = '';
   showError = false;
   @Input() currentUser: UserProfile;
   @Output() postAddedStatusChange = new EventEmitter<boolean>();
 
-  constructor(
-      private router: Router,
-      private snackBar: MatSnackBar,
-      private userService: UserService
-  ) { }
+  toggled = false;
 
   ngOnInit(): void {
 
@@ -62,6 +64,10 @@ export class FeedHeaderComponent implements OnInit {
       horizontalPosition: 'center',
       verticalPosition: 'top',
     });
+  }
+
+  handleSelection(event) {
+    this.messageStuff += event.char;
   }
 
 }

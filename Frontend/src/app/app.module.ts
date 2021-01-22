@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import {  NgxEmojiPickerModule  } from 'ngx-emoji-picker';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -91,7 +92,8 @@ import { CreateUserComponent } from './pages/create-user/create-user.component';
     MatProgressBarModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    NgxEmojiPickerModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

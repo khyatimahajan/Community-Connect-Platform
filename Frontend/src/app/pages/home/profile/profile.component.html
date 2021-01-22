@@ -34,15 +34,17 @@
             <input matInput placeholder="Current Password" [(ngModel)]="currentPassword">
         </mat-form-field>
 
-        <mat-form-field class="card-item">
-            <mat-label>New Password</mat-label>
-            <input matInput placeholder="New Password" [(ngModel)]="newPassword">
-        </mat-form-field>
+        <div class="flex-it">
+            <mat-form-field class="card-item" tyle="margin-right: 0.5em;">
+                <mat-label>New Password</mat-label>
+                <input matInput placeholder="New Password" [(ngModel)]="newPassword">
+            </mat-form-field>
 
-        <mat-form-field class="card-item">
-            <mat-label>Confirm Password</mat-label>
-            <input matInput placeholder="Confirm Password" [(ngModel)]="cnewPassword">
-        </mat-form-field>
+            <mat-form-field class="card-item" style="margin-left: 0.5em;">
+                <mat-label>Confirm Password</mat-label>
+                <input matInput placeholder="Confirm Password" [(ngModel)]="cnewPassword">
+            </mat-form-field>
+        </div>
 
         <div class="flex-it center">
             <button
