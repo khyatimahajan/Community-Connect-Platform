@@ -16,9 +16,12 @@ export class FeedHeaderComponent implements OnInit {
   constructor(
       private router: Router,
       private snackBar: MatSnackBar,
-      private userService: UserService
-  ) { }
+      private userService: UserService,
+  ) {
+  }
 
+  imageObj: File;
+  imageUrl = '';
   buttonDisabled = false;
   messageStuff = '';
   showError = false;
@@ -35,10 +38,10 @@ export class FeedHeaderComponent implements OnInit {
     if (this.messageStuff.length === 0) {
       this.showError = true;
     } else {
-      console.log('message : ' + this.messageStuff);
       const body = {
         body: this.messageStuff,
-        userId: this.currentUser.id
+        userId: this.currentUser.id,
+        image: this.imageUrl.length > 0 ? this.imageUrl : null
       };
       this.buttonDisabled = true;
       this.userService.postFeed(body).subscribe(response => {
@@ -70,4 +73,20 @@ export class FeedHeaderComponent implements OnInit {
     this.messageStuff += event.char;
   }
 
+  onImagePicked(event: Event): void {
+    const FILE = (event.target as HTMLInputElement).files[0];
+    this.imageObj = FILE;
+    this.onImageUpload();
+  }
+
+  onImageUpload() {
+    const imageForm = new FormData();
+    imageForm.append('image', this.imageObj);
+    this.userService.imageUpload(imageForm).subscribe(res => {
+      this.imageUrl = res.image;
+    }, error => {
+      this.openSnackBar('Could not upload Image Properly. Please try again');
+      this.imageUrl = '';
+    });
+  }
 }

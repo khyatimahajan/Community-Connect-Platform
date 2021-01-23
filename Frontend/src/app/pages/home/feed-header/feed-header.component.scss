@@ -56,3 +56,10 @@
       margin-left: 2em;
       margin-right: 2em;
   }
+
+  .middle-image {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+  }

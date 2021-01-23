@@ -58,6 +58,11 @@ export class UserService {
     const headers = { userId };
     return this.http.get<any>('http://' + this.link + '/feeds/' + feedId, { headers });
   }
+
+  imageUpload(imageForm: FormData): Observable<any> {
+    return this.http.post<any>('http://' + this.link + '/v1/upload', imageForm);
+  }
+
   /**
    * Handle Http operation that failed.
    * Let the app continue.
