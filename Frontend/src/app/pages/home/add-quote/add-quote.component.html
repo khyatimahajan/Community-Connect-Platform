@@ -18,7 +18,7 @@
     </div>
     <app-feed-item-minimized [authorImage]="data.author_profile_pic" [authorName]="data.author_name"
                              [body]="data.tweet.body" [image]="data.tweet.image"
-                             [created_at]="data.tweet.parent_id.created_at"
+                             [created_at]="data.tweet.created_at"
     ></app-feed-item-minimized>
     <mat-dialog-actions class="separated-buttons">
         <button class="comment-button" mat-button (click)="onCloseConfirm()"
