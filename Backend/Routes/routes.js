@@ -9,6 +9,7 @@ const router = express.Router();
 const validation = require("./../validation");
 const bcrypt = require("bcryptjs");
 const { urlify } = require("./../utils");
+const upload = require('./middleware/file-upload');
 
 // Get all users
 router.get("/users", async (req, res) => {
@@ -737,5 +738,11 @@ router.post("/create-user", async (req, res) => {
     }
   }
 });
+
+/* Where image is the name of the property sent from angular via the Form Data and the 1 is the max number of files to upload*/
+router.post('/api/v1/upload', upload.array('image', 1), (req, res) => {
+  /* This will be th 8e response sent from the backend to the frontend */
+  res.send({ image: req.file });
+ });
 
 module.exports = router;
