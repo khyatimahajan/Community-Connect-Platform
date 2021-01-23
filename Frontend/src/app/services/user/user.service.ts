@@ -63,7 +63,7 @@ export class UserService {
     return this.http.post<any>('http://' + this.link + '/v1/upload', imageForm);
   }
 
-  getNotifications(userId: string): Observable<Array<Feed>> {
+  getNotifications(userId: string): Observable<Array<Notif>> {
     const headers = { userId };
     return this.http.get<any>('http://' + this.link + '/get-notifications', { headers });
   }
