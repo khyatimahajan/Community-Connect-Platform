@@ -9,7 +9,7 @@ const router = express.Router();
 const validation = require("./../validation");
 const bcrypt = require("bcryptjs");
 const { urlify } = require("./../utils");
-const upload = require('./middleware/file-upload');
+const upload = require('./../middleware/file-uploads');
 
 // Get all users
 router.get("/users", async (req, res) => {
