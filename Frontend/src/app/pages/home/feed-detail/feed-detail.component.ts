@@ -108,9 +108,20 @@ export class FeedDetailComponent implements OnInit {
   }
 
   openQuoteModal() {
+    const dataFeed = this.feed;
+    if (this.feed.tweet.post_type === 'retweet') {
+      dataFeed.tweet._id = this.feed.tweet.parent_id._id;
+      dataFeed.tweet.user_id = this.feed.tweet.parent_id.user_id;
+      dataFeed.tweet.body = this.feed.tweet.parent_id.body;
+      dataFeed.tweet.created_at = this.feed.tweet.parent_id.created_at;
+      dataFeed.tweet.post_type = this.feed.tweet.parent_id.post_type;
+      dataFeed.tweet.image = this.feed.tweet.parent_id.image;
+      dataFeed.author_profile_pic = this.feed.parent_info.parent_profile_pic;
+      dataFeed.author_name = this.feed.parent_info.parent_name;
+    }
     const dialogRef = this.dialog.open(AddQuoteComponent, {
       width: '600px',
-      data: this.feed
+      data: dataFeed
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'Quote Added') {
