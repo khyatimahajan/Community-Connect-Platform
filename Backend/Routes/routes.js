@@ -38,6 +38,7 @@ router.post("/login", async (req, res) => {
       if (!validPass) {
         res.status(401).send({ status: "Wrong password entered" });
       } else {
+        let notifs = await Notifications.find({"outconn_id": user._id});
         var response = {
           group_id: user.group_id,
           isAdmin: user.isAdmin,
@@ -48,6 +49,7 @@ router.post("/login", async (req, res) => {
           username: user.username,
           bio: user.bio,
           profile_pic: user.profile_pic,
+          notifications: notifs.length,
         };
         res.status(200).send(response);
 
@@ -556,15 +558,15 @@ router.get("/get-notifications", async (req, res) => {
     try {
       const notifs = await Notifications.find({"outconn_id": user._id}, null, {sort: { "timestamp" : "descending" , "seen": "descending" }}).limit(20);
 
-      let response = {};
-      if (notifs) {
-        response["number_of_notifs"] = notifs.length;
-        response["notifications"] = notifs;
-      } else {
-        response["number_of_notifs"] = 0;
-        response["notifications"] = [];
-      }
-      res.status(200).send(response)
+      // let response = {};
+      // if (notifs) {
+      //   response["number_of_notifs"] = notifs.length;
+      //   response["notifications"] = notifs;
+      // } else {
+      //   response["number_of_notifs"] = 0;
+      //   response["notifications"] = [];
+      // }
+      res.status(200).send(notifs)
     } catch(err) {
       res.status(500).send({status: "Internal server error"})
     }
