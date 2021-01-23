@@ -5,6 +5,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {UserProfileShortened} from '../../model/UserProfileShortened';
 import { Feed } from 'src/app/model/Feed';
 import {FeedDetailItem} from '../../model/FeedDetailItem';
+import {Notif} from '../../model/Notif';
 
 @Injectable({
   providedIn: 'root'
