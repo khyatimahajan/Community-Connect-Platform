@@ -41,20 +41,17 @@
     </div>
     <div class="end-stuff">
       <mat-card-actions>
-<!--        <button class="post-img-button" mat-button>-->
-<!--          <span class="material-icons"> add_photo_alternate </span>-->
-<!--        </button>-->
-<!--        <button class="post-img-button" mat-button>-->
-<!--          <span class="material-icons"> insert_emoticon </span>-->
-<!--        </button>-->
-        <i
-          style="cursor: pointer"
-          (click)="toggled = !toggled"
-          [(emojiPickerIf)]="toggled"
-          [emojiPickerDirection]="'bottom' || 'top' || 'left' || 'right'"
-          (emojiPickerSelect)="handleSelection($event)"
-        ><span class="material-icons"> insert_emoticon </span></i
-        >
+        <button class="post-img-button" mat-button>
+          <span class="material-icons"> add_photo_alternate </span>
+        </button>
+        <button class="post-img-button"
+                (click)="toggled = !toggled"
+                [(emojiPickerIf)]="toggled"
+                [emojiPickerDirection]="'bottom' || 'top' || 'left' || 'right'"
+                (emojiPickerSelect)="handleSelection($event)"
+                mat-button>
+          <span class="material-icons"> insert_emoticon </span>
+        </button>
       </mat-card-actions>
       <mat-card-actions>
         <button class="post-button" mat-button (click)="addPost()" [disabled]="buttonDisabled || messageStuff? messageStuff.length === 0: true">POST</button>
