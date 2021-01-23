@@ -63,6 +63,11 @@ export class UserService {
     return this.http.post<any>('http://' + this.link + '/v1/upload', imageForm);
   }
 
+  getNotifications(userId: string): Observable<Array<Feed>> {
+    const headers = { userId };
+    return this.http.get<any>('http://' + this.link + '/get-notifications', { headers });
+  }
+
   /**
    * Handle Http operation that failed.
    * Let the app continue.
