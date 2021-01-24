@@ -575,6 +575,23 @@ router.get("/get-notifications", async (req, res) => {
   }
 });
 
+router.put("/mark-notif-as-read", async(req, res) => {
+  const user = await User.findById(req.header("userId"));
+  const notif = await Notifications.findById(req.header("notifId"));
+
+  if (user) {
+    try {
+      notif.seen = true;
+      await notif.save();
+      res.status(200).send({status: "Notification marked read successfully!"});
+    } catch(err) {
+      res.status(500).send({status: "Internal server error - could not mark as read"});
+    }
+  } else {
+    res.status(404).send({status: "No such user exists"})
+  }
+});
+
 router.put("/change-password", async (req, res) => {
   const userId = req.header("userId");
   const { currentPassword, newPassword, cnewPassword } = req.body;
