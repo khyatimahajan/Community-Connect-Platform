@@ -628,17 +628,23 @@ router.put("/change-password", async (req, res) => {
 
 router.get("/user/:username", async (req, res) => {
     let username = req.params.username;
+
     if (username != null) {
       const user = await User.findOne({
           "username" : username
-      });
+      }, '_id user_id username name bio EmailID profile_pic');
       if (user) {
-        let group = user.group_id;
+        let filters = '_id parent_id user_id body created_at like_count retweet_count reply_count quote_count post_type image liked_by conversation_id';
         let entireFeeds = await Feeds.find({
-          "visible_to.groups": { $in: group },
-        }).populate("parent_id").populate("comments");
+          "user_id": { $eq: user.user_id },
+          "post_type": { $ne: "reply" },
+        }, filters, { sort: { "created_at" : "descending" }}).populate("parent_id", filters);
   
-        res.send(entireFeeds);
+        var response = {
+          'user': user,
+          'feeds': entireFeeds
+        }
+        res.send(response);
       } else {
         res.status(404).send({ status: "User not found" })
       }
