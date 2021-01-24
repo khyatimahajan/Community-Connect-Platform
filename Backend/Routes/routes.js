@@ -650,15 +650,18 @@ router.get("/user/:username", async (req, res) => {
         // need to update in future release, should convert user_id to actual _id in mdb
         // also figure out how to mark a retweeted post's parent as retweeted in feed
         var feed;
+        var tempuser;
+        let allUsers = await User.find({}, 'user_id username profile_pic');
         for (feed of modifiedFeeds) {
           feed["author_profile_pic"] = user.profile_pic;
           feed["author_name"] = user.username;
           if (feed.tweet.liked_by.includes(user.username)) {
             feed["is_liked"] = true;
           }
-
-          if (feed.tweet.parent_id && feed.tweet.parent_id.user_id === user.user_id) {
-            feed["parent_info"] = {"parent_profile_pic": tempuser.profile_pic, "parent_name": tempuser.username};
+          for (tempuser of allUsers) {
+            if (feed.tweet.parent_id && feed.tweet.parent_id.user_id === tempuser.user_id) {
+              feed["parent_info"] = {"parent_profile_pic": tempuser.profile_pic, "parent_name": tempuser.username};
+            }
           }
         }
 
