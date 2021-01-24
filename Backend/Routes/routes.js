@@ -143,7 +143,7 @@ router.get("/feeds", async (req, res) => {
       entireFeeds.forEach(f => {
         response.push({
           "tweet" : f, "author_profile_pic": null, "author_name": null, "is_liked": false, "is_retweeted": false, "parent_info": null
-        })
+        });
       })
 
       // need to update in future release, should convert user_id to actual _id in mdb
@@ -639,12 +639,35 @@ router.get("/user/:username", async (req, res) => {
           "user_id": { $eq: user.user_id },
           "post_type": { $ne: "reply" },
         }, filters, { sort: { "created_at" : "descending" }}).populate("parent_id", filters);
-  
+
+        var modifiedFeeds = [];
+        entireFeeds.forEach(f => {
+          modifiedFeeds.push({
+            "tweet" : f, "author_profile_pic": null, "author_name": null, "is_liked": false, "is_retweeted": false, "parent_info": null
+          });
+        })
+
+        // need to update in future release, should convert user_id to actual _id in mdb
+        // also figure out how to mark a retweeted post's parent as retweeted in feed
+        var feed;
+        for (feed of modifiedFeeds) {
+          feed["author_profile_pic"] = user.profile_pic;
+          feed["author_name"] = user.username;
+          if (feed.tweet.liked_by.includes(user.username)) {
+            feed["is_liked"] = true;
+          }
+
+          if (feed.tweet.parent_id && feed.tweet.parent_id.user_id === user.user_id) {
+            feed["parent_info"] = {"parent_profile_pic": tempuser.profile_pic, "parent_name": tempuser.username};
+          }
+        }
+
         var response = {
           'user': user,
-          'feeds': entireFeeds
+          'feeds': modifiedFeeds
         }
         res.send(response);
+
       } else {
         res.status(404).send({ status: "User not found" })
       }
