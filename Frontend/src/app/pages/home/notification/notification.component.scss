@@ -9,6 +9,11 @@
   justify-content: space-between;
 }
 
+.example-card:hover {
+  background-color: rgb(230, 237, 245);
+  cursor: pointer;
+}
+
 .seen {
   background-color: #fff;
 }

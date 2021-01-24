@@ -38,7 +38,7 @@ router.post("/login", async (req, res) => {
       if (!validPass) {
         res.status(401).send({ status: "Wrong password entered" });
       } else {
-        let notifs = await Notifications.find({"outconn_id": user._id});
+        let notifs = await Notifications.find({"outconn_id": user._id, "seen": false });
         var response = {
           group_id: user.group_id,
           isAdmin: user.isAdmin,

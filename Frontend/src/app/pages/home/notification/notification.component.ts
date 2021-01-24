@@ -41,6 +41,7 @@ export class NotificationComponent implements OnInit {
     this.userService.markNotificationAsRead(this.authService.currentUser.id, item._id)
       .subscribe(response => {
         item.seen = true;
+        this.authService.currentUser.notifications = this.authService.currentUser.notifications - 1;
         this.openSnackBar('Marked Notification as Read');
       }, error => {
         this.openSnackBar(error.error.status);
