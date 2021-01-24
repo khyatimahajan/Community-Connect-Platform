@@ -18,6 +18,7 @@ export class UserService {
   awsLink = 'www.communityconnect.cc:3000/api';
   link = this.awsLink;
 
+  currentFeedId: string;
   userConnections: Array<UserProfileShortened> = [];
 
   httpOptions = {
@@ -67,6 +68,11 @@ export class UserService {
   getNotifications(userId: string): Observable<Array<Notif>> {
     const headers = { userId };
     return this.http.get<any>('http://' + this.link + '/get-notifications', { headers });
+  }
+
+  markNotificationAsRead(userId: string, notifId: string): Observable<Array<Notif>> {
+    const headers = { userId, notifId };
+    return this.http.put<any>('http://' + this.link + '/mark-notif-as-read', null, { headers });
   }
 
   /**
