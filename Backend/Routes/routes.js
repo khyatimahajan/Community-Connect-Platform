@@ -38,7 +38,7 @@ router.post("/login", async (req, res) => {
       if (!validPass) {
         res.status(401).send({ status: "Wrong password entered" });
       } else {
-        let notifs = await Notifications.find({"outconn_id": user._id, "seen": false });
+        let notifs = await Notifications.find({"outconn_id": user._id, "seen": false, "inconn_id": { $ne: user._id } });
         var response = {
           group_id: user.group_id,
           isAdmin: user.isAdmin,
@@ -84,6 +84,7 @@ router.get("/profile", async (req, res) => {
       let notificationCount = await Notifications.find({
         outconn_id: user._id,
         seen: false,
+        inconn_id: { $ne: user._id }
       }).countDocuments();
 
       var response = {
@@ -556,7 +557,7 @@ router.get("/get-notifications", async (req, res) => {
   const user = await User.findById(userId);
   if (user) {
     try {
-      const notifs = await Notifications.find({"outconn_id": user._id}, null, {sort: { "timestamp" : "descending" , "seen": "descending" }}).limit(20);
+      const notifs = await Notifications.find({"outconn_id": user._id, "inconn_id": { $ne: user._id }}, null, {sort: { "timestamp" : "descending" , "seen": "descending" }}).limit(20);
 
       // let response = {};
       // if (notifs) {
