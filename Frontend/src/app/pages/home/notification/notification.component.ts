@@ -37,4 +37,19 @@ export class NotificationComponent implements OnInit {
     });
   }
 
+  markNotifAsRead(item: Notif) {
+    this.userService.markNotificationAsRead(this.authService.currentUser.id, item._id)
+      .subscribe(response => {
+        item.seen = true;
+        this.openSnackBar('Marked Notification as Read');
+      }, error => {
+        this.openSnackBar(error.error.status);
+      });
+  }
+
+  // tslint:disable-next-line:variable-name
+  openDetailPage(post_id: string) {
+
+    console.log('Open Details Page ... ');
+  }
 }

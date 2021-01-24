@@ -36,7 +36,6 @@ export class FeedDetailComponent implements OnInit {
   }
 
   loadData() {
-    console.log('We come here .. ');
     if (this.feed != null && this.feed.tweet != null && this.feed.tweet._id != null && this.authService.currentUser != null) {
       this.userService.getDetailsForAFeed(this.authService.currentUser.id, this.feed.tweet._id).subscribe(response => {
         this.comments = response;
