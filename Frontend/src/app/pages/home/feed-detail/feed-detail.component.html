@@ -19,7 +19,7 @@
                 <img class="image" *ngIf="feed.tweet.image != null && feed.tweet.image != 'null'" [src]="feed.tweet.image" alt="Image Source">
                 <div style="margin-top: 1em;">
                     <app-feed-item-minimized
-                            *ngIf="feed.tweet.parent_id"
+                            *ngIf="feed.tweet.parent_id && feed.tweet.post_type != 'reply'"
                             [authorImage]="feed.parent_info.parent_profile_pic"
                             [authorName]="feed.parent_info.parent_name"
                             [created_at]="feed.tweet.parent_id.created_at"
