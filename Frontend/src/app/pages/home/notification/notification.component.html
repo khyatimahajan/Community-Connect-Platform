@@ -1,1 +1,16 @@
-<p>notification works!</p>
+<div class="notifications">
+    <mat-card-header>
+        <mat-card-title style="font-size: x-large">Notifications</mat-card-title>
+    </mat-card-header>
+
+    <mat-card
+            *ngFor="let item of notificationList; let i = index"
+            class="example-card" style="display: flex; flex: 1"
+            [ngClass]="{ notSeen : !item.seen }"
+    >
+        <div>{{item.status}}</div>
+<!--        <mat-icon class="icon">close</mat-icon>-->
+        <button *ngIf="!item.seen" mat-stroked-button color="warn" style="background-color: white">Mark as Read</button>
+
+    </mat-card>
+</div>

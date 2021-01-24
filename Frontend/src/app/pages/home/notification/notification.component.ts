@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import {Notif} from '../../../model/Notif';
+import {Router} from '@angular/router';
+import {AuthService} from '../../../services/auth/auth.service';
+import {UserService} from '../../../services/user/user.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-notification',
@@ -7,9 +12,29 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NotificationComponent implements OnInit {
 
-  constructor() { }
+  notificationList: Array<Notif> = [];
+
+  constructor(
+      private router: Router,
+      private authService: AuthService,
+      private userService: UserService,
+      private snackBar: MatSnackBar,
+  ) { }
 
   ngOnInit(): void {
+    this.userService.getNotifications(this.authService.currentUser.id).subscribe(response => {
+      this.notificationList = response;
+    }, error => {
+      this.openSnackBar(error.error.status);
+    });
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message ? message : 'Error', null, {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
   }
 
 }

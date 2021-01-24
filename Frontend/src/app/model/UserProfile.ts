@@ -9,4 +9,5 @@ export class UserProfile {
     name: string;
     username: string;
     bio: string;
+    notifications: number;
 }

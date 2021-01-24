@@ -1,0 +1,18 @@
+.notifications {
+  margin-top: 2em;
+}
+
+.example-card {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.seen {
+  background-color: #fff;
+}
+
+.notSeen {
+  background-color: rgb(237, 245, 253);
+}
