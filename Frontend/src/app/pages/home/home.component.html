@@ -10,7 +10,7 @@
         <mat-icon *ngIf="i !== 1 && i !== 2" class="icon">{{sidebarIconList[i]}}</mat-icon>
         <img *ngIf="i===1" [src]="imageSource" alt="Image Source" class="icon-image">
         <mat-icon *ngIf="i === 2 && currentUser && currentUser.notifications > 0" class="icon" matBadge="{{currentUser.notifications ? currentUser.notifications : '*'}}" matBadgeColor="warn">{{sidebarIconList[i]}}</mat-icon>
-        <mat-icon *ngIf="i === 2 && currentUser && currentUser.notifications == 0" class="icon">{{sidebarIconList[i]}}</mat-icon>
+        <mat-icon *ngIf="i === 2 && currentUser && currentUser.notifications <= 0" class="icon">{{sidebarIconList[i]}}</mat-icon>
 
         <div class="text">
           {{ item }}
