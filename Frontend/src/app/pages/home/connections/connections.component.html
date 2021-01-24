@@ -1,10 +1,10 @@
 <div class="connections">
     <mat-card-header style="display: block;">
-        <mat-card-title style="font-size: x-large">Profile</mat-card-title>
+<!--        <mat-card-title style="font-size: x-large">Profile</mat-card-title>-->
         <mat-progress-bar *ngIf="isLoading" mode="indeterminate" style="margin-bottom: 1em;"></mat-progress-bar>
-        <div *ngIf="user" style="display: flex; align-items: center; margin-left: 1em;">
+        <div *ngIf="user" style="display: flex; justify-content:center; align-items: center; padding: 1em;" class="profile-whatever-i-am-sad">
             <img *ngIf="user && user.profile_pic && user.profile_pic != 'null'" [src]="user.profile_pic" alt="Image Source" class="icon-image">
-            <mat-card-header style="color: black; margin-left: 20px; font-weight: bold;">{{user.username}}</mat-card-header>
+            <mat-card-header style="color: black; margin-left: 10px; font-weight: bold;">{{user.username}}'s Profile</mat-card-header>
         </div>
     </mat-card-header>
 
