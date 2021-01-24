@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthService} from '../../services/auth/auth.service';
 import {UserProfile} from '../../model/UserProfile';
@@ -7,6 +7,7 @@ import {UserService} from '../../services/user/user.service';
 import {UserProfileShortened} from '../../model/UserProfileShortened';
 import { Feed } from 'src/app/model/Feed';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {ConnectionsComponent} from './connections/connections.component';
 
 @Component({
     selector: 'app-home',
@@ -25,6 +26,7 @@ export class HomeComponent implements OnInit {
     }
     currentUser: UserProfile = null;
 
+    @ViewChild(ConnectionsComponent) conn: ConnectionsComponent;
     isSelectedItem = 0;
     sidebarIconList = ['home', 'face', 'notifications_none', 'login'];
     sidebarList = ['Home', 'Profile', 'Notifications', 'Logout'];
@@ -91,9 +93,8 @@ export class HomeComponent implements OnInit {
     }
 
     getUserProfile(user: UserProfileShortened) {
-        this.isSelectedItem = 5;
         this.selectedUserProfile = user;
         this.isSelectedItem = -1;
-
+        this.conn.loadPosts(user.username);
     }
 }

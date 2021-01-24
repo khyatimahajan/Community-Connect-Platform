@@ -29,12 +29,12 @@ export class ConnectionsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadPosts();
+    this.loadPosts(this.userProfileShort.username);
   }
 
-  loadPosts() {
+  loadPosts(username: string) {
     this.isLoading = true;
-    this.userService.getUserProfile(this.userProfileShort.username).subscribe(response => {
+    this.userService.getUserProfile(username).subscribe(response => {
       if (response) {
         this.isLoading = false;
         this.user = response.user;
