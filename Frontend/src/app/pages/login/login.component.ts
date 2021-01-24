@@ -26,6 +26,7 @@ export class LoginComponent implements OnInit {
 
   signUpData: UserSignupInfo;
   showLogin = true;
+  isLoading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -59,6 +60,7 @@ export class LoginComponent implements OnInit {
       try {
         const username = this.form.get('username').value;
         const password = this.form.get('password').value;
+        this.isLoading = true;
         this.authService.login(username, password).subscribe(response => {
           if (response) {
             this.authService.setUser(response);

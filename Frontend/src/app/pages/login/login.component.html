@@ -32,8 +32,14 @@
           mat-raised-button
           color="primary"
           style="margin-top: 1em; background-color: rgb(29, 161, 242)"
+          [disabled]="isLoading"
         >
-          Access Community Connect
+          <div *ngIf="!isLoading">
+            Access Community Connect
+          </div>
+          <div *ngIf="isLoading">
+            <mat-spinner></mat-spinner>
+          </div>
         </button>
       </form>
     </mat-card-content>
