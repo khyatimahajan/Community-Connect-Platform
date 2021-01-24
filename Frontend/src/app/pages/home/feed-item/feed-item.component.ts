@@ -121,7 +121,7 @@ export class FeedItemComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result === 'Load') {
                 this.feedStatusChange.emit(true);
-            } else if (result !== 'Cancel' && result != null && result.length > 5) {
+            } else if (result && result.tweet) {
                 this.openDetailModal(result);
             }
         });

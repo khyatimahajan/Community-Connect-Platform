@@ -78,7 +78,7 @@ export class NotificationComponent implements OnInit {
         this.markNotifAsRead(notif);
       }
       if (result === 'Load') {
-      } else if (result !== 'Cancel' && result != null && result.length > 5) {
+      } else if (result && result.tweet) {
         this.openDetailModal(result);
       }
     });
