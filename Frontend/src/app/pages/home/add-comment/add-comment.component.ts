@@ -15,6 +15,8 @@ export class AddCommentComponent implements OnInit {
 
   commentStr = '';
   buttonDisabled = false;
+  toggled = false;
+
   constructor(
       public thisDialogRef: MatDialogRef<AddCommentComponent>,
       @Inject(MAT_DIALOG_DATA) public data: Feed,
@@ -54,4 +56,9 @@ export class AddCommentComponent implements OnInit {
       verticalPosition: 'top',
     });
   }
+
+  handleSelection(event) {
+    this.commentStr += event.char;
+  }
+
 }
