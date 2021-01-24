@@ -26,22 +26,38 @@ export class FeedDetailComponent implements OnInit {
       private snackBar: MatSnackBar,
       public dialog: MatDialog
   ) {
-    this.loadData();
   }
 
   moment = moment;
 
   ngOnInit(): void {
-
+    this.loadData();
   }
 
   loadData() {
-    if (this.feed != null && this.feed.tweet != null && this.feed.tweet._id != null && this.authService.currentUser != null) {
+    if (this.feed != null && this.feed.tweet != null && this.feed.tweet._id != null) {
       this.userService.getDetailsForAFeed(this.authService.currentUser.id, this.feed.tweet._id).subscribe(response => {
         this.comments = response;
       });
     } else {
-      close();
+      this.userService.getDetailsForAFeed(this.authService.currentUser.id, this.userService.currentFeedId).subscribe(response => {
+
+        if (response[0].feed !== null) {
+          this.feed = new Feed();
+          this.feed.tweet = response[0].feed;
+          this.feed.author_name = response[0].author_username;
+          this.feed.author_profile_pic = response[0].author_profile_pic;
+          this.feed.is_liked = response[0].is_liked;
+          this.feed.is_retweeted = response[0].is_retweeted;
+          this.feed.parent_info = response[0].parent_info;
+
+          this.comments = response;
+        } else {
+          this.openSnackBar('Unable To Load this post at the moment');
+          this.thisDialogRef.close('Cancel');
+        }
+
+      });
     }
   }
 

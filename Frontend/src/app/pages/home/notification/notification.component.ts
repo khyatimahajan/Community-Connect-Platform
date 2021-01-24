@@ -46,7 +46,7 @@ export class NotificationComponent implements OnInit {
       .subscribe(response => {
         item.seen = true;
         this.authService.currentUser.notifications = this.authService.currentUser.notifications - 1;
-        this.openSnackBar('Marked Notification as Read');
+        // this.openSnackBar('Marked Notification as Read');
       }, error => {
         this.openSnackBar(error.error.status);
       });
@@ -74,6 +74,9 @@ export class NotificationComponent implements OnInit {
       data: null
     });
     dialogRef.afterClosed().subscribe(result => {
+      if (!notif.seen) {
+        this.markNotifAsRead(notif);
+      }
       if (result === 'Load') {
       } else if (result !== 'Cancel' && result != null && result.length > 5) {
         this.openDetailModal(result);

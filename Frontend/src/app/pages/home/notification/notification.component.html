@@ -3,7 +3,7 @@
         <mat-card-title style="font-size: x-large">Notifications</mat-card-title>
     </mat-card-header>
 
-    <mat-card (click)="openDetailPage(item.post_id)"
+    <mat-card (click)="openDetailPage(item)"
             *ngFor="let item of notificationList; let i = index"
             class="example-card" style="display: flex; flex: 1"
             [ngClass]="{ notSeen : !item.seen }"
