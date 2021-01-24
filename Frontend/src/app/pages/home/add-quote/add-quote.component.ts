@@ -14,6 +14,8 @@ export class AddQuoteComponent implements OnInit {
 
   quoteStr = '';
   buttonDisabled = false;
+  toggled = false;
+
   constructor(
       public thisDialogRef: MatDialogRef<AddQuoteComponent>,
       @Inject(MAT_DIALOG_DATA) public data: Feed,
@@ -63,5 +65,9 @@ export class AddQuoteComponent implements OnInit {
       horizontalPosition: 'center',
       verticalPosition: 'top',
     });
+  }
+
+  handleSelection(event) {
+    this.quoteStr += event.char;
   }
 }
