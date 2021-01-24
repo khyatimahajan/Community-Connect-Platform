@@ -1,0 +1,14 @@
+<div class="connections">
+    <mat-card-header style="display: block;">
+        <mat-card-title style="font-size: x-large">Profile</mat-card-title>
+        <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+        <div *ngIf="user" style="display: flex; align-items: center; margin-left: 1em;">
+            <img *ngIf="user && user.profile_pic && user.profile_pic != 'null'" [src]="user.profile_pic" alt="Image Source" class="icon-image">
+            <mat-card-header style="color: black; margin-left: 20px; font-weight: bold;">{{user.username}}</mat-card-header>
+        </div>
+    </mat-card-header>
+
+    <div style="margin-top: 1em;">
+        <app-feed-item *ngFor="let item of feedList; let i = index" [feed]="item" (feedStatusChange)="loadPosts()"></app-feed-item>
+    </div>
+</div>

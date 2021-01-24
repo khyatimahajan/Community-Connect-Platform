@@ -6,6 +6,7 @@ import {UserProfileShortened} from '../../model/UserProfileShortened';
 import { Feed } from 'src/app/model/Feed';
 import {FeedDetailItem} from '../../model/FeedDetailItem';
 import {Notif} from '../../model/Notif';
+import {UserDetails} from '../../model/UserDetails';
 
 @Injectable({
   providedIn: 'root'
@@ -73,6 +74,10 @@ export class UserService {
   markNotificationAsRead(userId: string, notifId: string): Observable<Array<Notif>> {
     const headers = { userId, notifId };
     return this.http.put<any>('http://' + this.link + '/mark-notif-as-read', null, { headers });
+  }
+
+  getUserProfile(username: string): Observable<UserDetails> {
+    return this.http.get<UserDetails>('http://' + this.link + '/user/' + username);
   }
 
   /**

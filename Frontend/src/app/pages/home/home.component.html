@@ -9,7 +9,9 @@
       >
         <mat-icon *ngIf="i !== 1 && i !== 2" class="icon">{{sidebarIconList[i]}}</mat-icon>
         <img *ngIf="i===1" [src]="imageSource" alt="Image Source" class="icon-image">
-        <mat-icon *ngIf="i === 2" class="icon" matBadge="{{currentUser.notifications ? currentUser.notifications : '*'}}" matBadgeColor="warn">{{sidebarIconList[i]}}</mat-icon>
+        <mat-icon *ngIf="i === 2 && currentUser && currentUser.notifications > 0" class="icon" matBadge="{{currentUser.notifications ? currentUser.notifications : '*'}}" matBadgeColor="warn">{{sidebarIconList[i]}}</mat-icon>
+        <mat-icon *ngIf="i === 2 && currentUser && currentUser.notifications == 0" class="icon">{{sidebarIconList[i]}}</mat-icon>
+
         <div class="text">
           {{ item }}
         </div>
@@ -30,6 +32,9 @@
     <div *ngIf="isSelectedItem == 2">
       <app-notification></app-notification>
     </div>
+    <div *ngIf="isSelectedItem == -1">
+      <app-connections [userProfileShort]="this.selectedUserProfile"></app-connections>
+    </div>
   </div>
   <div class="connections">
     <div class="sidebar">
@@ -38,6 +43,7 @@
         <mat-list-item
           *ngFor="let user of connectionList"
           class="connections-item"
+          (click)="getUserProfile(user)"
         >
           <img [src]="user.profile_pic" alt="Image Source" class="icon-image">
           <div style="margin-left: 1.5em;">{{ user.username }}</div>

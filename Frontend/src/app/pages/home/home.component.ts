@@ -32,6 +32,7 @@ export class HomeComponent implements OnInit {
     feedList: Array<Feed> = [];
     isLoading = true;
     imageSource = null;
+    selectedUserProfile: UserProfileShortened;
 
     ngOnInit(): void {
         this.currentUser = this.authService.currentUser;
@@ -87,5 +88,12 @@ export class HomeComponent implements OnInit {
             horizontalPosition: 'center',
             verticalPosition: 'top',
         });
+    }
+
+    getUserProfile(user: UserProfileShortened) {
+        this.isSelectedItem = 5;
+        this.selectedUserProfile = user;
+        this.isSelectedItem = -1;
+
     }
 }
