@@ -62,6 +62,7 @@ export class LoginComponent implements OnInit {
         const password = this.form.get('password').value;
         this.isLoading = true;
         this.authService.login(username, password).subscribe(response => {
+          this.isLoading = false;
           if (response) {
             this.authService.setUser(response);
             this._snackBar.dismiss();
@@ -70,10 +71,12 @@ export class LoginComponent implements OnInit {
             this.loginInvalid = true;
           }
         }, error => {
+          this.isLoading = false;
           this.openSnackBar(error.error.status);
           this.loginInvalid = true;
         });
       } catch (err) {
+        this.isLoading = false;
         this.loginInvalid = true;
       }
     } else {
