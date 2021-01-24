@@ -34,11 +34,8 @@
           style="margin-top: 1em; background-color: rgb(29, 161, 242)"
           [disabled]="isLoading"
         >
-          <div *ngIf="!isLoading">
+          <div>
             Access Community Connect
-          </div>
-          <div *ngIf="isLoading">
-            <mat-spinner></mat-spinner>
           </div>
         </button>
       </form>
