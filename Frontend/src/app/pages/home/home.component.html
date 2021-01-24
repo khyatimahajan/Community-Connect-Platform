@@ -7,8 +7,9 @@
         [ngClass]="{ selected: i === isSelectedItem }"
         (click)="menuSelect(i)"
       >
-        <mat-icon *ngIf="i!==1" class="icon">{{sidebarIconList[i]}}</mat-icon>
+        <mat-icon *ngIf="i !== 1 && i !== 2" class="icon">{{sidebarIconList[i]}}</mat-icon>
         <img *ngIf="i===1" [src]="imageSource" alt="Image Source" class="icon-image">
+        <mat-icon *ngIf="i === 2" class="icon" matBadge="15" matBadgeColor="warn">{{sidebarIconList[i]}}</mat-icon>
         <div class="text">
           {{ item }}
         </div>
@@ -25,6 +26,9 @@
     </div>
     <div *ngIf="isSelectedItem == 1">
       <app-profile></app-profile>
+    </div>
+    <div *ngIf="isSelectedItem == 2">
+      <app-notification></app-notification>
     </div>
   </div>
   <div class="connections">

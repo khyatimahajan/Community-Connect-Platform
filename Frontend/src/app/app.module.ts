@@ -46,6 +46,7 @@ import { FeedItemMinimizedComponent } from './pages/home/feed-item-minimized/fee
 import { FeedDetailComponent } from './pages/home/feed-detail/feed-detail.component';
 import { CommentDetailComponent } from './pages/home/comment-detail/comment-detail.component';
 import { CreateUserComponent } from './pages/create-user/create-user.component';
+import {MatBadgeModule} from '@angular/material/badge';
 
 @NgModule({
   declarations: [
@@ -68,33 +69,34 @@ import { CreateUserComponent } from './pages/create-user/create-user.component';
     CommentDetailComponent,
     CreateUserComponent,
   ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    AppRoutingModule,
-    FlexLayoutModule,
-    FormsModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
-    MatToolbarModule,
-    MatInputModule,
-    MatCardModule,
-    MatMenuModule,
-    MatIconModule,
-    MatButtonModule,
-    MatTableModule,
-    MatDividerModule,
-    MatSlideToggleModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatListModule,
-    FontAwesomeModule,
-    MatProgressBarModule,
-    MatDialogModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
-    NgxEmojiPickerModule.forRoot()
-  ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        AppRoutingModule,
+        FlexLayoutModule,
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+        MatToolbarModule,
+        MatInputModule,
+        MatCardModule,
+        MatMenuModule,
+        MatIconModule,
+        MatButtonModule,
+        MatTableModule,
+        MatDividerModule,
+        MatSlideToggleModule,
+        MatSelectModule,
+        MatSidenavModule,
+        MatListModule,
+        FontAwesomeModule,
+        MatProgressBarModule,
+        MatDialogModule,
+        MatSnackBarModule,
+        MatProgressSpinnerModule,
+        NgxEmojiPickerModule.forRoot(),
+        MatBadgeModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

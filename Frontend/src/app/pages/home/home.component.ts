@@ -26,8 +26,8 @@ export class HomeComponent implements OnInit {
     currentUser: UserProfile = null;
 
     isSelectedItem = 0;
-    sidebarIconList = ['home', 'face', 'login'];
-    sidebarList = ['Home', 'Profile', 'Logout'];
+    sidebarIconList = ['home', 'face', 'notifications_none', 'login'];
+    sidebarList = ['Home', 'Profile', 'Notifications', 'Logout'];
     connectionList: Array<UserProfileShortened> = [];
     feedList: Array<Feed> = [];
     isLoading = true;
@@ -73,7 +73,7 @@ export class HomeComponent implements OnInit {
             case 1:
                 break;
             case 2:
-               // break;
+               break;
             case 3:
                 this.authService.setUser(null);
                 this.router.navigate(['/login']);
