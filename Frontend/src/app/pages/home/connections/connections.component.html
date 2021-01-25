@@ -10,5 +10,10 @@
 
     <div style="margin-top: 1em;">
         <app-feed-item *ngFor="let item of feedList; let i = index" [feed]="item" (feedStatusChange)="loadPosts(userProfileShort.username)"></app-feed-item>
+        <div *ngIf="feedList.length == 0">
+            <mat-card-header>
+                No User Activity has been recorded.
+            </mat-card-header>
+        </div>
     </div>
 </div>
