@@ -557,7 +557,7 @@ router.get("/get-notifications", async (req, res) => {
   const user = await User.findById(userId);
   if (user) {
     try {
-      const notifs = await Notifications.find({"outconn_id": user._id, "inconn_id": { $ne: user._id }}, null, {sort: { "timestamp" : "descending" , "seen": "descending" }}).limit(20);
+      const notifs = await Notifications.find({"outconn_id": user._id, "inconn_id": { $ne: user._id }}, null, {sort: { "timestamp" : "descending" , "seen": "descending" }});
 
       // let response = {};
       // if (notifs) {
