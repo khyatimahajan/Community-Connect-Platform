@@ -1,4 +1,8 @@
 const express = require("express");
+const dotenv = require('dotenv');
+dotenv.config();
+require('dotenv').config({ path: 'final-env-file.env' });
+
 const _ = require("lodash");
 const bodyParser = require("body-parser");
 var cors = require("cors");
@@ -6,9 +10,6 @@ const uri = "mongodb://localhost:27017/27017";
 const mongoose = require("mongoose");
 const port = 3000;
 const routes = require("./Routes/routes");
-const dotenv = require('dotenv');
-dotenv.config();
-require('dotenv').config({ path: 'final-env-file.env' });
 
 mongoose
   .connect(uri, {

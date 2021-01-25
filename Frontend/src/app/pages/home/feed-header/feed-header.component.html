@@ -40,12 +40,12 @@
       </mat-card-content>
     </div>
     <div class="middle-image" >
-      <img style="max-width: 800px; max-height: 600px;" *ngIf="imageUrl.length > 0" src="{{ imageUrl }}"/>
+      <img style="max-width: 800px; max-height: 600px;" *ngIf="imageUrl && imageUrl.length > 0" src="{{ imageUrl }}"/>
     </div>
     <div class="end-stuff">
       <mat-card-actions>
         <input style="height: 0; width: 0;" type="file" accept="image/*" (change)="onImagePicked($event)" #file>
-        <button *ngIf="false" class="post-img-button" mat-button (click)="file.click()">
+        <button *ngIf="true" class="post-img-button" mat-button (click)="file.click()">
           <span class="material-icons"> add_photo_alternate </span>
         </button>
         <button class="post-img-button emoji-button-color"

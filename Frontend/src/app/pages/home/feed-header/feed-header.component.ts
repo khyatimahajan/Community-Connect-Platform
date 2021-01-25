@@ -41,10 +41,11 @@ export class FeedHeaderComponent implements OnInit {
       const body = {
         body: this.messageStuff,
         userId: this.currentUser.id,
-        image: this.imageUrl.length > 0 ? this.imageUrl : null
+        image: this.imageUrl && this.imageUrl.length > 0 ? this.imageUrl : null
       };
       this.buttonDisabled = true;
       this.userService.postFeed(body).subscribe(response => {
+        this.imageUrl = null;
         if (response) {
           this.messageStuff = '';
           this.buttonDisabled = false;
@@ -55,6 +56,7 @@ export class FeedHeaderComponent implements OnInit {
           console.log('There was an error posting this post');
         }
       }, error => {
+        this.imageUrl = null;
         this.openSnackBar(error.error.status);
       });
     }

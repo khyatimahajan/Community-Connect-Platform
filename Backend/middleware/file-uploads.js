@@ -3,9 +3,9 @@ const multer = require('multer');
 const multerS3 = require('multer-s3');
 
 aws.config.update({
-secretAccessKey: process.env.SECRET_ACCESS_KEY || 'bruh',
-accessKeyId: process.env.ACCESS_KEY_ID || 'bruh',
-region: process.env.AWS_REGION || 'bruh', //E.g us-east-1
+secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+region: process.env.AWS_REGION,
 });
 
 const s3 = new aws.S3();
@@ -24,7 +24,7 @@ const upload = multer({
     storage: multerS3({
       acl: 'public-read',
       s3,
-      bucket: process.env.AWS_BUCKET_NAME || 'bruh_bucket',
+      bucket: process.env.AWS_BUCKET_NAME,
       key: function(req, file, cb) {
         /*I'm using Date.now() to make sure my file has a unique name*/
         req.file = Date.now() + file.originalname;
