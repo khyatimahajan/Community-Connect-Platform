@@ -696,7 +696,7 @@ router.get("/feeds/:feed_id", async (req, res) => {
 
       var entireCommentsForFeed = await Feeds.find({
         "parent_id": feed_id,
-        "visible_to.groups": { $in: group }
+        "visible_to.groups": { $in: entireFeeds.visible_to.groups }
       }, filters).populate("parent_id", filters);
 
       var response = [];
