@@ -1,0 +1,41 @@
+.create-user-card {
+  padding: 30px;
+  display: block;
+  justify-content: space-around;
+  align-items: center;
+  min-width: 600px;
+  max-width: 800px;
+}
+
+.card-item {
+  width: 100%;
+}
+
+.flex-it {
+  display: flex;
+}
+
+.center {
+  align-items: center;
+  justify-content: center;
+}
+
+.image {
+  align-items: center;
+  justify-content: center;
+  padding-top: 1em;
+  padding-bottom: 3em;
+}
+
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.icon-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}

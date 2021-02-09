@@ -1,0 +1,65 @@
+<div class="feeds-header">
+  <mat-card class="example-card" style="display: flex; flex: 1">
+    <div style="flex: 1">
+      <mat-card-header>
+        <mat-card-title style="font-size: x-large">HOME</mat-card-title>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+    </div>
+    <div class="center-stuff">
+      <mat-card-content class="feed-post">
+        <div
+          style="
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          "
+        >
+          <div class="example-header-image">
+            <img *ngIf="currentUser && currentUser.profile_pic && currentUser.profile_pic != 'null'" [src]="currentUser.profile_pic" alt="Image Source" class="icon-image">
+            <mat-icon *ngIf="!currentUser || !currentUser.profile_pic">face</mat-icon>
+          </div>
+        </div>
+        <div style="margin-top: 1em; flex: 10; display: flex">
+          <mat-form-field
+            class="example-full-width"
+            style="flex: 1; margin-right: 2em"
+          >
+            <mat-label>What's on your mind? </mat-label>
+            <textarea
+              [(ngModel)]='messageStuff'
+              matInput
+              placeholder="Ex. I am feeling..."
+              maxlength="280"
+              rows="5"
+            ></textarea>
+            <mat-hint align="end"> {{ messageStuff.length }} / 280 </mat-hint>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </div>
+    <div class="middle-image" >
+      <img style="max-width: 400px; max-height: 300px;" *ngIf="imageUrl && imageUrl.length > 0" src="{{ imageUrl }}"/>
+    </div>
+    <div class="end-stuff">
+      <mat-card-actions>
+        <input style="height: 0; width: 0;" type="file" accept="image/*" (change)="onImagePicked($event)" #file>
+        <button *ngIf="true" class="post-img-button" mat-button (click)="file.click()">
+          <span class="material-icons"> add_photo_alternate </span>
+        </button>
+        <button class="post-img-button emoji-button-color"
+                (click)="toggled = !toggled"
+                [(emojiPickerIf)]="toggled"
+                [emojiPickerDirection]="'bottom' || 'top' || 'left' || 'right'"
+                (emojiPickerSelect)="handleSelection($event)"
+                mat-button>
+          <span class="material-icons"> insert_emoticon </span>
+        </button>
+      </mat-card-actions>
+      <mat-card-actions>
+        <button class="post-button" mat-button (click)="addPost()" [disabled]="buttonDisabled || messageStuff? messageStuff.length === 0: true">POST</button>
+      </mat-card-actions>
+    </div>
+  </mat-card>
+</div>
