@@ -37,21 +37,19 @@
             <mat-icon class="icon-style" (click)="togglePasswordVisibility()">{{passwordVisible ? "visibility_off" : "visibility"}}</mat-icon>
         </div>
 
-        <div class="flex-it center">
-            <mat-form-field class="card-item">
+
+        <div class="flex-it">
+            <mat-form-field class="card-item" style="margin-right: 0.5em">
                 <mat-label>New Password</mat-label>
                 <input matInput placeholder="New Password" [(ngModel)]="newPassword" [type]="passwordVisible ? 'text' : 'password'">
             </mat-form-field>
-            <mat-icon class="icon-style" (click)="togglePasswordVisibility()">{{passwordVisible ? "visibility_off" : "visibility"}}</mat-icon>
-        </div>
 
-        <div class="flex-it center">
-            <mat-form-field class="card-item">
+            <mat-form-field class="card-item" style="margin-left: 0.5em">
                 <mat-label>Confirm Password</mat-label>
                 <input matInput placeholder="Confirm Password" [(ngModel)]="cnewPassword" [type]="passwordVisible ? 'text' : 'password'">
             </mat-form-field>
-            <mat-icon class="icon-style" (click)="togglePasswordVisibility()">{{passwordVisible ? "visibility_off" : "visibility"}}</mat-icon>
         </div>
+
 
         <div class="flex-it center">
             <button
