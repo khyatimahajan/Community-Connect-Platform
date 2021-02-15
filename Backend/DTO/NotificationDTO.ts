@@ -1,4 +1,4 @@
-export class NotificationDTO {
+export class Notificationdto {
 	post_id: string;
 	status: string;
 	seen: boolean;

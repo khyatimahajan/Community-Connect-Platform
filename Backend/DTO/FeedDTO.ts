@@ -1,4 +1,4 @@
-import { UserMiniDTO } from 'UserMiniDTO'
+import { UserMiniDTO } from './UserMiniDTO'
 
 export class Feed {
 	id: string;

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Feeds = require('../../model/Feeds');
 
 // Feeds model
 const feedSchema = new mongoose.Schema({

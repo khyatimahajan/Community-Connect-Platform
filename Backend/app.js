@@ -6,10 +6,11 @@ require('dotenv').config({ path: 'final-env-file.env' });
 const _ = require("lodash");
 const bodyParser = require("body-parser");
 var cors = require("cors");
-const uri = "mongodb://localhost:27017/27017";
+const uri = "mongodb://localhost:27017/test";
 const mongoose = require("mongoose");
 const port = 3000;
 const routes = require("./Routes/routes");
+const getRoutes = require("./Routes/get");
 
 mongoose
   .connect(uri, {
@@ -21,6 +22,7 @@ mongoose
     app.use(bodyParser.json({limit: '50mb'}));
     app.use(cors());
 
+    app.use("/api/get", getRoutes);
     app.use("/api", routes);
     app.get("/server/status", (req, res) => {
       res.status(200).send("Server OK");
