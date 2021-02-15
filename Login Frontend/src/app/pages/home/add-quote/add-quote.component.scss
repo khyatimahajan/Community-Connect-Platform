@@ -28,3 +28,10 @@
   justify-content: stretch;
   margin-top: 0.5em;
 }
+
+.middle-image {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+}
