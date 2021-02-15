@@ -147,7 +147,7 @@ router.post("/repost", async (req, res) => {
   // add notif for user mention
 
   const user = await User.findById(req.body.userId);
-  groups = user.group_id;
+  groups = user.group_names;
   var parent_id = req.body.parent_id;
 
   // Create new feed
@@ -165,8 +165,7 @@ router.post("/repost", async (req, res) => {
     parent_id: parent_id ? parent_id : null,
     conversation_id: null,
     mentions: [...new Set(user_mentions)],
-    visible_to: { users: groupUsers, groups },
-    replies: [];
+    replies: [],
     image: req.body.image ? req.body.image : null,
   };
 

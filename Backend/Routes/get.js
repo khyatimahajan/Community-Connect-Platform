@@ -12,7 +12,7 @@ const bcrypt = require("bcryptjs");
 const { urlify } = require("./../utils");
 const upload = require('./../middleware/file-uploads');
 
-// TODO! limit visibility by groups for everything
+// TODO! limit visibility by groups for everything - only check for /feed/:feed_id
 
 router.get("/server/status", function (req, res) {
     res.status(200).send("Get Server OK");
