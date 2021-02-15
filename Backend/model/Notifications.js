@@ -2,22 +2,19 @@ const mongoose = require('mongoose');
 
 // Notifications model
 const notificationSchema = new mongoose.Schema({
-	inconn_id: {
+	incoming_from: {
 		type: mongoose.Types.ObjectId,
-		ref: 'user',
+		ref: 'User',
 	},
-	outconn_id: {
+	outgoing_to: {
 		type: mongoose.Types.ObjectId,
-		ref: 'user',
+		ref: 'User',
 	},
 	post_id: {
 		type: mongoose.Types.ObjectId,
 		ref: 'Feeds',
 	},
-	activity: {
-		type: String,
-	},
-	status: {
+	activity_type: {
 		type: String,
 	},
 	timestamp: {

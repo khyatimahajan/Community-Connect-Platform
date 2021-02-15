@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const feedSchema = new mongoose.Schema({
 	user_id: {
 		type: String,
+		ref: 'User',
 	},
 	body: {
 		type: String,
@@ -17,10 +18,15 @@ const feedSchema = new mongoose.Schema({
 			type: String,
 		},
 	],
+	reposted_by: [
+		{
+			type: String,
+		},
+	],
 	like_count: {
 		type: Number,
 	},
-	retweet_count: {
+	repost_count: {
 		type: Number,
 	},
 	reply_count: {
@@ -39,10 +45,7 @@ const feedSchema = new mongoose.Schema({
 		type: mongoose.Types.ObjectId,
 		ref: 'Feeds',
 	},
-	parent_post: {
-		type: Object
-	},
-	comments: [
+	replies: [
 		{
 			type: mongoose.Types.ObjectId,
 			ref: 'Feeds'
@@ -50,36 +53,13 @@ const feedSchema = new mongoose.Schema({
 	],
 	conversation_id: {
 		type: mongoose.Types.ObjectId,
-		ref: 'Feeds',
+		ref: 'ConversationVisibility',
 	},
 	mentions: [
 		{
 			type: String,
 		},
 	],
-	visible_to: {
-		userId: {
-			type: mongoose.Types.ObjectId,
-			ref: 'user',
-		},
-		userActivity: {
-			type: String,
-		},
-		users: [
-			{
-				type: String,
-			},
-		],
-		groups: [
-			{
-				type: String,
-			},
-		],
-	},
-	timestamp: {
-		type: Date,
-		default: Date.now,
-	},
 });
 
 // get user mentions inside post body

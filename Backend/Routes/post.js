@@ -12,6 +12,8 @@ const bcrypt = require("bcryptjs");
 const { urlify } = require("./../utils");
 const upload = require('./../middleware/file-uploads');
 
+//  TODO! check logtimes model
+
 router.post("/login", async (req, res) => {
   const { error } = validation.loginValidation(req.body);
   if (error) {

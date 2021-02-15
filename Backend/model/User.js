@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 
 // Users model
 const userSchema = new mongoose.Schema({
-	user_id: {
+	user_code: {
 		type: String,
 	},
-	username: {
+	user_handle: {
 		type: String,
 	},
 	password: {
@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
 		min: 2,
 		max: 255,
 	},
-	EmailID: {
+	email_id: {
 		type: String,
 		min: 6,
 		max: 255,
@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema({
 	profile_pic: {
 		type: String,
 	},
-	group_id: [
+	group_names: [
 		{
 			type: String,
 		},
@@ -95,4 +95,4 @@ userSchema.methods.getUserGroupMembers = async (currentUserID, cb) => {
 	}
 };
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model('User', userSchema);

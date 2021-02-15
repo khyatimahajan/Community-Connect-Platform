@@ -5,21 +5,22 @@ let schema = mongoose.Schema;
 
 let loggerSchema = new schema({
 	user: {
-		type: mongoose.Schema.Types.Mixed,
+		type: String,
+		ref: 'User'
 	},
-	loggedInAt: {
-		userTime: {
+	logged_in_at: {
+		user_time: {
 			type: String,
 		},
-		serverTime: {
+		server_time: {
 			type: String,
 		},
 	},
-	loggedOutAt: {
-		userTime: {
+	logged_out_at: {
+		user_time: {
 			type: String,
 		},
-		serverTime: {
+		server_time: {
 			type: String,
 		},
 	},
