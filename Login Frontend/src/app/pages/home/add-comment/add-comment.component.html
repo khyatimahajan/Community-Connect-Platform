@@ -22,6 +22,10 @@
         </mat-form-field>
     </div>
     <mat-dialog-actions class="separated-buttons">
+        <input style="height: 0; width: 0;" type="file" accept="image/*" (change)="onImagePicked($event)" #file>
+        <button *ngIf="true" class="post-img-button" mat-button (click)="file.click()">
+            <span class="material-icons"> add_photo_alternate </span>
+        </button>
         <button class="post-img-button emoji-button-color"
                 (click)="toggled = !toggled"
                 [(emojiPickerIf)]="toggled"

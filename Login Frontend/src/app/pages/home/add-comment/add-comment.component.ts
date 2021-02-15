@@ -16,6 +16,8 @@ export class AddCommentComponent implements OnInit {
   commentStr = '';
   buttonDisabled = false;
   toggled = false;
+  imageObj: File;
+  imageUrl = '';
 
   constructor(
       public thisDialogRef: MatDialogRef<AddCommentComponent>,
@@ -31,6 +33,7 @@ export class AddCommentComponent implements OnInit {
     if (this.commentStr.length > 0) {
       const body = {
         body: this.commentStr,
+        image: this.imageUrl && this.imageUrl.length > 0 ? this.imageUrl : null,
         userId: this.authService.currentUser.id,
         parent_id: this.data.tweet._id
       };
@@ -59,6 +62,23 @@ export class AddCommentComponent implements OnInit {
 
   handleSelection(event) {
     this.commentStr += event.char;
+  }
+
+  onImagePicked(event: Event): void {
+    const FILE = (event.target as HTMLInputElement).files[0];
+    this.imageObj = FILE;
+    this.onImageUpload();
+  }
+
+  onImageUpload() {
+    const imageForm = new FormData();
+    imageForm.append('image', this.imageObj);
+    this.userService.imageUpload(imageForm).subscribe(res => {
+      this.imageUrl = res.image;
+    }, error => {
+      this.openSnackBar('Could not upload Image Properly. Please try again');
+      this.imageUrl = '';
+    });
   }
 
 }
