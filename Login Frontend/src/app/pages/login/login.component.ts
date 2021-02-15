@@ -43,13 +43,6 @@ export class LoginComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const userStr = sessionStorage.getItem('user');
-    if (userStr) {
-      const userObj = JSON.parse(userStr);
-      this.authService.setUser(userObj);
-      await this.router.navigate(['/home']);
-    }
-
     this.form = this.fb.group({
       username: ['aaa@email.com', Validators.email],
       password: ['123456', Validators.required]
@@ -58,6 +51,13 @@ export class LoginComponent implements OnInit {
     this.signupForm = this.fb.group({
       accessCode: ['', Validators.required]
     });
+
+    const userStr = sessionStorage.getItem('user');
+    if (userStr) {
+      const userObj = JSON.parse(userStr);
+      this.authService.setUser(userObj);
+      await this.router.navigate(['/home']);
+    }
   }
 
   onSubmit() {

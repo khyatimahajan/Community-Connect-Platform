@@ -1,7 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import {  NgxEmojiPickerModule  } from 'ngx-emoji-picker';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -94,7 +95,7 @@ import {MatBadgeModule} from '@angular/material/badge';
         MatDialogModule,
         MatSnackBarModule,
         MatProgressSpinnerModule,
-        NgxEmojiPickerModule.forRoot(),
+        PickerModule,
         MatBadgeModule
     ],
   providers: [],

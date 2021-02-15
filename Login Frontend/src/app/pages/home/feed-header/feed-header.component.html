@@ -45,17 +45,13 @@
     <div class="end-stuff">
       <mat-card-actions>
         <input style="height: 0; width: 0;" type="file" accept="image/*" (change)="onImagePicked($event)" #file>
-        <button *ngIf="true" class="post-img-button" mat-button (click)="file.click()">
-          <span class="material-icons"> add_photo_alternate </span>
-        </button>
-        <button class="post-img-button emoji-button-color"
-                (click)="toggled = !toggled"
-                [(emojiPickerIf)]="toggled"
-                [emojiPickerDirection]="'bottom' || 'top' || 'left' || 'right'"
-                (emojiPickerSelect)="handleSelection($event)"
-                mat-button>
-          <span class="material-icons"> insert_emoticon </span>
-        </button>
+        <mat-icon (click)="file.click()" style="margin-right: 1em; cursor: pointer">add_photo_alternate</mat-icon>
+        <mat-icon (click)="toggled = !toggled" style="justify-self: center; align-self: center; cursor:pointer;">insert_emoticon</mat-icon>
+        <div  *ngIf="toggled"  class="emoji-stuff">
+          <emoji-mart (emojiClick)="handleSelection($event)" [darkMode]="false"></emoji-mart>
+        </div>
+
+
       </mat-card-actions>
       <mat-card-actions>
         <button class="post-button" mat-button (click)="addPost()" [disabled]="buttonDisabled || messageStuff? messageStuff.length === 0: true">POST</button>
