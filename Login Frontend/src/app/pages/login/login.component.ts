@@ -43,6 +43,13 @@ export class LoginComponent implements OnInit {
   }
 
   async ngOnInit() {
+    const userStr = sessionStorage.getItem('user');
+    if (userStr) {
+      const userObj = JSON.parse(userStr);
+      this.authService.setUser(userObj);
+      await this.router.navigate(['/home']);
+    }
+
     this.form = this.fb.group({
       username: ['aaa@email.com', Validators.email],
       password: ['123456', Validators.required]
@@ -66,6 +73,7 @@ export class LoginComponent implements OnInit {
           if (response) {
             this.authService.setUser(response);
             this._snackBar.dismiss();
+            sessionStorage.setItem('user', JSON.stringify(response));
             this.router.navigate(['/home']);
           } else {
             this.loginInvalid = true;

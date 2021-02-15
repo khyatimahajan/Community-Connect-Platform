@@ -79,6 +79,7 @@ export class HomeComponent implements OnInit {
                break;
             case 3:
                 this.authService.setUser(null);
+                sessionStorage.removeItem('user');
                 this.router.navigate(['/login']);
                 break;
         }
