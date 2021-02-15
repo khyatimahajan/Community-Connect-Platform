@@ -6,7 +6,6 @@ import {  NgxEmojiPickerModule  } from 'ngx-emoji-picker';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './pages/login/login.component';
-import { SignupComponent } from './pages/signup/signup.component';
 import { HomeComponent } from './pages/home/home.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 
@@ -45,14 +44,12 @@ import { AddQuoteComponent } from './pages/home/add-quote/add-quote.component';
 import { FeedItemMinimizedComponent } from './pages/home/feed-item-minimized/feed-item-minimized.component';
 import { FeedDetailComponent } from './pages/home/feed-detail/feed-detail.component';
 import { CommentDetailComponent } from './pages/home/comment-detail/comment-detail.component';
-import { CreateUserComponent } from './pages/create-user/create-user.component';
 import {MatBadgeModule} from '@angular/material/badge';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    SignupComponent,
     HomeComponent,
     PageNotFoundComponent,
     SidebarComponent,
@@ -67,7 +64,6 @@ import {MatBadgeModule} from '@angular/material/badge';
     FeedItemMinimizedComponent,
     FeedDetailComponent,
     CommentDetailComponent,
-    CreateUserComponent,
   ],
     imports: [
         BrowserModule,

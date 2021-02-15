@@ -30,13 +30,6 @@ export class AuthService {
     console.log(`Auth Service: ${message}`);
   }
 
-  login(email: string, password: string): Observable<UserProfile> {
-    const body = {
-      email, password, timezone: 'EST'
-    };
-    return this.http.post<any>('http://' + this.link + '/login', body);
-  }
-
   // tslint:disable-next-line:variable-name
   signup(user_id: string): Observable<UserSignupInfo> {
     const headers = { user_id };
@@ -45,11 +38,6 @@ export class AuthService {
 
   createUser(body: any): Observable<any> {
     return this.http.post<any>('http://' + this.link + '/create-user', body);
-  }
-
-  changePassword(body: any, userId: string): Observable<any> {
-     const headers = { userId };
-     return this.http.put<any>('http://' + this.link + '/change-password', body, { headers });
   }
 
   setUser(user: UserProfile) {

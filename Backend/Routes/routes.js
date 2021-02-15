@@ -732,7 +732,8 @@ router.get("/signup", async (req, res) => {
     res.status(404).send({ status: "Could not find any user matching that userid" });
   } else {
     if (user.password && user.profile_pic) {
-      res.status(403).send({ status: "Access code has already been redeemed"});
+      res.status(200).send(user);
+      // res.status(403).send({ status: "Access code has already been redeemed"});
     } else {
       res.status(200).send(user);
     }
