@@ -68,12 +68,17 @@ export class UserService {
 
   getNotifications(userId: string): Observable<Array<Notif>> {
     const headers = { userId };
-    return this.http.get<any>('http://' + this.link + '/get-notifications', { headers });
+    return this.http.get<any>('http://' + this.link + '/get/notifications', { headers });
   }
 
   markNotificationAsRead(userId: string, notifId: string): Observable<Array<Notif>> {
     const headers = { userId, notifId };
     return this.http.put<any>('http://' + this.link + '/mark-notif-as-read', null, { headers });
+  }
+
+  markAllNotificationAsRead(userId: string): Observable<Array<Notif>> {
+    const headers = { userId };
+    return this.http.put<any>('http://' + this.link + '/put/notifications/read', null, { headers });
   }
 
   getUserProfile(username: string): Observable<UserDetails> {

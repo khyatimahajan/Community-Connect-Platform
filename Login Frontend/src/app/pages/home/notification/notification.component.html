@@ -1,7 +1,14 @@
 <div class="notifications">
+    <div class="flex-it">
     <mat-card-header>
-        <mat-card-title style="font-size: x-large">Notifications</mat-card-title>
+            <mat-card-title style="font-size: x-large">Notifications</mat-card-title>
     </mat-card-header>
+        <button (click)="markAllNotifAsRead()"
+                mat-stroked-button color="warn"
+                style="background-color: white">Mark all as read
+        </button>
+    </div>
+
 
     <mat-card (click)="openDetailPage(item)"
             *ngFor="let item of notificationList; let i = index"
@@ -11,7 +18,7 @@
         <div>{{item.status}}</div>
         <button *ngIf="!item.seen" (click)="markNotifAsRead(item); $event.stopPropagation()"
                 mat-stroked-button color="warn"
-                style="background-color: white">Mark as Read
+                style="background-color: white">Mark as read
         </button>
 
     </mat-card>

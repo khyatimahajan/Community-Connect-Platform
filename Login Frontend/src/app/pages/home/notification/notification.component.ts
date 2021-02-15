@@ -83,4 +83,17 @@ export class NotificationComponent implements OnInit {
       }
     });
   }
+
+    markAllNotifAsRead() {
+      this.userService.markAllNotificationAsRead(this.authService.currentUser.id)
+          .subscribe(response => {
+            for (const notification of this.notificationList) {
+              notification.seen = true;
+            }
+            this.authService.currentUser.notifications = 0;
+            // this.openSnackBar('Marked Notification as Read');
+          }, error => {
+            this.openSnackBar(error.error.status);
+          });
+    }
 }
