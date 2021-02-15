@@ -15,6 +15,8 @@ export class ProfileComponent implements OnInit {
   currentPassword: string;
   newPassword: string;
   cnewPassword: string;
+  passwordVisible = false;
+
   constructor(
       private router: Router,
       private snackBar: MatSnackBar,
@@ -52,4 +54,8 @@ export class ProfileComponent implements OnInit {
       verticalPosition: 'top',
     });
   }
+
+    togglePasswordVisibility() {
+        this.passwordVisible = !this.passwordVisible;
+    }
 }
