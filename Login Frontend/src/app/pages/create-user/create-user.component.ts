@@ -1,9 +1,8 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {UserSignupInfo} from '../../model/UserSignupInfo';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthService} from '../../services/auth/auth.service';
-import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-create-user',
@@ -21,13 +20,13 @@ export class CreateUserComponent implements OnInit {
       private route: ActivatedRoute,
       private router: Router,
       private snackBar: MatSnackBar,
-      private authService: AuthService,
-      @Inject(DOCUMENT) private document: Document
+      private authService: AuthService
   ) { }
 
   ngOnInit(): void {
     this.signUpData = this.authService.currentUserSignUpInfo;
     if (this.signUpData == null) {
+
       const code = localStorage.getItem('user_id');
       if (code) {
         this.authService.signup(code).subscribe(response => {
@@ -43,16 +42,14 @@ export class CreateUserComponent implements OnInit {
         });
       } else {
         this.openSnackBar('No SignUp User Info Detected. Please try again.');
-        // this.router.navigate(['/login']);
-        this.goToUrl();
+        this.router.navigate(['/login']);
       }
     }
 
     this.imageSrc = localStorage.getItem('avatar');
     if (this.imageSrc == null) {
       this.openSnackBar('No Avatar Detected. Please try again.');
-      // this.router.navigate(['/login']);
-      this.goToUrl();
+      this.router.navigate(['/login']);
     }
   }
 
@@ -62,10 +59,6 @@ export class CreateUserComponent implements OnInit {
       horizontalPosition: 'center',
       verticalPosition: 'top',
     });
-  }
-
-  goToUrl(): void {
-    this.document.location.href = 'http://localhost:4200/login';
   }
 
   signUpUser() {
