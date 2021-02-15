@@ -34,3 +34,10 @@
   z-index: 1000;
   box-shadow: rgba(0, 0, 0, 0.5) 0 3px 8px;
 }
+
+.middle-image {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+}

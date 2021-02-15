@@ -28,6 +28,7 @@ export class AddCommentComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.thisDialogRef.updatePosition({ top: '50px' });
   }
   onCloseConfirm() {
     if (this.commentStr.length > 0) {

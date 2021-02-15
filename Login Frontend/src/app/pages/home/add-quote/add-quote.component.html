@@ -21,14 +21,17 @@
                              [created_at]="data.tweet.created_at"
     ></app-feed-item-minimized>
     <mat-dialog-actions class="separated-buttons">
-        <button class="post-img-button emoji-button-color"
-                (click)="toggled = !toggled"
-                [(emojiPickerIf)]="toggled"
-                [emojiPickerDirection]="'bottom' || 'top' || 'left' || 'right'"
-                (emojiPickerSelect)="handleSelection($event)"
-                mat-button>
-            <span class="material-icons"> insert_emoticon </span>
-        </button>
+        <div style="display: flex">
+            <input style="height: 0; width: 0;" type="file" accept="image/*" (change)="onImagePicked($event)" #file>
+            <mat-icon (click)="file.click()" style="margin-right: 1em; cursor: pointer">add_photo_alternate</mat-icon>
+            <div>
+                <mat-icon (click)="toggled = !toggled" style="justify-self: center; align-self: center; cursor:pointer;">insert_emoticon</mat-icon>
+                <div  *ngIf="toggled"  class="emoji-stuff">
+                    <emoji-mart (emojiClick)="handleSelection($event)" [darkMode]="false"></emoji-mart>
+                </div>
+            </div>
+        </div>
+
         <div>
             <button class="comment-button" mat-button (click)="onCloseConfirm()"
                     [disabled]="buttonDisabled || quoteStr? quoteStr.length === 0: true">CONFIRM

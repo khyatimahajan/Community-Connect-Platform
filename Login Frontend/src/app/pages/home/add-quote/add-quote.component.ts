@@ -15,6 +15,8 @@ export class AddQuoteComponent implements OnInit {
   quoteStr = '';
   buttonDisabled = false;
   toggled = false;
+  imageObj: File;
+  imageUrl = '';
 
   constructor(
       public thisDialogRef: MatDialogRef<AddQuoteComponent>,
@@ -69,5 +71,22 @@ export class AddQuoteComponent implements OnInit {
 
   handleSelection(event) {
     this.quoteStr += event.char;
+  }
+
+  onImagePicked(event: Event): void {
+    const FILE = (event.target as HTMLInputElement).files[0];
+    this.imageObj = FILE;
+    this.onImageUpload();
+  }
+
+  onImageUpload() {
+    const imageForm = new FormData();
+    imageForm.append('image', this.imageObj);
+    this.userService.imageUpload(imageForm).subscribe(res => {
+      this.imageUrl = res.image;
+    }, error => {
+      this.openSnackBar('Could not upload Image Properly. Please try again');
+      this.imageUrl = '';
+    });
   }
 }

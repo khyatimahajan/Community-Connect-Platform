@@ -6,6 +6,9 @@
 
     ></app-feed-item-minimized>
     <div class="comment-area">
+        <div class="middle-image" >
+            <img style="max-width: 400px; max-height: 300px;" *ngIf="imageUrl && imageUrl.length > 0" src="{{ imageUrl }}"/>
+        </div>
         <mat-form-field
                 style="flex: 1;"
         >
@@ -22,12 +25,14 @@
         </mat-form-field>
     </div>
     <mat-dialog-actions class="separated-buttons">
-        <input style="height: 0; width: 0;" type="file" accept="image/*" (change)="onImagePicked($event)" #file>
-        <mat-icon (click)="file.click()" style="margin-right: 1em; cursor: pointer">add_photo_alternate</mat-icon>
-        <div>
-            <mat-icon (click)="toggled = !toggled" style="justify-self: center; align-self: center; cursor:pointer;">insert_emoticon</mat-icon>
-            <div  *ngIf="toggled"  class="emoji-stuff">
-                <emoji-mart (emojiClick)="handleSelection($event)" [darkMode]="false"></emoji-mart>
+        <div style="display: flex">
+            <input style="height: 0; width: 0;" type="file" accept="image/*" (change)="onImagePicked($event)" #file>
+            <mat-icon (click)="file.click()" style="margin-right: 1em; cursor: pointer">add_photo_alternate</mat-icon>
+            <div>
+                <mat-icon (click)="toggled = !toggled" style="justify-self: center; align-self: center; cursor:pointer;">insert_emoticon</mat-icon>
+                <div  *ngIf="toggled"  class="emoji-stuff">
+                    <emoji-mart (emojiClick)="handleSelection($event)" [darkMode]="false"></emoji-mart>
+                </div>
             </div>
         </div>
 
