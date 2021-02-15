@@ -1,0 +1,40 @@
+<div>
+    <h2>Replying to {{data.author_name}}</h2>
+    <app-feed-item-minimized [authorImage]="data.author_profile_pic" [authorName]="data.author_name"
+                             [body]="data.tweet.body" [image]="data.tweet.image"
+                             [created_at]="data.tweet.created_at"
+
+    ></app-feed-item-minimized>
+    <div class="comment-area">
+        <mat-form-field
+                style="flex: 1;"
+        >
+            <mat-label>Add Reply</mat-label>
+            <textarea
+                    [(ngModel)]='commentStr'
+                    #message
+                    matInput
+                    placeholder="Ex. I am feeling..."
+                    maxlength="280"
+                    rows="5"
+            ></textarea>
+            <mat-hint align="end"> {{ message.value.length }} / 280</mat-hint>
+        </mat-form-field>
+    </div>
+    <mat-dialog-actions class="separated-buttons">
+        <button class="post-img-button emoji-button-color"
+                (click)="toggled = !toggled"
+                [(emojiPickerIf)]="toggled"
+                [emojiPickerDirection]="'bottom' || 'top' || 'left' || 'right'"
+                (emojiPickerSelect)="handleSelection($event)"
+                mat-button>
+            <span class="material-icons"> insert_emoticon </span>
+        </button>
+        <div>
+            <button class="comment-button" mat-button (click)="onCloseConfirm()"
+                    [disabled]="buttonDisabled || commentStr? commentStr.length === 0: true">CONFIRM
+            </button>
+            <button class="cancel-button" mat-button (click)="onCloseCancel()">CANCEL</button>
+        </div>
+    </mat-dialog-actions>
+</div>
