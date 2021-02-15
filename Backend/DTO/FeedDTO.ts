@@ -1,7 +1,7 @@
 import { UserMiniDTO } from './UserMiniDTO'
 
 export class Feed {
-	id: string;
+	_id: string;
     author: UserMiniDTO;
     body: string;
     created_at: string;
@@ -14,7 +14,7 @@ export class Feed {
     replies: Feed[];
     image: string;
     parent_post: {
-    	id: string;
+    	_id: string;
     	author: UserMiniDTO;
     	body: string;
     	image: string;

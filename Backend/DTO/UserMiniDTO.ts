@@ -1,5 +1,5 @@
 export class UserMiniDTO {
-	id: string;
+	_id: string;
 	profile_pic: string;
 	user_handle: string;
 }
