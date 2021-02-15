@@ -70,7 +70,7 @@ export class AddQuoteComponent implements OnInit {
   }
 
   handleSelection(event) {
-    this.quoteStr += event.char;
+    this.quoteStr += event.emoji.native;
   }
 
   onImagePicked(event: Event): void {

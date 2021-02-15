@@ -62,7 +62,7 @@ export class AddCommentComponent implements OnInit {
   }
 
   handleSelection(event) {
-    this.commentStr += event.char;
+    this.commentStr += event.emoji.native;
   }
 
   onImagePicked(event: Event): void {

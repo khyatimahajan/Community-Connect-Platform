@@ -72,7 +72,7 @@ export class FeedHeaderComponent implements OnInit {
   }
 
   handleSelection(event) {
-    this.messageStuff += event.char;
+    this.messageStuff += event.emoji.native;
   }
 
   onImagePicked(event: Event): void {
