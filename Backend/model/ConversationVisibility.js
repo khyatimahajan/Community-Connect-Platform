@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 // Groups model
 let schema = mongoose.Schema;
 
-let convVisSchema = new schema({
+let convisSchema = new schema({
 	conversation_id: {
 		type: String,
 		required: true,
@@ -13,4 +13,4 @@ let convVisSchema = new schema({
 	},
 });
 
-module.exports = mongoose.model('ConversationVisibility', groupSchema);
+module.exports = mongoose.model('ConversationVisibility', convisSchema);
