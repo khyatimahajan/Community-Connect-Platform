@@ -15,7 +15,7 @@ const upload = require('./../middleware/file-uploads');
 router.put("/like", async (req, res) => {
   const user = await User.findById(req.body.userId);
   const feed = await Feeds.findById(req.body.feedId);
-  const visibility = await ConVis.findOne(feed.conversation_id);
+  const visibility = await ConVis.findOne({conversation_id: feed.conversation_id});
 
   let union = [...new Set([...user.group_names, ...visibility.visible_to])];
   try {
@@ -27,14 +27,14 @@ router.put("/like", async (req, res) => {
 
   var islikepost = false;
   try {
-    if (feed.liked_by.indexOf(user.user_handle) >= 0) {
+    if (feed.liked_by.indexOf(user._id) >= 0) {
       feed.like_count = feed.like_count - 1;
-      var index = feed.liked_by.indexOf(user.user_handle);
+      var index = feed.liked_by.indexOf(user._id);
       feed.liked_by.splice(index, 1);
     } else {
       feed.like_count = feed.like_count + 1;
       islikepost = true;
-      feed.liked_by.push(user.user_handle);
+      feed.liked_by.push(user._id);
     }
     await feed.save();
     res.status(200).send({status: "Post liked successfully!"});
@@ -103,7 +103,7 @@ router.put("/comment", async (req, res) => {
     oldFeed.replies.push(feed._id);
     oldFeed.reply_count = oldFeed.reply_count + 1;
 
-    const visibility = await ConVis.findOne(feed.conversation_id);
+    const visibility = await ConVis.findOne({conversation_id: feed.conversation_id});
     const user = await User.findById(req.body.userId);
     let union = [...new Set([...user.group_names, ...visibility.visible_to])];
     try {

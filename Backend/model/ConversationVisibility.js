@@ -5,7 +5,8 @@ let schema = mongoose.Schema;
 
 let convisSchema = new schema({
 	conversation_id: {
-		type: String,
+		type: mongoose.Types.ObjectId,
+		ref: 'Feeds'
 	},
 	visible_to: [
 		{

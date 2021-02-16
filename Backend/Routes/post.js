@@ -178,50 +178,51 @@ router.post("/repost", async (req, res) => {
     var oldFeed = await Feeds.findById(parent_id);
     try {
       // Save to DB
-      let feed = await newFeed.save();
-      feed.conversation_id = oldFeed.conversation_id;
+      // let feed = await newFeed.save();
+      newFeed.conversation_id = oldFeed.conversation_id;
       if (req.body.body) {
           oldFeed.quote_count = oldFeed.quote_count + 1;
       } else {
           oldFeed.repost_count = oldFeed.repost_count + 1;
+          oldFeed.reposted_by = [...new Set([...oldFeed.reposted_by, user._id])];
       }
-
-      const visibility = new ConVis(feed.conversation_id);
+      const visibility = await ConVis.findOne({conversation_id: oldFeed.conversation_id});
       visibility.visible_to = [...new Set([...user.group_names, ...visibility.visible_to])];
-
       await visibility.save();
-      await feed.save();
+      await newFeed.save();
       await oldFeed.save();
-      if (feed.post_type === "repost") {
+      if (newFeed.post_type === "repost") {
         res.status(201).send({status: "Created new repost successfully!"});
       }
-      else if (feed.post_type === "quote") {
+      else if (newFeed.post_type === "quote") {
        res.status(201).send({status: "Created new quote successfully!"}); 
       }
     } catch (err) {
       // let error = new Error({"Something went wrong"});
-      if (feed.post_type === "repost") {
+      if (newFeed.post_type === "repost") {
         res.status(400).send({status: "Could not save repost to DB"});
-      } else if (feed.post_type === "quote") {
+      } else if (newFeed.post_type === "quote") {
         res.status(400).send({status: "Could not save quote to DB"});
       }
     }
     try {
         // create notification for receiver
+        console.log('coming to notif');
         let notif = new Notifications({
           incoming_from: user._id,
-          outgoing_to: oldUser.user_id,
+          outgoing_to: oldUser._id,
           post_id: parent_id,
-          seen: false,
-          activity_type: feed.post_type,
+          activity_type: newFeed.post_type,
           timestamp: Date.now(),
+          seen: false,
         });
+        console.log(notif);
         // save to DB
         notif.save();
       } catch(err) {
-        if (feed.post_type === "repost") {
+        if (newFeed.post_type === "repost") {
           console.log("Could not save notification for repost to DB for", oldFeed._id);
-        } else if (feed.post_type === "quote") {
+        } else if (newFeed.post_type === "quote") {
           console.log("Could not save notification for quote to DB", oldFeed._id);
         }
       }

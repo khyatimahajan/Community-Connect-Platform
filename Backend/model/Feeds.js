@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 // Feeds model
 const feedSchema = new mongoose.Schema({
 	user_id: {
-		type: String,
+		type: mongoose.Types.ObjectId,
 		ref: 'User',
 	},
 	body: {
@@ -15,12 +15,14 @@ const feedSchema = new mongoose.Schema({
 	},
 	liked_by: [
 		{
-			type: String,
+			type: mongoose.Types.ObjectId,
+			ref: 'User',
 		},
 	],
 	reposted_by: [
 		{
-			type: String,
+			type: mongoose.Types.ObjectId,
+			ref: 'User',
 		},
 	],
 	like_count: {
