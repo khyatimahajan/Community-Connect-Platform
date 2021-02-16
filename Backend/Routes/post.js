@@ -122,8 +122,10 @@ router.post("/feed", async (req, res) => {
     feed.conversation_id = feed._id;
     await feed.save();
     // set conversation visibility
-    const con_vis = new ConVis(feed.conversation_id);
-    con_vis.visible_to = [...new Set(user.group_names)];
+    const con_vis = new ConVis({
+      conversation_id: feed.conversation_id,
+      visible_to: [...new Set(user.group_names)]
+    });
     await con_vis.save();
     // send status
     res.status(201).send({status: "Created new post successfully!"});
