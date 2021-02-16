@@ -19,9 +19,9 @@ router.post("/login", async (req, res) => {
   if (error) {
     res.status(400).send({ status: "Email and/or password empty" });
   } else {
-    const { email, password } = req.body;
+    const { email_id, password } = req.body;
     const user = await User.findOne({
-      EmailID: email,
+      email_id: email_id,
     });
 
     if (!user) {
@@ -31,7 +31,7 @@ router.post("/login", async (req, res) => {
       if (!validPass) {
         res.status(401).send({ status: "Wrong password entered" });
       } else {
-        let notificationCount = await Notifications.find({"outconn_id": user._id, "seen": false, "inconn_id": { $ne: user._id } }).countDocuments();
+        let notificationCount = await Notifications.find({"outgoing_to": user._id, "seen": false, "incoming_from": { $ne: user._id } }).countDocuments();
         var response = {
           id: user._id,
           user_handle: user.user_handle,
@@ -154,7 +154,7 @@ router.post("/repost", async (req, res) => {
 
   // Create new feed
   let feed = {
-    user_id: user.user_id,
+    user_id: user._id,
     body: req.body.body? urlify(req.body.body) : null,
     created_at: Date.now(),
     liked_by: [],
@@ -184,7 +184,9 @@ router.post("/repost", async (req, res) => {
           oldFeed.quote_count = oldFeed.quote_count + 1;
       } else {
           oldFeed.repost_count = oldFeed.repost_count + 1;
-          oldFeed.reposted_by = [...new Set([...oldFeed.reposted_by, user._id])];
+          if (!oldFeed.reposted_by.includes(user._id)) {
+            oldFeed.reposted_by.push(user._id);
+          }
       }
       const visibility = await ConVis.findOne({conversation_id: oldFeed.conversation_id});
       visibility.visible_to = [...new Set([...user.group_names, ...visibility.visible_to])];
@@ -207,16 +209,14 @@ router.post("/repost", async (req, res) => {
     }
     try {
         // create notification for receiver
-        console.log('coming to notif');
         let notif = new Notifications({
           incoming_from: user._id,
-          outgoing_to: oldUser._id,
+          outgoing_to: oldFeed.user_id,
           post_id: parent_id,
           activity_type: newFeed.post_type,
           timestamp: Date.now(),
           seen: false,
         });
-        console.log(notif);
         // save to DB
         notif.save();
       } catch(err) {
@@ -234,7 +234,7 @@ router.post("/create-user", async (req, res) => {
   if (error) {
     res.status(400).send({ status: "Did not receive all required user info" });
   } else {
-    const { image_src, name, email_id, user_handle, location, bio, password, password_conf, user_code } = req.body;
+    const { image_src, name, email_id, user_handle, bio, password, password_conf } = req.body;
     const user = await User.findOne({
       email_id: email_id,
       user_handle: user_handle,

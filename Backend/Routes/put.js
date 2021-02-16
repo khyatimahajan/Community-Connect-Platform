@@ -44,13 +44,14 @@ router.put("/like", async (req, res) => {
   if (islikepost) {
     try {
       // create notification for receiver
-      let oldUser = await User.findbyId(feed.user_id);
-      let notifexists = await Notifications.findOne({"incoming_from": user._id, "outgoing_to": oldUser._id, "post_id": feed._id, "seen": false});
+      // let oldUser = await User.findbyId(feed.user_id);
+      // TODO: check activity type when pulling notifs everywhere
+      let notifexists = await Notifications.findOne({"incoming_from": user._id, "outgoing_to": feed.user_id, "post_id": feed._id, "seen": false, "activity_type": "like"});
       if (!notifexists) {
         let str_fromuser = user.user_handle;
         let notif = new Notifications({
           incoming_from: user._id,
-          outgoing_to: oldUser._id,
+          outgoing_to: feed.user_id,
           post_id: feed._id,
           seen: false,
           activity_type: "like",

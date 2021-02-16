@@ -15,4 +15,4 @@ let convisSchema = new schema({
 	],
 });
 
-module.exports = mongoose.model('ConversationVisibility', convisSchema);
+module.exports = mongoose.model('ConVis', convisSchema);

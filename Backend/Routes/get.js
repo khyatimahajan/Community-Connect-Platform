@@ -23,7 +23,7 @@ router.get("/notifications", async (req, res) => {
     const user = await User.findById(userId);
     if (user) {
       try {
-        const notifs = await Notifications.find({"outconn_id": user._id, "inconn_id": { $ne: user._id }}, null, {sort: { "timestamp" : "descending" , "seen": "descending" }});
+        const notifs = await Notifications.find({"outgoing_to": user._id, "incoming_from": { $ne: user._id }}, null, {sort: { "timestamp" : "descending" , "seen": "descending" }});
   
         let notifdto = [];
 
@@ -78,12 +78,15 @@ router.get("/feeds", async (req, res) => {
     if (user) {
       let group = user.group_names;
       // let allUsers = await User.find({}, 'id user_handle profile_pic');
-      var entireFeeds = await Feeds.find({"post_type": { $ne: "reply" }}, null, { sort: { "created_at" : "descending" }}).limit(30).populate({ 
+      var entireFeeds = await Feeds.find({"post_type": { $ne: "reply" }}, null, { sort: { "created_at" : "descending" }}).limit(30)
+      .populate({ 
               path: "parent_id",
               populate: {
                   path: "user_id",
-                  model: User,
-              }}, '_id user_id body image created_at').populate("conversation_id", null, {"visible_to": {$in: group}}).populate("user_id", '_id profile_pic user_handle').populate("replies");
+                  model: "User",
+              }})
+      // TODO! make feed visible only if user belongs to groups .populate("conversation_id", null, {"visible_to": {$in: group}})
+      .populate("user_id", '_id profile_pic user_handle').populate("replies");
 
       let feeddto = [];
       entireFeeds.forEach(feed => {
@@ -100,18 +103,17 @@ router.get("/feeds", async (req, res) => {
               has_reposted: feed.reposted_by.includes(user._id)? true : false,
               replies: feed.replies,
               image: feed.image,
-              visible_to: feed.conversation_id.visible_to,
-              parent_post: {
+              parent_post: feed.parent_id ? {
                       _id: feed.parent_id._id,
                       author: feed.parent_id.user_id,
                       body: feed.parent_id.body,
                       image: feed.parent_id.image,
                       created_at: feed.parent_id.created_at,
-                  },
+                  } : null,
               is_repost: feed.post_type == 'repost'? true : false,
           })
       });
-      res.status(200).send(response);
+      res.status(200).send(feeddto);
     }
   } else {
     res.status(400).send({ status: "No user ID was received for getting feeds" });
