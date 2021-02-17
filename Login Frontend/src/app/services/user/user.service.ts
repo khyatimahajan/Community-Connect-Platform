@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {UserProfile} from '../../model/UserProfile';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {UserProfileShortened} from '../../model/UserProfileShortened';
 import { Feed } from 'src/app/model/Feed';
-import {FeedDetailItem} from '../../model/FeedDetailItem';
 import {Notif} from '../../model/Notif';
 import {UserDetails} from '../../model/UserDetails';
+import {UserMinified} from '../../model/UserMinified';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +19,7 @@ export class UserService {
   link = this.localLink;
 
   currentFeedId: string;
-  userConnections: Array<UserProfileShortened> = [];
+  userConnections: Array<UserMinified> = [];
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -31,39 +30,39 @@ export class UserService {
     console.log(`User Service: ${message}`);
   }
 
-  getConnections(userId: string): Observable<Array<UserProfileShortened>> {
+  getConnections(userId: string): Observable<Array<UserMinified>> {
     const headers = { userId };
-    return this.http.get<any>('http://' + this.link + '/connections', { headers });
+    return this.http.get<any>('http://' + this.link + '/get/connections', { headers });
   }
 
   getFeeds(id: string): Observable<Array<Feed>> {
     const headers = { id };
-    return this.http.get<any>('http://' + this.link + '/feeds', { headers });
+    return this.http.get<any>('http://' + this.link + '/get/feeds', { headers });
   }
 
   postFeed(body: any): Observable<any> {
-    return this.http.post<any>('http://' + this.link + '/feed', body);
+    return this.http.post<any>('http://' + this.link + '/post/feed', body);
   }
 
   putLike(body: any): Observable<any> {
-    return this.http.put<any>('http://' + this.link + '/like', body);
+    return this.http.put<any>('http://' + this.link + '/put/like', body);
   }
 
   putComment(body: any): Observable<any> {
-    return this.http.put<any>('http://' + this.link + '/comment', body);
+    return this.http.put<any>('http://' + this.link + '/put/comment', body);
   }
 
   postQuoteOrRepost(body: any): Observable<any> {
-    return this.http.post<any>('http://' + this.link + '/repost', body);
+    return this.http.post<any>('http://' + this.link + '/post/repost', body);
   }
 
-  getDetailsForAFeed(userId: string, feedId: string): Observable<Array<FeedDetailItem>> {
+  getDetailsForAFeed(userId: string, feedId: string): Observable<Feed> {
     const headers = { userId };
-    return this.http.get<any>('http://' + this.link + '/feeds/' + feedId, { headers });
+    return this.http.get<any>('http://' + this.link + '/get/feeds/' + feedId, { headers });
   }
 
   imageUpload(imageForm: FormData): Observable<any> {
-    return this.http.post<any>('http://' + this.link + '/v1/upload', imageForm);
+    return this.http.post<any>('http://' + this.link + '/post/v1/upload', imageForm);
   }
 
   getNotifications(userId: string): Observable<Array<Notif>> {
@@ -73,12 +72,12 @@ export class UserService {
 
   markNotificationAsRead(userId: string, notifId: string): Observable<Array<Notif>> {
     const headers = { userId, notifId };
-    return this.http.put<any>('http://' + this.link + '/mark-notif-as-read', null, { headers });
+    return this.http.put<any>('http://' + this.link + '/put/mark-one-notif-as-read', null, { headers });
   }
 
   markAllNotificationAsRead(userId: string): Observable<Array<Notif>> {
     const headers = { userId };
-    return this.http.put<any>('http://' + this.link + '/put/notifications/read', null, { headers });
+    return this.http.put<any>('http://' + this.link + '/put/mark-all-notifs-as-read', null, { headers });
   }
 
   getUserProfile(username: string): Observable<UserDetails> {

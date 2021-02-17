@@ -28,23 +28,20 @@ export class FeedItemComponent implements OnInit {
     moment = moment;
 
     ngOnInit(): void {
-        if (this.feed && this.feed.tweet) {
-
-        }
     }
 
     toggleLike() {
         const body = {
-            feedId: this.feed.tweet._id,
+            feedId: this.feed._id,
             userId: this.authService.currentUser.id
         };
         this.userService.putLike(body).subscribe(response => {
             if (response) {
-                this.feed.is_liked = !this.feed.is_liked;
-                if (this.feed.is_liked) {
-                    this.feed.tweet.like_count++;
+                this.feed.has_liked = !this.feed.has_liked;
+                if (this.feed.has_liked) {
+                    this.feed.like_count++;
                 } else {
-                    this.feed.tweet.like_count--;
+                    this.feed.like_count--;
                 }
             }
         }, error => {
@@ -59,21 +56,21 @@ export class FeedItemComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe(result => {
             if (result === 'Comment Added') {
-                this.feed.tweet.reply_count++;
+                this.feed.reply_count++;
             }
         });
     }
 
     repost() {
         let feedID;
-        if (this.feed.tweet) {
-            if (this.feed.tweet.post_type === 'retweet') {
-                feedID = this.feed.tweet.conversation_id;
+        if (this.feed) {
+            if (this.feed.is_repost) {
+                feedID = this.feed.parent_post._id;
             } else {
-                feedID = this.feed.tweet._id;
+                feedID = this.feed._id;
             }
         } else {
-            feedID = this.feed.tweet._id;
+            feedID = this.feed._id;
         }
         const body = {
             userId: this.authService.currentUser.id,
@@ -81,7 +78,7 @@ export class FeedItemComponent implements OnInit {
         };
         this.userService.postQuoteOrRepost(body).subscribe(response => {
             if (response) {
-                this.feed.tweet.retweet_count++;
+                this.feed.repost_count++;
                 this.feedStatusChange.emit(true);
             }
         }, error => {
@@ -91,15 +88,13 @@ export class FeedItemComponent implements OnInit {
 
     openQuoteModal() {
         const dataFeed = this.feed;
-        if (this.feed.tweet.post_type === 'retweet') {
-            dataFeed.tweet._id = this.feed.tweet.parent_id._id;
-            dataFeed.tweet.user_id = this.feed.tweet.parent_id.user_id;
-            dataFeed.tweet.body = this.feed.tweet.parent_id.body;
-            dataFeed.tweet.created_at = this.feed.tweet.parent_id.created_at;
-            dataFeed.tweet.post_type = this.feed.tweet.parent_id.post_type;
-            dataFeed.tweet.image = this.feed.tweet.parent_id.image;
-            dataFeed.author_profile_pic = this.feed.parent_info.parent_profile_pic;
-            dataFeed.author_name = this.feed.parent_info.parent_name;
+        if (this.feed.is_repost) {
+            dataFeed._id = this.feed._id;
+            dataFeed.body = this.feed.parent_post.body;
+            dataFeed.created_at = this.feed.parent_post.created_at;
+            dataFeed.is_repost = this.feed.is_repost;
+            dataFeed.image = this.feed.parent_post.image;
+            dataFeed.author = this.feed.author;
         }
         const dialogRef = this.dialog.open(AddQuoteComponent, {
             width: '600px',
@@ -107,7 +102,7 @@ export class FeedItemComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe(result => {
             if (result === 'Quote Added') {
-                this.feed.tweet.quote_count++;
+                this.feed.quote_count++;
                 this.feedStatusChange.emit(true);
             }
         });

@@ -3,21 +3,21 @@
         <div class="tweet-card" (click)="goInsideComment()">
             <div class="tweet-info">
                 <div class="profile-pic">
-                    <img *ngIf="feed.author_profile_pic" [src]="feed.author_profile_pic" alt="Image Source"
+                    <img *ngIf="feed.author.profile_pic" [src]="feed.author.profile_pic" alt="Image Source"
                          class="icon-image">
-                    <mat-icon *ngIf="!feed.author_profile_pic">face</mat-icon>
+                    <mat-icon *ngIf="!feed.author.profile_pic">face</mat-icon>
                 </div>
                 <div class="tweet">
                     <div class="name">
                         <div class="actual-name">
-                            {{feed.author_name}}
+                            {{feed.author.user_handle}}
                         </div>
                         <div class="time-stuff">
-                            {{moment(this.feed.tweet.created_at).fromNow()}}
+                            {{moment(this.feed.created_at).fromNow()}}
                         </div>
                     </div>
-                    <div class="text"  [innerHtml]="feed.tweet.body"></div>
-                    <img class="image" *ngIf="feed.tweet.image != null && feed.tweet.image != 'null'" [src]="feed.tweet.image" alt="Image Source">
+                    <div class="text"  [innerHtml]="feed.body"></div>
+                    <img class="image" *ngIf="feed.image != null && feed.image != 'null'" [src]="feed.image" alt="Image Source">
                 </div>
             </div>
 
@@ -30,7 +30,7 @@
                     >
                         <mat-icon>insert_comment</mat-icon>
                     </button>
-                    <div>{{feed.tweet.reply_count}}</div>
+                    <div>{{feed.reply_count}}</div>
                 </div>
                 <div class="action-button repost" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
                     <button
@@ -40,9 +40,9 @@
                     >
                         <mat-icon>repeat</mat-icon>
                     </button>
-                    <div>{{feed.tweet.retweet_count + feed.tweet.quote_count}}</div>
+                    <div>{{feed.repost_count + feed.quote_count}}</div>
                 </div>
-                <div class="action-button like" [ngClass]="{ liked: feed.is_liked }"
+                <div class="action-button like" [ngClass]="{ liked: feed.has_liked }"
                      (click)="toggleLike(); $event.stopPropagation()">
                     <button
                             mat-icon-button
@@ -51,7 +51,7 @@
                     >
                         <mat-icon>favorite_border</mat-icon>
                     </button>
-                    <div>{{feed.tweet.like_count}}</div>
+                    <div>{{feed.like_count}}</div>
                 </div>
             </div>
         </div>

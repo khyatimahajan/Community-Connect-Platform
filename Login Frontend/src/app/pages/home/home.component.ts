@@ -4,10 +4,10 @@ import {AuthService} from '../../services/auth/auth.service';
 import {UserProfile} from '../../model/UserProfile';
 import {DomSanitizer} from '@angular/platform-browser';
 import {UserService} from '../../services/user/user.service';
-import {UserProfileShortened} from '../../model/UserProfileShortened';
 import { Feed } from 'src/app/model/Feed';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ConnectionsComponent} from './connections/connections.component';
+import {UserMinified} from '../../model/UserMinified';
 
 @Component({
     selector: 'app-home',
@@ -30,11 +30,11 @@ export class HomeComponent implements OnInit {
     isSelectedItem = 0;
     sidebarIconList = ['home', 'face', 'notifications_none', 'login'];
     sidebarList = ['Home', 'Profile', 'Notifications', 'Logout'];
-    connectionList: Array<UserProfileShortened> = [];
+    connectionList: Array<UserMinified> = [];
     feedList: Array<Feed> = [];
     isLoading = true;
     imageSource = null;
-    selectedUserProfile: UserProfileShortened;
+    selectedUserProfile: UserMinified;
 
     ngOnInit(): void {
         this.currentUser = this.authService.currentUser;
@@ -93,9 +93,9 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    getUserProfile(user: UserProfileShortened) {
+    getUserProfile(user: UserMinified) {
         this.selectedUserProfile = user;
         this.isSelectedItem = -1;
-        this.conn.loadPosts(user.username);
+        this.conn.loadPosts(user.user_handle);
     }
 }
