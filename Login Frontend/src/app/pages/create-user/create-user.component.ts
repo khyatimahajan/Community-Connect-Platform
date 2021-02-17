@@ -34,7 +34,7 @@ export class CreateUserComponent implements OnInit {
             this.openSnackBar('Some Error Occured.');
           } else {
             this.signUpData = response;
-            this.signUpData.email = this.signUpData.EmailID + '';
+            this.signUpData.email_id = this.signUpData.email_id + '';
             this.authService.setSignUpInfo(this.signUpData);
           }
         }, error => {
@@ -66,8 +66,9 @@ export class CreateUserComponent implements OnInit {
     const body = {
       image_src: this.imageSrc,
       name: this.signUpData.name,
-      email: this.signUpData.EmailID,
-      username: this.signUpData.username,
+      email_id: this.signUpData.email_id,
+      user_handle: this.signUpData.user_handle,
+      location: 'EST',
       bio: this.signUpData.bio,
       password: this.password,
       password_conf: this.cPassword,

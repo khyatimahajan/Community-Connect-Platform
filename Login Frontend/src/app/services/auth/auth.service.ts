@@ -39,8 +39,8 @@ export class AuthService {
   }
 
   // tslint:disable-next-line:variable-name
-  signup(user_id: string): Observable<UserSignupInfo> {
-    const headers = { user_id };
+  signup(user_code: string): Observable<UserSignupInfo> {
+    const headers = { user_code };
     return this.http.get<any>('http://' + this.link + '/get/signup', { headers });
   }
 
