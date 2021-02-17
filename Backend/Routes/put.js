@@ -79,7 +79,7 @@ router.put("/comment", async (req, res) => {
 
   var parent_id = req.body.parent_id;
   let feed = {
-    user_id: req.body.user_id,
+    user_id: req.body.userId,
     body: urlify(req.body.body),
     created_at: Date.now(),
     liked_by: [],
@@ -104,7 +104,7 @@ router.put("/comment", async (req, res) => {
     oldFeed.reply_count = oldFeed.reply_count + 1;
     let parent_id = oldFeed._id;
     const visibility = await ConVis.findOne({conversation_id: oldFeed.conversation_id});
-    const user = await User.findById(req.body.user_id);
+    const user = await User.findById(req.body.userId);
     let union = [...new Set([...user.group_names, ...visibility.visible_to])];
     try {
       visibility.visible_to = union;
