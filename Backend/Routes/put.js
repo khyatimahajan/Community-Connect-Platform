@@ -79,7 +79,7 @@ router.put("/comment", async (req, res) => {
 
   var parent_id = req.body.parent_id;
   let feed = {
-    user_id: user._id,
+    user_id: req.body.user_id,
     body: urlify(req.body.body),
     created_at: Date.now(),
     liked_by: [],
@@ -94,7 +94,6 @@ router.put("/comment", async (req, res) => {
     mentions: [...new Set(user_mentions)],
     image: req.body.image ? req.body.image : null,
   };
-
   const newFeed = new Feeds(feed);
   var oldFeed = await Feeds.findById(parent_id);
   try {
@@ -103,9 +102,9 @@ router.put("/comment", async (req, res) => {
     feed.conversation_id = oldFeed.conversation_id;
     oldFeed.replies.push(feed._id);
     oldFeed.reply_count = oldFeed.reply_count + 1;
-
-    const visibility = await ConVis.findOne({conversation_id: feed.conversation_id});
-    const user = await User.findById(req.body.userId);
+    let parent_id = oldFeed._id;
+    const visibility = await ConVis.findOne({conversation_id: oldFeed.conversation_id});
+    const user = await User.findById(req.body.user_id);
     let union = [...new Set([...user.group_names, ...visibility.visible_to])];
     try {
       visibility.visible_to = union;
@@ -113,31 +112,28 @@ router.put("/comment", async (req, res) => {
     } catch (err) {
       console.log("could not update post visibility for", feed._id)
     }
-
     // Update to feed
+    try {
+      // create notification for receiver
+      let notif = new Notifications({
+        incoming_from: user._id,
+        outgoing_to: oldFeed.user_id,
+        post_id: parent_id, 
+        activity_type: "reply",
+        timestamp: Date.now(),
+        seen: false
+      });
+      // save to DB
+      notif.save();
+    } catch(err) {
+      console.log("Could not save notification for comment to DB for", oldFeed._id);
+    };
     await feed.save();
     await oldFeed.save();
     res.status(201).send({status: "Created new comment successfully!"});
   } catch (err) {
     res.status(400).send({status: "Could not post comment"});
-  }
-
-  try {
-    // create notification for receiver
-    let oldUser = await User.findbyId(oldFeed.user_id);
-    let notif = new Notifications({
-      incoming_from: user._id,
-      outgoing_to: oldUser._id,
-      post_id: oldFeed._id, 
-      seen: false,
-      activity_type: "reply",
-      timestamp: Date.now()
-    });
-    // save to DB
-    notif.save();
-  } catch(err) {
-    console.log("Could not save notification for comment to DB for", oldFeed._id);
-  }
+  };
 });
 
 router.put("/mark-one-notif-as-read", async(req, res) => {

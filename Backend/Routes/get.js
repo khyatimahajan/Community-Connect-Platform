@@ -23,26 +23,47 @@ router.get("/notifications", async (req, res) => {
     const user = await User.findById(userId);
     if (user) {
       try {
-        const notifs = await Notifications.find({"outgoing_to": user._id, "incoming_from": { $ne: user._id }}, null, {sort: { "timestamp" : "descending" , "seen": "descending" }});
+        const notifs = await Notifications.find({"outgoing_to": user._id, "incoming_from": { $ne: user._id }}, null, {sort: { "timestamp" : "descending" , "seen": "descending" }})
+        .populate("incoming_from");
   
         let notifdto = [];
-
         notifs.forEach(notification => {
-          notifdto.push({
-            'post_id': notification.post_id,
-            'status': notification.status,
-            'seen': notification.seen,
-            'timestamp': notification.timestamp
-          })
+          let status = '';
+          switch (notification.activity_type) {
+            case "like":
+              status = notification.incoming_from.user_handle + ' liked your post.';
+              break;
+            case "repost":
+              status = notification.incoming_from.user_handle + ' reposted your post.';
+              break;
+            case "quote":
+              status = notification.incoming_from.user_handle + ' quoted your post.';
+              break;
+            case "reply":
+              status = notification.incoming_from.user_handle + ' reposted your post.';
+              break;
+            default:
+              status = "error";
+          };
+          if (status === "error") {
+            console.log('Notification error.');
+          } else {
+            notifdto.push({
+              '_id': notification._id,
+              'post_id': notification.post_id._id,
+              'status': status,
+              'seen': notification.seen,
+              'timestamp': notification.timestamp
+            })
+          }
         });
-  
-        res.status(200).send(notifdto)
+        res.status(200).send(notifdto);
       } catch(err) {
-        res.status(500).send({status: "Internal server error"})
+        res.status(500).send({status: "Internal server error"});
       }
     } else {
-      res.status(404).send({status: "No such user exists"})
-    }
+      res.status(404).send({status: "No such user exists"});
+    };
 });
 
 router.get("/profile", async (req, res) => {
@@ -91,7 +112,7 @@ router.get("/feeds", async (req, res) => {
       let feeddto = [];
       entireFeeds.forEach(feed => {
           feeddto.push({
-              id: feed._id,
+              _id: feed._id,
               author: feed.user_id,
               body: feed.body,
               created_at: feed.created_at,
@@ -199,21 +220,31 @@ router.get("/feeds/:feed_id", async (req, res) => {
       let filters = '_id user_id body created_at liked_by reposted_by  like_count repost_count reply_count quote_count post_type image parent_id conversation_id image replies';
       var entireFeeds = await Feeds.findOne({
         "_id": feed_id,
-      }, null, { sort: { "created_at" : "ascending" }}).populate({ 
+      }, null, { sort: { "created_at" : "ascending" }})
+      .populate({ 
               path: "parent_id",
               populate: {
                   path: "user_id",
                   model: User,
-              }}, '_id user_id body image created_at', filters).populate({ 
+                  select: '_id profile_pic user_handle'
+              }})
+      .populate({ 
               path: "replies",
               populate: {
                   path: "user_id",
                   model: User,
-              }}, '_id user_id body image created_at', filters);
+                  select: '_id profile_pic user_handle'
+              }})
+      .populate({
+              path: "user_id",
+              model: User,
+              select: '_id profile_pic user_handle'
+      });
 
-      var modifiedFeeds = [];
-        entireFeeds.forEach(feed => {
-          modifiedFeeds.push({
+      var modifiedReplies = [];
+      entireFeeds.replies.forEach(feed => {
+          modifiedReplies.push({
+            _id: feed._id,
             author: feed.user_id,
             body: feed.body,
             created_at: feed.created_at,
@@ -225,16 +256,32 @@ router.get("/feeds/:feed_id", async (req, res) => {
             has_reposted: feed.has_reposted,
             replies: feed.replies,
             image: feed.image,
-            parent_post: {
-                _id: feed.parent_id._id,
-                author: feed.parent_id.user_id,
-                body: feed.parent_id.body,
-                image: feed.parent_id.image,
-                created_at: feed.parent_id.created_at
-            },
+            parent_post: feed.parent_id,
             is_repost: feed.is_repost,
           });
         });
+      modifiedFeeds = {
+        _id: entireFeeds._id,
+        author: entireFeeds.user_id,
+        body: entireFeeds.body,
+        created_at: entireFeeds.created_at,
+        like_count: entireFeeds.like_count,
+        reply_count: entireFeeds.reply_count,
+        quote_count: entireFeeds.quote_count,
+        repost_count: entireFeeds.repost_count,
+        has_liked: entireFeeds.has_liked,
+        has_reposted: entireFeeds.has_reposted,
+        replies: modifiedReplies,
+        image: entireFeeds.image,
+        parent_post: entireFeeds.parent_id ? {
+            _id: entireFeeds.parent_id._id,
+            author: entireFeeds.parent_id.user_id,
+            body: entireFeeds.parent_id.body,
+            image: entireFeeds.parent_id.image,
+            created_at: entireFeeds.parent_id.created_at
+        } : null,
+        is_repost: entireFeeds.is_repost,
+      };
       res.status(200).send(modifiedFeeds);
     }
   } else {

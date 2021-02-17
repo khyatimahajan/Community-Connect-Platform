@@ -45,10 +45,10 @@ router.post("/login", async (req, res) => {
         //Logger for user login time
         let log = new Logger({
           user_id: user._id,
-          loggedInAt: {
-            serverTime: new Date(),
-            userTime: new Date().toLocaleString("en-US", {
-              timeZone: req.body.timezone || "America/New_York",
+          logged_in_at: {
+            server_time: new Date(),
+            user_time: new Date().toLocaleString("en-US", {
+              time_zone: req.body.timezone || "America/New_York",
             }),
           },
         });
@@ -68,9 +68,9 @@ router.post("/logout", async (req, res) => {
 
     if (log) {
       res.status(201).send("Logged out");
-      log.loggedOutAt.serverTime = new Date();
-      log.loggedOutAt.userTime = new Date().toLocaleString("en-US", {
-        timeZone: req.body.timezone || "America/New_York",
+      log.logged_out_at.server_time = new Date();
+      log.logged_out_at.user_time = new Date().toLocaleString("en-US", {
+        time_zone: req.body.timezone || "America/New_York",
       });
       log.save();
     } else {

@@ -5,7 +5,7 @@ let schema = mongoose.Schema;
 
 let loggerSchema = new schema({
 	user: {
-		type: String,
+		type: mongoose.Types.ObjectId,
 		ref: 'User'
 	},
 	logged_in_at: {
