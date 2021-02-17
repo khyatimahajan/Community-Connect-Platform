@@ -4,8 +4,8 @@ import {Router} from '@angular/router';
 import {AuthService} from '../../../services/auth/auth.service';
 import {UserService} from '../../../services/user/user.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {UserProfileShortened} from '../../../model/UserProfileShortened';
 import {UserProfile} from '../../../model/UserProfile';
+import {UserMinified} from '../../../model/UserMinified';
 
 @Component({
   selector: 'app-connections',
@@ -18,7 +18,7 @@ export class ConnectionsComponent implements OnInit {
   feedList: Array<Feed> = [];
   user: UserProfile;
 
-  @Input() userProfileShort: UserProfileShortened;
+  @Input() userProfileShort: UserMinified;
 
   constructor(
       private router: Router,
@@ -29,7 +29,7 @@ export class ConnectionsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadPosts(this.userProfileShort.username);
+    this.loadPosts(this.userProfileShort.user_handle);
   }
 
   loadPosts(username: string) {

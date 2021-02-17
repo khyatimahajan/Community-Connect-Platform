@@ -1,13 +1,13 @@
 // tslint:disable:variable-name
 export class UserProfile {
-    EmailID: string;
-    group_id: Array<string>;
+    email_id: string;
+    group_names: Array<string>;
     profile_pic: string;
-    user_id: string;
+    user_code: string;
     isAdmin: string;
     id: string;
     name: string;
-    username: string;
+    user_handle: string;
     bio: string;
-    notifications: number;
+    notification_count: number;
 }

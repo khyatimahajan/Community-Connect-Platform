@@ -81,7 +81,7 @@ export class UserService {
   }
 
   getUserProfile(username: string): Observable<UserDetails> {
-    return this.http.get<UserDetails>('http://' + this.link + '/user/' + username);
+    return this.http.get<UserDetails>('http://' + this.link + '/get/user/' + username);
   }
 
   /**

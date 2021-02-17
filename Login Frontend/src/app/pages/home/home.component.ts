@@ -41,7 +41,7 @@ export class HomeComponent implements OnInit {
         if (this.currentUser == null) {
             this.router.navigate(['/login']);
         } else {
-            this.sidebarList[1] = this.currentUser.name;
+            this.sidebarList[1] = this.currentUser.user_handle;
             this.imageSource = this.currentUser.profile_pic;
             // this.imageSource = this.sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${this.currentUser.profile_pic}`);
             this.userService.getConnections(this.currentUser.id).subscribe(response => {
