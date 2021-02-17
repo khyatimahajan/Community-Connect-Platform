@@ -4,10 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {UserSignupInfo} from '../../model/UserSignupInfo';
-import {Feed} from '../../model/Feed';
-import {FeedDetailComponent} from '../home/feed-detail/feed-detail.component';
-import {SignupComponent} from '../signup/signup.component';
-import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-login',

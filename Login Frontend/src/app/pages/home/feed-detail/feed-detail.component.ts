@@ -16,9 +16,10 @@ const moment = require('moment');
 })
 export class FeedDetailComponent implements OnInit {
 
+  feed: Feed;
   constructor(
       public thisDialogRef: MatDialogRef<FeedDetailComponent>,
-      @Inject(MAT_DIALOG_DATA) public feed: Feed,
+      @Inject(MAT_DIALOG_DATA) public feedId: string,
       private userService: UserService,
       private authService: AuthService,
       private snackBar: MatSnackBar,
@@ -33,8 +34,8 @@ export class FeedDetailComponent implements OnInit {
   }
 
   loadData() {
-    if (this.feed != null && this.feed._id != null) {
-      this.userService.getDetailsForAFeed(this.authService.currentUser.id, this.feed._id).subscribe(response => {
+    if (this.feedId != null) {
+      this.userService.getDetailsForAFeed(this.authService.currentUser.id, this.feedId).subscribe(response => {
         this.feed = response;
       });
     } else {

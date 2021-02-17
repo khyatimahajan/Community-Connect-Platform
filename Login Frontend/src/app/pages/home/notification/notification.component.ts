@@ -55,7 +55,7 @@ export class NotificationComponent implements OnInit {
   openDetailModal(f: Feed) {
     const dialogRef = this.dialog.open(FeedDetailComponent, {
       width: '800px',
-      data: f
+      data: f._id
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'Load') {
@@ -71,7 +71,7 @@ export class NotificationComponent implements OnInit {
     this.userService.currentFeedId = notif.post_id;
     const dialogRef = this.dialog.open(FeedDetailComponent, {
       width: '800px',
-      data: null
+      data: notif.post_id
     });
     dialogRef.afterClosed().subscribe(result => {
       if (!notif.seen) {

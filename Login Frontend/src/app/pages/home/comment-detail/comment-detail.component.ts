@@ -16,8 +16,7 @@ const moment = require('moment');
 })
 export class CommentDetailComponent implements OnInit {
 
-  feed: Feed = null;
-  @Input() comment: Feed;
+  @Input() feed: Feed;
   @Input() showUI: boolean;
   @Output() loadDataEmitter = new EventEmitter<boolean>();
   @Output() loadNewFeedEmitter = new EventEmitter<Feed>();
@@ -33,7 +32,7 @@ export class CommentDetailComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.showUI) {
-      this.updateFeedFromComment(this.comment);
+      this.updateFeedFromComment(this.feed);
     }
   }
 
@@ -45,13 +44,13 @@ export class CommentDetailComponent implements OnInit {
     };
     this.userService.putLike(body).subscribe(response => {
       if (response) {
-        this.comment.has_liked = !this.comment.has_liked;
-        if (this.comment.has_liked) {
-          this.comment.like_count++;
+        this.feed.has_liked = !this.feed.has_liked;
+        if (this.feed.has_liked) {
+          this.feed.like_count++;
         } else {
-          this.comment.like_count--;
+          this.feed.like_count--;
         }
-        this.updateFeedFromComment(this.comment);
+        this.updateFeedFromComment(this.feed);
       }
     }, error => {
       this.openSnackBar(error.error.status);
@@ -65,8 +64,8 @@ export class CommentDetailComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'Comment Added') {
-        this.comment.reply_count++;
-        this.updateFeedFromComment(this.comment);
+        this.feed.reply_count++;
+        this.updateFeedFromComment(this.feed);
         this.loadDataEmitter.emit(true);
       }
     });
@@ -74,14 +73,14 @@ export class CommentDetailComponent implements OnInit {
 
   repost() {
     let feedID;
-    if (this.comment) {
-        if (this.comment.is_repost) {
-          feedID = this.comment.parent_post._id;
+    if (this.feed) {
+        if (this.feed.is_repost) {
+          feedID = this.feed.parent_post._id;
         } else {
-          feedID = this.comment._id;
+          feedID = this.feed._id;
         }
     } else {
-      feedID = this.comment._id;
+      feedID = this.feed._id;
     }
     const body = {
       userId: this.authService.currentUser.id,
@@ -89,8 +88,8 @@ export class CommentDetailComponent implements OnInit {
     };
     this.userService.postQuoteOrRepost(body).subscribe(response => {
       if (response) {
-        this.comment.repost_count++;
-        this.updateFeedFromComment(this.comment);
+        this.feed.repost_count++;
+        this.updateFeedFromComment(this.feed);
         this.loadDataEmitter.emit(true);
       }
     }, error => {
@@ -114,16 +113,15 @@ export class CommentDetailComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'Quote Added') {
-        this.comment.quote_count++;
-        this.updateFeedFromComment(this.comment);
+        this.feed.quote_count++;
+        this.updateFeedFromComment(this.feed);
         this.loadDataEmitter.emit(true);
       }
     });
   }
 
   updateFeedFromComment(comment: Feed): Feed {
-    // TODO! Add feed stuff to update feed from comment
-    return null;
+    return comment;
   }
 
   goInsideComment() {

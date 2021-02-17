@@ -2,7 +2,6 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthService} from '../../../services/auth/auth.service';
 import {UserService} from '../../../services/user/user.service';
-import {UserProfileShortened} from '../../../model/UserProfileShortened';
 import {UserProfile} from '../../../model/UserProfile';
 import {MatSnackBar} from '@angular/material/snack-bar';
 

@@ -68,7 +68,7 @@
     <mat-divider style="margin-top: 1em;"></mat-divider>
     <app-comment-detail
             *ngFor="let com of feed.replies"
-            [comment]="com"
+            [feed]="com"
             [showUI]="true"
             (loadDataEmitter)="loadDataAgain()"
             (loadNewFeedEmitter)="loadNewFeed($event)"
