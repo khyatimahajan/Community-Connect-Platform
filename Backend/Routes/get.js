@@ -157,7 +157,7 @@ router.get("/connections", async (req, res) => {
   }
 });
 
-router.get("/user/:username", async (req, res) => {
+router.get("/user/:user_handle", async (req, res) => {
     let user_handle = req.params.user_handle;
 
     if (username != null) {
