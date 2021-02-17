@@ -1,8 +1,8 @@
 <div>
-    <h2>Replying to {{data.author_name}}</h2>
-    <app-feed-item-minimized [authorImage]="data.author_profile_pic" [authorName]="data.author_name"
-                             [body]="data.tweet.body" [image]="data.tweet.image"
-                             [created_at]="data.tweet.created_at"
+    <h2>Replying to {{data.author.user_handle}}</h2>
+    <app-feed-item-minimized [authorImage]="data.author.profile_pic" [authorName]="data.author.user_handle"
+                             [body]="data.body" [image]="data.image"
+                             [created_at]="data.created_at"
 
     ></app-feed-item-minimized>
     <div class="comment-area">

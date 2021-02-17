@@ -32,14 +32,14 @@ export class AddQuoteComponent implements OnInit {
     if (this.quoteStr.length > 0) {
 
       let feedID;
-      if (this.data.tweet.parent_id) {
-        if (this.data.tweet.parent_id.post_type === 'retweet') {
-          feedID = this.data.tweet.conversation_id;
+      if (this.data) {
+        if (this.data.is_repost) {
+          feedID = this.data.parent_post._id;
         } else {
-          feedID = this.data.tweet._id;
+          feedID = this.data._id;
         }
       } else {
-        feedID = this.data.tweet._id;
+        feedID = this.data._id;
       }
       const body = {
         body: this.quoteStr,

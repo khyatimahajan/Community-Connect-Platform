@@ -1,5 +1,5 @@
 <div>
-    <h2>Quoting to {{data.author_name}}</h2>
+    <h2>Quoting to {{data.author.user_handle}}</h2>
     <div class="comment-area">
         <div class="middle-image" >
             <img style="max-width: 400px; max-height: 300px;" *ngIf="imageUrl && imageUrl.length > 0" src="{{ imageUrl }}"/>
@@ -19,9 +19,9 @@
             <mat-hint align="end"> {{ message.value.length }} / 280</mat-hint>
         </mat-form-field>
     </div>
-    <app-feed-item-minimized [authorImage]="data.author_profile_pic" [authorName]="data.author_name"
-                             [body]="data.tweet.body" [image]="data.tweet.image"
-                             [created_at]="data.tweet.created_at"
+    <app-feed-item-minimized [authorImage]="data.author.profile_pic" [authorName]="data.author.user_handle"
+                             [body]="data.body" [image]="data.image"
+                             [created_at]="data.created_at"
     ></app-feed-item-minimized>
     <mat-dialog-actions class="separated-buttons">
         <div style="display: flex">

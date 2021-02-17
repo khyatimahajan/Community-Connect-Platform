@@ -2,28 +2,28 @@
     <div class="tweet-card">
         <div class="tweet-info">
             <div class="profile-pic">
-                <img *ngIf="feed.author_profile_pic" [src]="feed.author_profile_pic" alt="Image Source"
+                <img *ngIf="feed.author.profile_pic" [src]="feed.author.profile_pic" alt="Image Source"
                      class="icon-image">
-                <mat-icon *ngIf="!feed.author_profile_pic">face</mat-icon>
+                <mat-icon *ngIf="!feed.author.profile_pic">face</mat-icon>
             </div>
             <div class="tweet">
                 <div class="name">
                     <div class="actual-name">
-                        {{feed.author_name}}
+                        {{feed.author.user_handle}}
                     </div>
                     <div class="time-stuff">
-                        {{moment(this.feed.tweet.created_at).fromNow()}}
+                        {{moment(this.feed.created_at).fromNow()}}
                     </div>
                 </div>
-                <div class="text" [innerHtml]="feed.tweet.body"></div>
-                <img class="image" *ngIf="feed.tweet.image != null && feed.tweet.image != 'null'" [src]="feed.tweet.image" alt="Image Source">
+                <div class="text" [innerHtml]="feed.body"></div>
+                <img class="image" *ngIf="feed.image != null && feed.image != 'null'" [src]="feed.image" alt="Image Source">
                 <div style="margin-top: 1em;">
                     <app-feed-item-minimized
-                            *ngIf="feed.tweet.parent_id && feed.tweet.post_type != 'reply'"
-                            [authorImage]="feed.parent_info.parent_profile_pic"
-                            [authorName]="feed.parent_info.parent_name"
-                            [created_at]="feed.tweet.parent_id.created_at"
-                            [body]="feed.tweet.parent_id.body" [image]="feed.tweet.parent_id.image"
+                            *ngIf="feed.parent_post"
+                            [authorImage]="feed.parent_post.author.profile_pic"
+                            [authorName]="feed.parent_post.author.user_handle"
+                            [created_at]="feed.parent_post.created_at"
+                            [body]="feed.parent_post.body" [image]="feed.parent_post.image"
                             (click)="$event.stopPropagation()">
                     </app-feed-item-minimized>
                 </div>
@@ -40,7 +40,7 @@
                 >
                     <mat-icon>insert_comment</mat-icon>
                 </button>
-                <div>{{feed.tweet.reply_count}}</div>
+                <div>{{feed.reply_count}}</div>
             </div>
             <div class="action-button repost" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
                 <button
@@ -50,9 +50,9 @@
                 >
                     <mat-icon>repeat</mat-icon>
                 </button>
-                <div>{{feed.tweet.retweet_count + feed.tweet.quote_count}}</div>
+                <div>{{feed.repost_count + feed.quote_count}}</div>
             </div>
-            <div class="action-button like" [ngClass]="{ liked: feed.is_liked }"
+            <div class="action-button like" [ngClass]="{ liked: feed.has_liked }"
                  (click)="toggleLike(); $event.stopPropagation()">
                 <button
                         mat-icon-button
@@ -61,15 +61,15 @@
                 >
                     <mat-icon>favorite_border</mat-icon>
                 </button>
-                <div>{{feed.tweet.like_count}}</div>
+                <div>{{feed.like_count}}</div>
             </div>
         </div>
     </div>
     <mat-divider style="margin-top: 1em;"></mat-divider>
     <app-comment-detail
-            *ngFor="let com of comments"
+            *ngFor="let com of feed.replies"
             [comment]="com"
-            [showUI]="isFeed(com)"
+            [showUI]="true"
             (loadDataEmitter)="loadDataAgain()"
             (loadNewFeedEmitter)="loadNewFeed($event)"
     >

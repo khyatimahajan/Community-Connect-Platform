@@ -31,11 +31,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
-import { SidebarComponent } from './pages/home/sidebar/sidebar.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ConnectionsComponent } from './pages/home/connections/connections.component';
 import { FeedHeaderComponent } from './pages/home/feed-header/feed-header.component';
-import { FeedListComponent } from './pages/home/feed-list/feed-list.component';
 import { NotificationComponent } from './pages/home/notification/notification.component';
 import { ProfileComponent } from './pages/home/profile/profile.component';
 
@@ -56,10 +54,8 @@ import {MatBadgeModule} from '@angular/material/badge';
     SignupComponent,
     HomeComponent,
     PageNotFoundComponent,
-    SidebarComponent,
     ConnectionsComponent,
     FeedHeaderComponent,
-    FeedListComponent,
     NotificationComponent,
     ProfileComponent,
     FeedItemComponent,
