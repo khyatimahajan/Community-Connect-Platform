@@ -214,7 +214,7 @@ router.put("/moderate-post", async(req, res) => {
     try {
       feed.body = '[deleted]';
       feed.image = null;
-
+      // TODO: figure out how to save content before deleting it
       const notif = new Notifications({
         incoming_from: 'research team',
         outgoing_to: user,
