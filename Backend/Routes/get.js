@@ -25,6 +25,7 @@ router.get("/notifications", async (req, res) => {
       try {
         const notifs = await Notifications.find({"outgoing_to": user._id, "incoming_from": { $ne: user._id }}, null, {sort: { "timestamp" : "descending" , "seen": "descending" }})
         .populate("incoming_from");
+        //  TODO: might not be able to populate notif from research team, how to handle?
   
         let notifdto = [];
         notifs.forEach(notification => {
@@ -41,6 +42,10 @@ router.get("/notifications", async (req, res) => {
               break;
             case "reply":
               status = notification.incoming_from.user_handle + ' reposted your post.';
+              break;
+            case "moderation notice":
+              status = 'The research team has moderated your post. Please adhere to community rules while interacting on this site. Thank you for your cooperation.'
+              // TODO: should we add that others complained?
               break;
             default:
               status = "error";

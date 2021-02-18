@@ -206,4 +206,33 @@ router.put("/change-password", async (req, res) => {
   }
 });
 
+router.put("/moderate-post", async(req, res) => {
+  const feed = await Feeds.findById(req.body.feedId);
+  const user = req.body.userId;
+
+  if (feed) {
+    try {
+      feed.body = '[deleted]';
+      feed.image = null;
+
+      const notif = new Notifications({
+        incoming_from: 'research team',
+        outgoing_to: user,
+        post_id: feed._id,
+        activity_type: 'moderation notice',
+        seen: false,
+        timestamp: Date.now()
+      });
+
+      feed.save();
+      notif.save();
+      res.status(200).send({status: "Moderated feed successfully."});
+    } catch(err) {
+      res.status(500).send({status: "Internal server error - could not moderate feed"});
+    }
+  } else {
+    res.status(404).send({status: "No such feed exists"})
+  }
+});
+
 module.exports = router;
