@@ -1,4 +1,5 @@
 const express = require("express");
+const helmet = require("helmet");
 const dotenv = require('dotenv');
 dotenv.config();
 require('dotenv').config({ path: 'final-env-file.env' });
@@ -22,6 +23,7 @@ mongoose
   })
   .then(() => {
     const app = express();
+    app.use(helmet.hidePoweredBy());
     app.use(bodyParser.json({limit: '50mb'}));
     app.use(cors());
 
