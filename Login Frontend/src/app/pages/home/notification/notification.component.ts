@@ -96,4 +96,13 @@ export class NotificationComponent implements OnInit {
             this.openSnackBar(error.error.status);
           });
     }
+
+    showAllReadButton() {
+        this.notificationList.forEach(notif => {
+          if (!notif.seen) {
+            return true;
+          }
+        });
+        return false;
+    }
 }

@@ -3,7 +3,7 @@
     <mat-card-header>
             <mat-card-title style="font-size: x-large">Notifications</mat-card-title>
     </mat-card-header>
-        <button (click)="markAllNotifAsRead()"
+        <button *ngIf="showAllReadButton()" (click)="markAllNotifAsRead()"
                 mat-stroked-button color="warn"
                 style="background-color: white">Mark all as read
         </button>
