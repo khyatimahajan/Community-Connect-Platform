@@ -4,7 +4,6 @@ import {UserProfile} from '../../model/UserProfile';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Feed } from 'src/app/model/Feed';
 import {Notif} from '../../model/Notif';
-import {UserDetails} from '../../model/UserDetails';
 import {UserMinified} from '../../model/UserMinified';
 
 @Injectable({
