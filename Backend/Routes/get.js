@@ -104,7 +104,12 @@ router.get("/feeds", async (req, res) => {
     if (user) {
       let group = user.group_names;
       // let allUsers = await User.find({}, 'id user_handle profile_pic');
-      var entireFeeds = await Feeds.find({"post_type": { $ne: "reply" }}, null, { sort: { "created_at" : "descending" }}).limit(30)
+      var entireFeeds = await Feeds.find({"post_type": { $ne: "reply" }}, null, { sort: { "created_at" : "descending" }})
+      // .populate("conversation_visibility_id")
+      .populate({
+        path: "conversation_visibility_id",
+        match: {"visible_to" : { $in: group } },
+      }, {"visible_to" : { $ne: null }})
       .populate({ 
               path: "parent_id",
               populate: {
@@ -112,10 +117,27 @@ router.get("/feeds", async (req, res) => {
                   model: "User",
               }})
       // TODO! make feed visible only if user belongs to groups .populate("conversation_id", null, {"visible_to": {$in: group}})
-      .populate("user_id", '_id profile_pic user_handle').populate("replies");
+      .populate("user_id", '_id profile_pic user_handle')
+      // .populate({
+      //   path: "conversation_visibility_id",
+      //   match: {visible_to : { $in: ["C"] } },
+      // })
+      // .find({"conversation_visibility_id.visible_to" : { $ne: null }})
+      .limit(20);
+      //  .populate({
+      //   path: "conversation_visibility_id",
+      //   model: "ConVis",
+      //   match: { visible_to : { $eq: group } }
+      // });
+      // .populate("conversation_visibility_id")
+      // .where({"conversation_visibility_id.visible_to" : { $in : group }})
+
+      console.log(entireFeeds);
 
       let feeddto = [];
       entireFeeds.forEach(feed => {
+          // console.log(Array.isArray(feed.conversation_visibility_id.visible_to));
+          // console.log(feed.conversation_visibility_id);
           feeddto.push({
               _id: feed._id,
               author: feed.user_id,

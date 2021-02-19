@@ -66,6 +66,7 @@ const feedSchema = new mongoose.Schema({
 			type: String,
 		},
 	],
+	image: String,
 });
 
 // get user mentions inside post body
