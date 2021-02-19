@@ -164,6 +164,7 @@ router.get("/connections", async (req, res) => {
 
 router.get("/user/:user_handle", async (req, res) => {
     let user_handle = req.params.user_handle;
+    let requester_id = req.params.userId;
 
     if (user_handle != null) {
       const user = await User.findOne({
@@ -194,8 +195,8 @@ router.get("/user/:user_handle", async (req, res) => {
             reply_count: feed.reply_count,
             quote_count: feed.quote_count,
             repost_count: feed.repost_count,
-            has_liked: feed.has_liked,
-            has_reposted: feed.has_reposted,
+            has_liked: (feed.liked_by.includes(requester_id)) ? true : false,
+            has_reposted: (feed.reposted_by.includes(requester_id)) ? true : false,
             replies: feed.replies,
             image: feed.image,
             parent_post: feed.parent_id ? {
@@ -205,7 +206,7 @@ router.get("/user/:user_handle", async (req, res) => {
                 image: feed.parent_id.image,
                 created_at: feed.parent_id.created_at
             } : null,
-            is_repost: feed.is_repost,
+            is_repost: (feed.post_type == 'repost') ? true : false,
           });
         });
         res.send(modifiedFeeds);
