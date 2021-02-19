@@ -44,7 +44,7 @@ router.get("/notifications", async (req, res) => {
               status = notification.incoming_from.user_handle + ' reposted your post.';
               break;
             case "moderation notice":
-              status = 'The research team has moderated your post. Please adhere to community rules while interacting on this site. Thank you for your cooperation.'
+              status = 'Your post was removed in accordance with community rules.'
               // TODO: should we add that others complained?
               break;
             default:
@@ -174,12 +174,14 @@ router.get("/user/:user_handle", async (req, res) => {
         let entireFeeds = await Feeds.find({
           "user_id": { $eq: user._id },
           "post_type": { $ne: "reply" },
-        }, filters, { sort: { "created_at" : "descending" }}).populate({ 
+        }, filters, { sort: { "created_at" : "descending" }})
+        .populate({ 
               path: "parent_id",
               populate: {
                   path: "user_id",
                   model: User,
-              }}, '_id user_id body image created_at', filters).populate("user_id", '_id user_handle profile_pic');
+              }})
+        .populate("user_id", '_id user_handle profile_pic');
 
         var modifiedFeeds = [];
         entireFeeds.forEach(feed => {
@@ -195,13 +197,13 @@ router.get("/user/:user_handle", async (req, res) => {
             has_reposted: feed.has_reposted,
             replies: feed.replies,
             image: feed.image,
-            parent_post: {
+            parent_post: feed.parent_id ? {
                 _id: feed.parent_id._id,
                 author: feed.parent_id.user_id,
                 body: feed.parent_id.body,
                 image: feed.parent_id.image,
                 created_at: feed.parent_id.created_at
-            },
+            } : null,
             is_repost: feed.is_repost,
           });
         });
