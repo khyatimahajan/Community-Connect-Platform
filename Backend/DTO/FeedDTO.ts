@@ -21,5 +21,5 @@ export class Feed {
     	created_at: string;
     };
     is_repost: boolean;
-    post_type: string; // maybe
+    // post_type: string; // maybe
 }

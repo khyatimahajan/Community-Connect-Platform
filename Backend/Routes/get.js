@@ -186,6 +186,7 @@ router.get("/user/:user_handle", async (req, res) => {
         var modifiedFeeds = [];
         entireFeeds.forEach(feed => {
           modifiedFeeds.push({
+            _id: feed._id,
             author: feed.user_id,
             body: feed.body,
             created_at: feed.created_at,
