@@ -120,13 +120,14 @@ router.post("/feed", async (req, res) => {
     // Save to DB, set conversation_id based on _id, then resave feed
     let feed = await newFeed.save();
     feed.conversation_id = feed._id;
-    await feed.save();
     // set conversation visibility
     const con_vis = new ConVis({
       conversation_id: feed.conversation_id,
       visible_to: [...new Set(user.group_names)]
     });
-    await con_vis.save();
+    let new_con_vis = await con_vis.save();
+    feed.conversation_visibility_id = new_con_vis._id;
+    await feed.save();
     // send status
     res.status(201).send({status: "Created new post successfully!"});
   } catch (err) {
@@ -190,7 +191,8 @@ router.post("/repost", async (req, res) => {
       }
       const visibility = await ConVis.findOne({conversation_id: oldFeed.conversation_id});
       visibility.visible_to = [...new Set([...user.group_names, ...visibility.visible_to])];
-      await visibility.save();
+      let new_visibility = await visibility.save();
+      newFeed.conversation_visibility_id = new_visibility._id;
       await newFeed.save();
       await oldFeed.save();
       if (newFeed.post_type === "repost") {

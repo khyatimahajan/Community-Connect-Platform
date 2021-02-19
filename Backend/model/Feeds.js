@@ -57,6 +57,10 @@ const feedSchema = new mongoose.Schema({
 		type: mongoose.Types.ObjectId,
 		ref: 'Feeds',
 	},
+	conversation_visibility_id: {
+		type: mongoose.Types.ObjectId,
+		ref: 'ConVis',
+	},
 	mentions: [
 		{
 			type: String,

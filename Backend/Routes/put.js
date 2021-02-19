@@ -108,7 +108,8 @@ router.put("/comment", async (req, res) => {
     let union = [...new Set([...user.group_names, ...visibility.visible_to])];
     try {
       visibility.visible_to = union;
-      visibility.save();
+      let new_visibility = await visibility.save();
+      feed.conversation_visibility_id = new_visibility._id;
     } catch (err) {
       console.log("could not update post visibility for", feed._id)
     }
