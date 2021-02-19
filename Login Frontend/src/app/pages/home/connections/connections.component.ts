@@ -16,7 +16,7 @@ export class ConnectionsComponent implements OnInit {
 
   isLoading = true;
   feedList: Array<Feed> = [];
-  user: UserProfile;
+  user: UserMinified;
 
   @Input() userProfileShort: UserMinified;
 
@@ -34,11 +34,11 @@ export class ConnectionsComponent implements OnInit {
 
   loadPosts(username: string) {
     this.isLoading = true;
-    this.userService.getUserProfile(username).subscribe(response => {
+    this.userService.getUserProfile(username, this.authService.currentUser.id).subscribe(response => {
       if (response) {
         this.isLoading = false;
-        this.user = response.user;
-        this.feedList = response.feeds;
+        this.user = this.userProfileShort;
+        this.feedList = response;
       }
     }, error => {
       this.openSnackBar(error.error.status);

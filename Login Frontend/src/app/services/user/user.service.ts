@@ -80,8 +80,9 @@ export class UserService {
     return this.http.put<any>('http://' + this.link + '/put/mark-all-notifs-as-read', null, { headers });
   }
 
-  getUserProfile(username: string): Observable<UserDetails> {
-    return this.http.get<UserDetails>('http://' + this.link + '/get/user/' + username);
+  getUserProfile(username: string, userId): Observable<Array<Feed>> {
+    const headers = { userId };
+    return this.http.get<Array<Feed>>('http://' + this.link + '/get/user/' + username, { headers });
   }
 
   /**

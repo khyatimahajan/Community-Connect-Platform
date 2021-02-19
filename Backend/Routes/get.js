@@ -164,7 +164,7 @@ router.get("/connections", async (req, res) => {
 
 router.get("/user/:user_handle", async (req, res) => {
     let user_handle = req.params.user_handle;
-    let requester_id = req.header.userId;
+    let requester_id = req.header("userId");
 
     if (user_handle != null) {
       const user = await User.findOne({
