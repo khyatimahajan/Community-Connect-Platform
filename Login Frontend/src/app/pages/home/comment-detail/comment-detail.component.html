@@ -32,7 +32,7 @@
                     </button>
                     <div>{{feed.reply_count}}</div>
                 </div>
-                <div class="action-button repost" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+                <div class="action-button repost" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()" [ngClass]="{ reposted: feed.has_reposted }">
                     <button
                             mat-icon-button
                             class="repost-button"
