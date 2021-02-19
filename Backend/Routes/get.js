@@ -261,12 +261,12 @@ router.get("/feeds/:feed_id", async (req, res) => {
             reply_count: feed.reply_count,
             quote_count: feed.quote_count,
             repost_count: feed.repost_count,
-            has_liked: feed.has_liked,
-            has_reposted: feed.has_reposted,
+            has_liked: (feed.liked_by.includes(user._id)) ? true : false,
+            has_reposted: (feed.reposted_by.includes(user._id)) ? true : false,
             replies: feed.replies,
             image: feed.image,
             parent_post: feed.parent_id,
-            is_repost: feed.is_repost,
+            is_repost: (feed.post_type == 'repost') ? true : false,
           });
         });
       modifiedFeeds = {
@@ -278,8 +278,8 @@ router.get("/feeds/:feed_id", async (req, res) => {
         reply_count: entireFeeds.reply_count,
         quote_count: entireFeeds.quote_count,
         repost_count: entireFeeds.repost_count,
-        has_liked: entireFeeds.has_liked,
-        has_reposted: entireFeeds.has_reposted,
+        has_liked: (entireFeeds.liked_by.includes(user._id)) ? true : false,
+        has_reposted: (entireFeeds.reposted_by.includes(user._id)) ? true : false,
         replies: modifiedReplies,
         image: entireFeeds.image,
         parent_post: entireFeeds.parent_id ? {
@@ -289,7 +289,7 @@ router.get("/feeds/:feed_id", async (req, res) => {
             image: entireFeeds.parent_id.image,
             created_at: entireFeeds.parent_id.created_at
         } : null,
-        is_repost: entireFeeds.is_repost,
+        is_repost: (entireFeeds.post_type == 'repost') ? true : false,
       };
       res.status(200).send(modifiedFeeds);
     }
