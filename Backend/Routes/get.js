@@ -12,8 +12,6 @@ const bcrypt = require("bcryptjs");
 const { urlify } = require("./../utils");
 const upload = require('./../middleware/file-uploads');
 
-// TODO! limit visibility by groups for everything - only check for /feed/:feed_id
-
 router.get("/server/status", function (req, res) {
     res.status(200).send("Get Server OK");
 });
@@ -25,8 +23,6 @@ router.get("/notifications", async (req, res) => {
       try {
         const notifs = await Notifications.find({"outgoing_to": user._id, "incoming_from": { $ne: user._id }}, null, {sort: { "timestamp" : "descending" , "seen": "descending" }})
         .populate("incoming_from");
-        //  TODO: might not be able to populate notif from research team, how to handle?
-  
         let notifdto = [];
         notifs.forEach(notification => {
           let status = '';
@@ -45,7 +41,7 @@ router.get("/notifications", async (req, res) => {
               break;
             case "moderation notice":
               status = 'Your post was removed in accordance with community rules.'
-              // TODO: should we add that others complained?
+              // TODO! should we add that others complained?
               break;
             default:
               status = "error";
