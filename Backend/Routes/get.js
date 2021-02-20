@@ -103,63 +103,49 @@ router.get("/feeds", async (req, res) => {
     const user = await User.findById(userId);
     if (user) {
       let group = user.group_names;
-      // let allUsers = await User.find({}, 'id user_handle profile_pic');
       var entireFeeds = await Feeds.find({"post_type": { $ne: "reply" }}, null, { sort: { "created_at" : "descending" }})
-      // .populate("conversation_visibility_id")
-      .populate({
-        path: "conversation_visibility_id",
-        match: {"visible_to" : { $in: group } },
-      }, {"visible_to" : { $ne: null }})
       .populate({ 
               path: "parent_id",
               populate: {
                   path: "user_id",
                   model: "User",
-              }})
-      // TODO! make feed visible only if user belongs to groups .populate("conversation_id", null, {"visible_to": {$in: group}})
+              }
+      })
+      .populate('conversation_visibility_id')
+      // TODO! make feed visibility work better
       .populate("user_id", '_id profile_pic user_handle')
-      // .populate({
-      //   path: "conversation_visibility_id",
-      //   match: {visible_to : { $in: ["C"] } },
-      // })
-      // .find({"conversation_visibility_id.visible_to" : { $ne: null }})
-      .limit(20);
-      //  .populate({
-      //   path: "conversation_visibility_id",
-      //   model: "ConVis",
-      //   match: { visible_to : { $eq: group } }
-      // });
-      // .populate("conversation_visibility_id")
-      // .where({"conversation_visibility_id.visible_to" : { $in : group }})
+      .limit(100);
 
       console.log(entireFeeds);
 
       let feeddto = [];
       entireFeeds.forEach(feed => {
           // console.log(Array.isArray(feed.conversation_visibility_id.visible_to));
-          // console.log(feed.conversation_visibility_id);
-          feeddto.push({
-              _id: feed._id,
-              author: feed.user_id,
-              body: feed.body,
-              created_at: feed.created_at,
-              like_count: feed.like_count,
-              reply_count: feed.reply_count,
-              repost_count: feed.repost_count,
-              quote_count: feed.quote_count,
-              has_liked: feed.liked_by.includes(user._id)? true : false,
-              has_reposted: feed.reposted_by.includes(user._id)? true : false,
-              replies: feed.replies,
-              image: feed.image,
-              parent_post: feed.parent_id ? {
-                      _id: feed.parent_id._id,
-                      author: feed.parent_id.user_id,
-                      body: feed.parent_id.body,
-                      image: feed.parent_id.image,
-                      created_at: feed.parent_id.created_at,
-                  } : null,
-              is_repost: feed.post_type == 'repost'? true : false,
-          })
+          let intersection = feed.conversation_visibility_id.visible_to.filter(x => group.includes(x));
+          if (intersection.length > 0) {
+            feeddto.push({
+                _id: feed._id,
+                author: feed.user_id,
+                body: feed.body,
+                created_at: feed.created_at,
+                like_count: feed.like_count,
+                reply_count: feed.reply_count,
+                repost_count: feed.repost_count,
+                quote_count: feed.quote_count,
+                has_liked: feed.liked_by.includes(user._id)? true : false,
+                has_reposted: feed.reposted_by.includes(user._id)? true : false,
+                replies: feed.replies,
+                image: feed.image,
+                parent_post: feed.parent_id ? {
+                        _id: feed.parent_id._id,
+                        author: feed.parent_id.user_id,
+                        body: feed.parent_id.body,
+                        image: feed.parent_id.image,
+                        created_at: feed.parent_id.created_at,
+                    } : null,
+                is_repost: feed.post_type == 'repost'? true : false,
+            })
+        }
       });
       res.status(200).send(feeddto);
     }
