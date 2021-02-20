@@ -334,6 +334,19 @@ router.get("/signup", async (req, res) => {
   };
 });
 
+router.get("/testing", async (req, res) => {
+  let userId = req.headers.id
+  if (userId != null) {
+    const user = await User.findById(userId);
+    if (user) {
+      var allVisibleFeeds = await ConVis.find({"visible_to": { $in: user.group_names}}).populate("conversation_id")
+      res.status(200).send(allVisibleFeeds);
+    }
+  } else {
+    res.status(400).send({ status: "No user ID was received for getting feeds" });
+  }
+});
+
 
 
 module.exports = router;
