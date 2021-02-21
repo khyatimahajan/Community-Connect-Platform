@@ -12,8 +12,6 @@ const bcrypt = require("bcryptjs");
 const { urlify } = require("./../utils");
 const upload = require('./../middleware/file-uploads');
 
-// TODO! limit visibility by groups for everything - only check for /feed/:feed_id
-
 router.get("/server/status", function (req, res) {
     res.status(200).send("Get Server OK");
 });
@@ -25,8 +23,6 @@ router.get("/notifications", async (req, res) => {
       try {
         const notifs = await Notifications.find({"outgoing_to": user._id, "incoming_from": { $ne: user._id }}, null, {sort: { "timestamp" : "descending" , "seen": "descending" }})
         .populate("incoming_from");
-        //  TODO: might not be able to populate notif from research team, how to handle?
-  
         let notifdto = [];
         notifs.forEach(notification => {
           let status = '';
@@ -45,7 +41,7 @@ router.get("/notifications", async (req, res) => {
               break;
             case "moderation notice":
               status = 'Your post was removed in accordance with community rules.'
-              // TODO: should we add that others complained?
+              // TODO! should we add that others complained?
               break;
             default:
               status = "error";
@@ -116,11 +112,8 @@ router.get("/feeds", async (req, res) => {
       .populate("user_id", '_id profile_pic user_handle')
       .limit(100);
 
-      console.log(entireFeeds);
-
       let feeddto = [];
       entireFeeds.forEach(feed => {
-          // console.log(Array.isArray(feed.conversation_visibility_id.visible_to));
           let intersection = feed.conversation_visibility_id.visible_to.filter(x => group.includes(x));
           if (intersection.length > 0) {
             feeddto.push({
@@ -128,13 +121,13 @@ router.get("/feeds", async (req, res) => {
                 author: feed.user_id,
                 body: feed.body,
                 created_at: feed.created_at,
-                like_count: feed.like_count,
-                reply_count: feed.reply_count,
-                repost_count: feed.repost_count,
-                quote_count: feed.quote_count,
-                has_liked: feed.liked_by.includes(user._id)? true : false,
-                has_reposted: feed.reposted_by.includes(user._id)? true : false,
-                replies: feed.replies,
+                like_count: feed.post_type == 'repost'? feed.parent_id.like_count : feed.like_count,
+                reply_count: feed.post_type == 'repost'? feed.parent_id.reply_count : feed.reply_count,
+                repost_count: feed.post_type == 'repost'? feed.parent_id.repost_count : feed.repost_count,
+                quote_count: feed.post_type == 'repost'? feed.parent_id.quote_count : feed.quote_count,
+                has_liked: feed.post_type == 'repost'? feed.parent_id.liked_by.includes(user._id) ? true : false : feed.liked_by.includes(user._id) ? true : false,
+                has_reposted: feed.post_type == 'repost'? feed.parent_id.reposted_by.includes(user._id) ? true : false : feed.reposted_by.includes(user._id) ? true : false,
+                replies: feed.replies, // you don't actually use this info
                 image: feed.image,
                 parent_post: feed.parent_id ? {
                         _id: feed.parent_id._id,
