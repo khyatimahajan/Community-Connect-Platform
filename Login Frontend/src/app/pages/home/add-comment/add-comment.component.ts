@@ -36,7 +36,7 @@ export class AddCommentComponent implements OnInit {
         body: this.commentStr,
         image: this.imageUrl && this.imageUrl.length > 0 ? this.imageUrl : null,
         userId: this.authService.currentUser.id,
-        parent_id: this.data._id
+        parent_id: this.data.is_repost? this.data.parent_post._id : this.data._id
       };
       this.buttonDisabled = true;
       this.userService.putComment(body).subscribe(response => {

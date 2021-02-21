@@ -32,7 +32,7 @@ export class FeedItemComponent implements OnInit {
 
     toggleLike() {
         const body = {
-            feedId: this.feed._id,
+            feedId: this.feed.is_repost ? this.feed.parent_post._id : this.feed._id,
             userId: this.authService.currentUser.id
         };
         this.userService.putLike(body).subscribe(response => {
