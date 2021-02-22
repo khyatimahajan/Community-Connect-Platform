@@ -111,7 +111,6 @@ export class FeedItemComponent implements OnInit {
     openDetailModal(f: Feed) {
         const dialogRef = this.dialog.open(FeedDetailComponent, {
             width: '1200px',
-            height: '800px',
             data: f._id
         });
         dialogRef.afterClosed().subscribe(result => {
