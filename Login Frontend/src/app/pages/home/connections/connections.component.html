@@ -12,7 +12,7 @@
         <app-feed-item *ngFor="let item of feedList; let i = index" [feed]="item" (feedStatusChange)="loadPosts(userProfileShort.user_handle)"></app-feed-item>
         <div *ngIf="feedList.length == 0">
             <mat-card-header>
-                No User Activity has been recorded.
+                No user activity has been recorded yet.
             </mat-card-header>
         </div>
     </div>
