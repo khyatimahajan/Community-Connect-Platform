@@ -211,11 +211,11 @@ router.put("/moderate-post", async(req, res) => {
 
   if (feed) {
     try {
-      feed.body = '[deleted]';
+      feed.body = '[this content has been removed]';
       feed.image = null;
       // TODO! figure out how to save content before deleting it
       const notif = new Notifications({
-        incoming_from: 'research team',
+        incoming_from: null,
         outgoing_to: user,
         post_id: feed._id,
         activity_type: 'moderation notice',
