@@ -208,6 +208,7 @@ router.put("/change-password", async (req, res) => {
 router.put("/moderate-post", async(req, res) => {
   const feed = await Feeds.findById(req.body.feedId);
   const user = req.body.userId;
+  const from = req.body.fromId;
 
   if (feed) {
     try {
@@ -215,10 +216,10 @@ router.put("/moderate-post", async(req, res) => {
       feed.image = null;
       // TODO! figure out how to save content before deleting it
       const notif = new Notifications({
-        incoming_from: null,
+        incoming_from: from,
         outgoing_to: user,
         post_id: feed._id,
-        activity_type: 'moderation notice',
+        activity_type: 'moderation_notice',
         seen: false,
         timestamp: Date.now()
       });
