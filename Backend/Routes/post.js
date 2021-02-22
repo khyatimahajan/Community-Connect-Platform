@@ -11,7 +11,17 @@ const validation = require("./../validation");
 const bcrypt = require("bcryptjs");
 const { urlify } = require("./../utils");
 const upload = require('./../middleware/file-uploads');
+const aws = require('aws-sdk');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
 
+aws.config.update({
+secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+region: process.env.AWS_REGION,
+});
+
+var s3 = new aws.S3( { params: {Bucket: process.env.AWS_BUCKET_NAME} } )
 //  TODO! check logtimes model
 
 router.post("/login", async (req, res) => {
@@ -264,5 +274,28 @@ router.post('/v1/upload', upload.array('image', 1), (req, res) => {
   /* This will be th 8e response sent from the backend to the frontend */
   res.send({ image: req.files[0].location });
  });
+
+ /* Where image is the name of the property sent from angular via the Form Data and the 1 is the max number of files to upload*/
+router.post('/v1/upload/profile', async (req, res) => {
+  /* This will be th 8e response sent from the backend to the frontend */
+
+  buf = Buffer.from(req.body.image.replace(/^data:image\/\w+;base64,/, ""),'base64')
+  var data = {
+    Key: req.body.userId, 
+    Body: buf,
+    ContentEncoding: 'base64',
+    ContentType: 'image/jpeg'
+  };
+  
+  s3.putObject(data, function(err, data){
+      if (err) { 
+        console.log(err);
+        res.status(500).send('Error uploading data: ', data); 
+      } else {
+        res.send({ image: req.files[0].location });
+      }
+  });
+ });
+
 
 module.exports = router;

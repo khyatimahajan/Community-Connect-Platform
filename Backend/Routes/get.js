@@ -226,12 +226,30 @@ router.get("/feeds/:feed_id", async (req, res) => {
   if (feed_id != null) {
     if (user) {
       let groups = user.group_names;
-      let filters = '_id user_id body created_at liked_by reposted_by  like_count repost_count reply_count quote_count post_type image parent_id conversation_id conversation_visibility_id image replies';
+      let filters = '_id user_id body created_at liked_by reposted_by like_count repost_count reply_count quote_count post_type image parent_id conversation_id conversation_visibility_id image replies';
       var entireFeeds = await Feeds.findOne({
         "_id": feed_id,
       }, null, { sort: { "created_at" : "ascending" }})
       .populate({ 
               path: "parent_id",
+              populate: {
+                  path: "user_id",
+                  model: User,
+                  select: '_id profile_pic user_handle'
+              }})
+      .populate({ 
+              path: "parent_id",
+              populate: {
+                path: "replies",
+                populate: {
+                    path: "user_id",
+                    model: User,
+                    select: '_id profile_pic user_handle'
+                },
+                model: Feeds
+              }})
+      .populate({ 
+              path: "parent_id.replies",
               populate: {
                   path: "user_id",
                   model: User,
@@ -255,7 +273,8 @@ router.get("/feeds/:feed_id", async (req, res) => {
 
       let intersection = entireFeeds.conversation_visibility_id.visible_to.filter(x => groups.includes(x));
       if (intersection.length > 0) {
-        entireFeeds.replies.forEach(feed => {
+        if (entireFeeds.post_type == 'repost') {
+          entireFeeds.parent_id.replies.forEach(feed => {
             modifiedReplies.push({
               _id: feed._id,
               author: feed.user_id,
@@ -273,17 +292,38 @@ router.get("/feeds/:feed_id", async (req, res) => {
               is_repost: (feed.post_type == 'repost') ? true : false,
             });
           });
+        } else {
+          entireFeeds.replies.forEach(feed => {
+            modifiedReplies.push({
+              _id: feed._id,
+              author: feed.user_id,
+              body: feed.body,
+              created_at: feed.created_at,
+              like_count: feed.like_count,
+              reply_count: feed.reply_count,
+              quote_count: feed.quote_count,
+              repost_count: feed.repost_count,
+              has_liked: (feed.liked_by.includes(user._id)) ? true : false,
+              has_reposted: (feed.reposted_by.includes(user._id)) ? true : false,
+              replies: feed.replies,
+              image: feed.image,
+              parent_post: feed.parent_id,
+              is_repost: (feed.post_type == 'repost') ? true : false,
+            });
+          });
+        }
+        
         modifiedFeeds = {
           _id: entireFeeds._id,
           author: entireFeeds.user_id,
           body: entireFeeds.body,
           created_at: entireFeeds.created_at,
-          like_count: entireFeeds.like_count,
-          reply_count: entireFeeds.reply_count,
-          quote_count: entireFeeds.quote_count,
-          repost_count: entireFeeds.repost_count,
-          has_liked: (entireFeeds.liked_by.includes(user._id)) ? true : false,
-          has_reposted: (entireFeeds.reposted_by.includes(user._id)) ? true : false,
+          like_count: entireFeeds.post_type == 'repost'? entireFeeds.parent_id.like_count : entireFeeds.like_count,
+          reply_count: entireFeeds.post_type == 'repost'? entireFeeds.parent_id.reply_count : entireFeeds.reply_count,
+          repost_count: entireFeeds.post_type == 'repost'? entireFeeds.parent_id.repost_count : entireFeeds.repost_count,
+          quote_count: entireFeeds.post_type == 'repost'? entireFeeds.parent_id.quote_count : entireFeeds.quote_count,
+          has_liked: entireFeeds.post_type == 'repost'? entireFeeds.parent_id.liked_by.includes(user._id) ? true : false : entireFeeds.liked_by.includes(user._id) ? true : false,
+          has_reposted: entireFeeds.post_type == 'repost'? entireFeeds.parent_id.reposted_by.includes(user._id) ? true : false : entireFeeds.reposted_by.includes(user._id) ? true : false,
           replies: modifiedReplies,
           image: entireFeeds.image,
           parent_post: entireFeeds.parent_id ? {
@@ -331,5 +371,3 @@ router.get("/testing", async (req, res) => {
 });
 
 
-
-module.exports = router;
