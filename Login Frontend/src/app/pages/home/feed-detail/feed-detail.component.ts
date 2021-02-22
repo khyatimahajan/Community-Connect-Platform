@@ -30,6 +30,7 @@ export class FeedDetailComponent implements OnInit {
   moment = moment;
 
   ngOnInit(): void {
+    this.thisDialogRef.updatePosition({ top: '50px' });
     this.loadData();
   }
 
