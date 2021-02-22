@@ -1,15 +1,21 @@
 <div class="tweet-container">
     <mat-card class="tweet-card" (click)="openDetailModal(feed)">
         <div class="tweet-info">
-            <div class="profile-pic">
+            <div *ngIf="!feed.is_repost" class="profile-pic">
                 <img *ngIf="feed.author.profile_pic" [src]="feed.author.profile_pic" alt="Image Source"
                      class="icon-image">
                 <mat-icon *ngIf="!feed.author.profile_pic">face</mat-icon>
             </div>
             <div class="tweet">
                 <div class="name">
-                    <div class="actual-name">
-                        {{feed.author.user_handle}}
+                    <div class="actual-name ">
+                        <div *ngIf="feed.is_repost" style="font-size: 1em; font-weight: normal; margin-left: 2em; display: flex; align-items: center">
+                            <mat-icon style="font-size: 1em; height: 1em;">repeat</mat-icon>
+                            {{feed.author.user_handle}} reposted
+                        </div>
+                        <div *ngIf="!feed.is_repost">
+                            {{feed.author.user_handle}}
+                        </div>
                     </div>
                     <div class="time-stuff">
                         {{moment(this.feed.created_at).fromNow()}}
