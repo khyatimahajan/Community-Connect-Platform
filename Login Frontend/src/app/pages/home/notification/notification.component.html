@@ -18,7 +18,7 @@
         <div>{{item.status}}</div>
         <button *ngIf="!item.seen" (click)="markNotifAsRead(item); $event.stopPropagation()"
                 mat-stroked-button color="warn"
-                style="background-color: white">Mark as read
+                style="background-color: white; margin-left: 3em; min-width: 2em">Mark as read
         </button>
 
     </mat-card>
