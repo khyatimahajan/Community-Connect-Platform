@@ -39,8 +39,8 @@ router.get("/notifications", async (req, res) => {
             case "reply":
               status = notification.incoming_from.user_handle + ' reposted your post.';
               break;
-            case "moderation notice":
-              status = 'Your post was removed in accordance with community rules.'
+            case "moderation_notice":
+              status = 'Your post was removed 1) based on your request OR 2) in accordance with community rules.'
               // TODO! should we add that others complained?
               break;
             default:
@@ -51,7 +51,7 @@ router.get("/notifications", async (req, res) => {
           } else {
             notifdto.push({
               '_id': notification._id,
-              'post_id': notification.post_id._id,
+              'post_id': notification.post_id,
               'status': status,
               'seen': notification.seen,
               'timestamp': notification.timestamp
