@@ -15,10 +15,10 @@
             class="example-card" style="display: flex; flex: 1"
             [ngClass]="{ notSeen : !item.seen }"
     >
-        <div style="flex: 9;">{{item.status}}</div>
+        <div style="flex: 8.5;">{{item.status}}</div>
         <button *ngIf="!item.seen" (click)="markNotifAsRead(item); $event.stopPropagation()"
                 mat-stroked-button color="warn"
-                style="background-color: white; flex: 1">Mark as read
+                style="background-color: white; flex: 1.5">Mark as read
         </button>
 
     </mat-card>
