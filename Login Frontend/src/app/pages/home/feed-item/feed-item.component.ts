@@ -50,10 +50,15 @@ export class FeedItemComponent implements OnInit {
     }
 
     showCommentModal() {
-        const dialogRef = this.dialog.open(AddCommentComponent, {
+        const dialogRef = this.feed.is_repost ?
+            this.dialog.open(AddCommentComponent, {
             width: '600px',
-            data: this.feed
-        });
+            data: this.feed.parent_post
+            })
+            : this.dialog.open(AddCommentComponent, {
+                width: '600px',
+                data: this.feed
+            });
         dialogRef.afterClosed().subscribe(result => {
             if (result === 'Comment Added') {
                 this.feed.reply_count++;
