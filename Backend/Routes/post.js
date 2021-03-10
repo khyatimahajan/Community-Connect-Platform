@@ -101,6 +101,7 @@ router.post("/feed", async (req, res) => {
       user_mentions.push(part.join("").trim());
     }
   });
+  user_mentions = [...new Set(user_mentions)];
 
   // add support for notifs based on mentions
 
@@ -121,7 +122,7 @@ router.post("/feed", async (req, res) => {
     post_type: "post",
     parent_id: null,
     conversation_id: null,
-    mentions: [...new Set(user_mentions)],
+    mentions: user_mentions,
     image: req.body.image ? req.body.image : null,
   };
 
@@ -138,6 +139,25 @@ router.post("/feed", async (req, res) => {
     let new_con_vis = await con_vis.save();
     feed.conversation_visibility_id = new_con_vis._id;
     await feed.save();
+    try {
+      // notifications for mentions
+      var mention;
+      for (mention of user_mentions) {
+        let mentioned_user = await User.findOne({user_handle: mention});
+        let notif = new Notifications({
+        incoming_from: user._id,
+        outgoing_to: mentioned_user._id,
+        post_id: feed._id, 
+        activity_type: "mention",
+        timestamp: Date.now(),
+        seen: false
+        });
+        // save to DB
+        notif.save();
+      }
+    } catch (err) {
+      console.log("Could not save notification for mentions to DB for", feed._id);
+    }
     // send status
     res.status(201).send({status: "Created new post successfully!"});
   } catch (err) {
@@ -156,6 +176,7 @@ router.post("/repost", async (req, res) => {
       user_mentions.push(part.join("").trim());
     }
   });
+  user_mentions = [...new Set(user_mentions)];
 
   // TODO! add notif for user mention
 
@@ -177,7 +198,7 @@ router.post("/repost", async (req, res) => {
     post_type: parent_id && req.body.body ? "quote" : parent_id? "repost" : "error",
     parent_id: parent_id ? parent_id : null,
     conversation_id: null,
-    mentions: [...new Set(user_mentions)],
+    mentions: user_mentions,
     replies: [],
     image: req.body.image ? req.body.image : null,
   };
@@ -231,6 +252,22 @@ router.post("/repost", async (req, res) => {
         });
         // save to DB
         notif.save();
+
+        // notifications for mentions
+        var mention;
+        for (mention of user_mentions) {
+          let mentioned_user = await User.findOne({user_handle: mention});
+          let notif = new Notifications({
+          incoming_from: user._id,
+          outgoing_to: mentioned_user._id,
+          post_id: newFeed._id, 
+          activity_type: "mention",
+          timestamp: Date.now(),
+          seen: false
+          });
+          // save to DB
+          notif.save();
+        };
       } catch(err) {
         if (newFeed.post_type === "repost") {
           console.log("Could not save notification for repost to DB for", oldFeed._id);

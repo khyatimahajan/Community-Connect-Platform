@@ -39,6 +39,9 @@ router.get("/notifications", async (req, res) => {
             case "reply":
               status = notification.incoming_from.user_handle + ' reposted your post.';
               break;
+            case "mention":
+              status = 'You were mentioned in ' + notification.incoming_from.user_handle +'\'s post.';
+              break;
             case "moderation_notice":
               status = 'Your post was removed 1) based on your request OR 2) in accordance with community rules.'
               // TODO! should we add that others complained?
