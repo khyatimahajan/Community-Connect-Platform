@@ -155,7 +155,8 @@ router.get("/connections", async (req, res) => {
       let groups = user.group_names;
       const users = await User.find({
         group_names: { $in: groups },
-      }, '_id user_handle profile_pic');
+      }, '_id user_handle profile_pic')
+      .where('profile_pic').ne(null);
       res.send(users);
     }
   } else {
