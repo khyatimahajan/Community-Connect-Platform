@@ -47,8 +47,8 @@
     }
     .image {
       margin-top: 1em;
-      width: 500px;
-      height: auto;
+      max-width: 15em;
+      max-height: 15em;
     }
   }
 }
