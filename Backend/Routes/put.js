@@ -74,6 +74,7 @@ router.put("/comment", async (req, res) => {
       user_mentions.push(part.join("").trim());
     }
   });
+  user_mentions = [...new Set(user_mentions)];
 
   var parent_id = req.body.parent_id;
   let feed = {
@@ -89,7 +90,7 @@ router.put("/comment", async (req, res) => {
     post_type: parent_id ? "reply" : "post",
     parent_id: parent_id ? parent_id : null,
     conversation_id: null,
-    mentions: [...new Set(user_mentions)],
+    mentions: user_mentions,
     image: req.body.image ? req.body.image : null,
   };
   const newFeed = new Feeds(feed);
@@ -124,6 +125,22 @@ router.put("/comment", async (req, res) => {
       });
       // save to DB
       notif.save();
+
+      // notifications for mentions
+      var mention;
+      for (mention of user_mentions) {
+        let mentioned_user = await User.findOne({user_handle: mention});
+        let notif = new Notifications({
+        incoming_from: user._id,
+        outgoing_to: mentioned_user._id,
+        post_id: feed._id, 
+        activity_type: "mention",
+        timestamp: Date.now(),
+        seen: false
+        });
+        // save to DB
+        notif.save();
+      };
     } catch(err) {
       console.log("Could not save notification for comment to DB for", oldFeed._id);
     };
