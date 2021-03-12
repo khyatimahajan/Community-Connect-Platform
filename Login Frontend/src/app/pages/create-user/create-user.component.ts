@@ -3,6 +3,7 @@ import {UserSignupInfo} from '../../model/UserSignupInfo';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthService} from '../../services/auth/auth.service';
+import {UserService} from '../../services/user/user.service';
 
 @Component({
   selector: 'app-create-user',
@@ -20,7 +21,8 @@ export class CreateUserComponent implements OnInit {
       private route: ActivatedRoute,
       private router: Router,
       private snackBar: MatSnackBar,
-      private authService: AuthService
+      private authService: AuthService,
+      private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -47,6 +49,7 @@ export class CreateUserComponent implements OnInit {
     }
 
     this.imageSrc = localStorage.getItem('avatar');
+    this.onImageUpload();
     if (this.imageSrc == null) {
       this.openSnackBar('No Avatar Detected. Please try again.');
       this.router.navigate(['/login']);
@@ -60,6 +63,18 @@ export class CreateUserComponent implements OnInit {
       verticalPosition: 'top',
     });
   }
+
+  onImageUpload() {
+    const imageForm = new FormData();
+    imageForm.append('image', this.imageSrc);
+    this.userService.imageUpload(imageForm).subscribe(res => {
+      this.imageSrc = res.image;
+    }, error => {
+      this.openSnackBar('Could not upload Image Properly. Please try again');
+      // this.imageUrl = '';
+    });
+  }
+
 
   signUpUser() {
 
