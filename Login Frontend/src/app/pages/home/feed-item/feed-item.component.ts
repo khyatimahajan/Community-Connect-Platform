@@ -7,6 +7,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {AddQuoteComponent} from '../add-quote/add-quote.component';
 import {FeedDetailComponent} from '../feed-detail/feed-detail.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {CopyContentModalComponent} from '../copy-content-modal/copy-content-modal.component';
 // @ts-ignore
 const moment = require('moment');
 
@@ -138,6 +139,16 @@ export class FeedItemComponent implements OnInit {
     }
 
     copyContent(feed: Feed) {
-        this.openSnackBar('Work in Progress to copy stuff');
+        if (feed.author.user_handle === 'news_node') {
+            const dialogRef = this.dialog.open(CopyContentModalComponent, {
+                width: '1200px',
+                data: feed
+            });
+            dialogRef.afterClosed().subscribe(result => {
+                if (result === 'Load') {
+                    this.feedStatusChange.emit(true);
+                }
+            });
+        }
     }
 }

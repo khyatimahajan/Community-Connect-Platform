@@ -20,11 +20,14 @@ export class FeedHeaderComponent implements OnInit {
   }
 
   imageObj: File;
+  @Input()
   imageUrl = '';
   buttonDisabled = false;
+  @Input()
   messageStuff = '';
   showError = false;
   @Input() currentUser: UserProfile;
+  @Input() showHome = true;
   @Output() postAddedStatusChange = new EventEmitter<boolean>();
 
   toggled = false;

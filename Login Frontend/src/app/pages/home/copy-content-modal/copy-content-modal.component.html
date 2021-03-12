@@ -1,0 +1,12 @@
+<app-feed-header [currentUser]="currentUser"
+                 [showHome]="false"
+                 [messageStuff]="feedBody"
+                 [imageUrl]="feedImageUrl"
+                 (postAddedStatusChange)="doNothing()"></app-feed-header>
+
+<mat-dialog-actions class="separated-buttons">
+    <!--    <button class="comment-button" mat-button (click)="showCommentModal()"-->
+    <!--            [disabled]="">ADD COMMENT-->
+    <!--    </button>-->
+    <button class="cancel-button" mat-button (click)="close()">CANCEL</button>
+</mat-dialog-actions>

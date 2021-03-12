@@ -46,6 +46,7 @@ import { FeedDetailComponent } from './pages/home/feed-detail/feed-detail.compon
 import { CommentDetailComponent } from './pages/home/comment-detail/comment-detail.component';
 import { CreateUserComponent } from './pages/create-user/create-user.component';
 import {MatBadgeModule} from '@angular/material/badge';
+import { CopyContentModalComponent } from './pages/home/copy-content-modal/copy-content-modal.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import {MatBadgeModule} from '@angular/material/badge';
     FeedDetailComponent,
     CommentDetailComponent,
     CreateUserComponent,
+    CopyContentModalComponent,
   ],
     imports: [
         BrowserModule,
