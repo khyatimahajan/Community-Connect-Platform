@@ -136,4 +136,8 @@ export class FeedItemComponent implements OnInit {
             verticalPosition: 'top',
         });
     }
+
+    copyContent(feed: Feed) {
+        this.openSnackBar('Work in Progress to copy stuff');
+    }
 }

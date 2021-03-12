@@ -18,6 +18,10 @@
                         </div>
                     </div>
                     <div class="time-stuff">
+                        <button *ngIf="feed.author.user_handle === 'news_node'" (click)="copyContent(feed)"
+                                mat-stroked-button color="warn"
+                                style="background-color: white; margin-right: 0.5em;">Copy Content
+                        </button>
                         {{moment(this.feed.created_at).fromNow()}}
                     </div>
                 </div>
