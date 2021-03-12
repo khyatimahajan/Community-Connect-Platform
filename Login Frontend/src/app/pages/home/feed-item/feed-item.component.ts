@@ -114,17 +114,19 @@ export class FeedItemComponent implements OnInit {
     }
 
     openDetailModal(f: Feed) {
-        const dialogRef = this.dialog.open(FeedDetailComponent, {
-            width: '1200px',
-            data: f._id
-        });
-        dialogRef.afterClosed().subscribe(result => {
-            if (result === 'Load') {
-                this.feedStatusChange.emit(true);
-            } else if (result && result._id) {
-                this.openDetailModal(result);
-            }
-        });
+        if (f.author.user_handle !== 'news_node') {
+            const dialogRef = this.dialog.open(FeedDetailComponent, {
+                width: '1200px',
+                data: f._id
+            });
+            dialogRef.afterClosed().subscribe(result => {
+                if (result === 'Load') {
+                    this.feedStatusChange.emit(true);
+                } else if (result && result._id) {
+                    this.openDetailModal(result);
+                }
+            });
+        }
     }
 
     openSnackBar(message: string) {

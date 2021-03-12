@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <div class="actions">
+        <div class="actions" *ngIf="feed.author.user_handle !== 'news_node'">
             <div class="action-button reply" (click)="showCommentModal(); $event.stopPropagation()">
                 <button
                         mat-icon-button
