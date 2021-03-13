@@ -27,15 +27,21 @@
         <input matInput disabled value="{{signUpData? signUpData.bio : 'Error'}}">
     </mat-form-field>
 
-    <mat-form-field class="card-item">
-        <mat-label>Password</mat-label>
-        <input matInput placeholder="Password" [(ngModel)]="password">
-    </mat-form-field>
+    <div class="flex-it center">
+        <mat-form-field class="card-item">
+            <mat-label>Password</mat-label>
+            <input matInput placeholder="Password" [(ngModel)]="password" [type]="passwordVisible ? 'text' : 'password'">
+        </mat-form-field>
+        <mat-icon class="icon-style" (click)="togglePasswordVisibility()">{{passwordVisible ? "visibility_off" : "visibility"}}</mat-icon>
+    </div>
 
-    <mat-form-field class="card-item">
-        <mat-label>Confirm Password</mat-label>
-        <input matInput placeholder="Confirm Password" [(ngModel)]="cPassword">
-    </mat-form-field>
+    <div class="flex-it center">
+        <mat-form-field class="card-item">
+            <mat-label>Confirm Password</mat-label>
+            <input matInput placeholder="Confirm Password" [(ngModel)]="cPassword" [type]="passwordVisible ? 'text' : 'password'">
+        </mat-form-field>
+        <mat-icon class="hidden" style="opacity: 0">{{passwordVisible ? "visibility_off" : "visibility"}}</mat-icon>
+    </div>
 
     <div class="flex-it center">
         <button

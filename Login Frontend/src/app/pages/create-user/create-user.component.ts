@@ -16,6 +16,7 @@ export class CreateUserComponent implements OnInit {
   imageSrc: string;
   password = '';
   cPassword = '';
+  passwordVisible = false;
 
   constructor(
       private route: ActivatedRoute,
@@ -116,5 +117,9 @@ export class CreateUserComponent implements OnInit {
     }, error => {
       this.openSnackBar(error.error.status);
     });
+  }
+
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
   }
 }
