@@ -33,37 +33,40 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({
       email_id: email_id,
     });
-
     if (!user) {
       res.status(403).send({ status: "Could not find user matching entered email" });
     } else {
-      const validPass = await bcrypt.compare(req.body.password, user.password);
-      if (!validPass) {
-        res.status(401).send({ status: "Wrong password entered" });
-      } else {
-        let notificationCount = await Notifications.find({"outgoing_to": user._id, "seen": false, "incoming_from": { $ne: user._id } }).countDocuments();
-        var response = {
-          id: user._id,
-          user_handle: user.user_handle,
-          bio: user.bio,
-          notification_count: notificationCount || 0,
-          profile_pic: user.profile_pic,
-          group_names: user.group_names
-        };
-        res.status(200).send(response);
+        if (!user.profile_pic) {
+          res.status(401).send({status: "Please create your credentials first"});
+        } else {
+        const validPass = await bcrypt.compare(req.body.password, user.password);
+        if (!validPass) {
+          res.status(401).send({ status: "Wrong password entered" });
+        } else {
+          let notificationCount = await Notifications.find({"outgoing_to": user._id, "seen": false, "incoming_from": { $ne: user._id } }).countDocuments();
+          var response = {
+            id: user._id,
+            user_handle: user.user_handle,
+            bio: user.bio,
+            notification_count: notificationCount || 0,
+            profile_pic: user.profile_pic,
+            group_names: user.group_names
+          };
+          res.status(200).send(response);
 
-        //Logger for user login time
-        let log = new Logger({
-          user_id: user._id,
-          logged_in_at: {
-            server_time: new Date(),
-            user_time: new Date().toLocaleString("en-US", {
-              time_zone: req.body.timezone || "America/New_York",
-            }),
-          },
-        });
-        // Save it to DB
-        log.save();
+          //Logger for user login time
+          let log = new Logger({
+            user_id: user._id,
+            logged_in_at: {
+              server_time: new Date(),
+              user_time: new Date().toLocaleString("en-US", {
+                time_zone: req.body.timezone || "America/New_York",
+              }),
+            },
+          });
+          // Save it to DB
+          log.save();
+        }
       }
     }
   }
@@ -134,7 +137,8 @@ router.post("/feed", async (req, res) => {
     // set conversation visibility
     const con_vis = new ConVis({
       conversation_id: feed.conversation_id,
-      visible_to: [...new Set(user.group_names)]
+      visible_to: [...new Set(user.group_names)],
+      initial_visible_to: [...new Set(user.group_names)]
     });
     let new_con_vis = await con_vis.save();
     feed.conversation_visibility_id = new_con_vis._id;

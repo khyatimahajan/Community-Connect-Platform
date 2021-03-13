@@ -13,6 +13,11 @@ let convisSchema = new schema({
 			type: String,
 		},
 	],
+	initial_visible_to: [
+		{
+			type: String,
+		},
+	],
 });
 
 module.exports = mongoose.model('ConVis', convisSchema);
