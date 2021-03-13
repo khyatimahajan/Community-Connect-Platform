@@ -58,6 +58,7 @@
   .feeds-posts {
     flex: 4;
   }
+  overflow: hidden;
 }
 
 .connections {
@@ -119,4 +120,24 @@
     justify-content: space-between;
     margin-left: 2em;
     margin-right: 2em;
+}
+
+.example-viewport {
+  height: 50em;
+  flex: 1;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.example-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.example-viewport {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.virtual-connection-scroll {
+  height: 60em;
 }

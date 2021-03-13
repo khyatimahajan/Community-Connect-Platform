@@ -19,37 +19,45 @@
     </mat-list>
   </div>
   <div class="feeds">
-    <app-feed-header *ngIf="isSelectedItem == 0" [currentUser]="currentUser" (postAddedStatusChange)="loadPosts()"></app-feed-header>
-    <div *ngIf="isSelectedItem == 0" class="feeds-posts">
-      <div style="margin-top: 1em;">
-        <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
-        <app-feed-item *ngFor="let item of feedList; let i = index" [feed]="item" (feedStatusChange)="loadPosts()"></app-feed-item>
+    <cdk-virtual-scroll-viewport itemSize="40" class="example-viewport">
+      <div style="padding: 8px;">
+        <app-feed-header *ngIf="isSelectedItem == 0" [currentUser]="currentUser" (postAddedStatusChange)="loadPosts()"></app-feed-header>
+        <div *ngIf="isSelectedItem == 0" class="feeds-posts">
+          <div style="margin-top: 1em;">
+            <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+            <div *cdkVirtualFor="let item of feedList;">
+              <app-feed-item [feed]="item" (feedStatusChange)="loadPosts()"></app-feed-item>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div *ngIf="isSelectedItem == 1">
-      <app-profile></app-profile>
-    </div>
-    <div *ngIf="isSelectedItem == 2">
-      <app-notification></app-notification>
-    </div>
-    <div *ngIf="isSelectedItem == -1">
-      <app-connections [userProfileShort]="this.selectedUserProfile"></app-connections>
-    </div>
+      <div *ngIf="isSelectedItem == 1" style="padding: 8px;">
+        <app-profile></app-profile>
+      </div>
+      <div *ngIf="isSelectedItem == 2" style="padding: 8px;">
+        <app-notification></app-notification>
+      </div>
+      <div *ngIf="isSelectedItem == -1" style="padding: 8px;">
+        <app-connections [userProfileShort]="this.selectedUserProfile"></app-connections>
+      </div>
+    </cdk-virtual-scroll-viewport>
   </div>
   <div class="connections">
     <div class="sidebar">
       <div class="title">Connections</div>
-      <mat-list class="sidebar-container">
-        <mat-list-item
-          *ngFor="let user of connectionList"
-          class="connections-item"
-          (click)="getUserProfile(user)"
-        >
-          <img [src]="user.profile_pic" alt="Image Source" class="icon-image">
-          <div style="margin-left: 1.5em;">{{ user.user_handle }}</div>
-          <mat-divider></mat-divider>
-        </mat-list-item>
-      </mat-list>
+      <cdk-virtual-scroll-viewport itemSize="30" class="virtual-connection-scroll">
+        <mat-list class="sidebar-container">
+          <mat-list-item
+            *cdkVirtualFor="let user of connectionList"
+            class="connections-item"
+            (click)="getUserProfile(user)"
+          >
+            <img [src]="user.profile_pic" alt="Image Source" class="icon-image">
+            <div style="margin-left: 1.5em;">{{ user.user_handle }}</div>
+            <mat-divider></mat-divider>
+          </mat-list-item>
+        </mat-list>
+      </cdk-virtual-scroll-viewport>
     </div>
   </div>
 </div>

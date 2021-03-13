@@ -48,6 +48,8 @@ import { CreateUserComponent } from './pages/create-user/create-user.component';
 import {MatBadgeModule} from '@angular/material/badge';
 import { CopyContentModalComponent } from './pages/home/copy-content-modal/copy-content-modal.component';
 
+import {ScrollingModule} from '@angular/cdk/scrolling';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -94,6 +96,7 @@ import { CopyContentModalComponent } from './pages/home/copy-content-modal/copy-
         MatSnackBarModule,
         MatProgressSpinnerModule,
         PickerModule,
+        ScrollingModule,
         MatBadgeModule
     ],
   providers: [],
