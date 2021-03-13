@@ -139,5 +139,6 @@
 }
 
 .virtual-connection-scroll {
-  height: 60em;
+  overflow-y: scroll;
+  max-height: 40em;
 }

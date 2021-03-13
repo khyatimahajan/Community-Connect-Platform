@@ -45,10 +45,10 @@
   <div class="connections">
     <div class="sidebar">
       <div class="title">Connections</div>
-      <cdk-virtual-scroll-viewport itemSize="30" class="virtual-connection-scroll">
+      <div class="virtual-connection-scroll">
         <mat-list class="sidebar-container">
           <mat-list-item
-            *cdkVirtualFor="let user of connectionList"
+            *ngFor="let user of connectionList"
             class="connections-item"
             (click)="getUserProfile(user)"
           >
@@ -57,7 +57,7 @@
             <mat-divider></mat-divider>
           </mat-list-item>
         </mat-list>
-      </cdk-virtual-scroll-viewport>
+      </div>
     </div>
   </div>
 </div>
