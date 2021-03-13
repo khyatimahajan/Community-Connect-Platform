@@ -91,7 +91,7 @@
 }
 
 .feed-post {
-    flex: 1;
+  flex: 1;
   display: flex;
 }
 
@@ -125,17 +125,6 @@
 .example-viewport {
   height: 50em;
   flex: 1;
-}
-
-/* Hide scrollbar for Chrome, Safari and Opera */
-.example-viewport::-webkit-scrollbar {
-  display: none;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-.example-viewport {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
 }
 
 .virtual-connection-scroll {
