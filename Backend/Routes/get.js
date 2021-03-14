@@ -113,7 +113,7 @@ router.get("/feeds", async (req, res) => {
       .populate('conversation_visibility_id')
       // TODO! make feed visibility work better
       .populate("user_id", '_id profile_pic user_handle')
-      .limit(100);
+      .limit(250);
 
       let feeddto = [];
       entireFeeds.forEach(feed => {
