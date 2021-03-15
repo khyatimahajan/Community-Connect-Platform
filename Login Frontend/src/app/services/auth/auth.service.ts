@@ -57,6 +57,11 @@ export class AuthService {
      this.currentUser = user;
   }
 
+  setNotificationCount(count: number) {
+    this.currentUser.notification_count = count;
+    sessionStorage.setItem('user', JSON.stringify(this.currentUser));
+  }
+
   setSignUpInfo(user: UserSignupInfo) {
     this.currentUserSignUpInfo = user;
   }
