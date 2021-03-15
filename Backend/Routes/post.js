@@ -249,7 +249,7 @@ router.post("/repost", async (req, res) => {
         let notif = new Notifications({
           incoming_from: user._id,
           outgoing_to: oldFeed.user_id,
-          post_id: parent_id,
+          post_id: newFeed._id,
           activity_type: newFeed.post_type,
           timestamp: Date.now(),
           seen: false,
