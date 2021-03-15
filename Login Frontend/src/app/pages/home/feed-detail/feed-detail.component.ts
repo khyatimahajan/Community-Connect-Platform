@@ -127,7 +127,7 @@ export class FeedDetailComponent implements OnInit {
       dataFeed.created_at = this.feed.parent_post.created_at;
       dataFeed.is_repost = this.feed.is_repost;
       dataFeed.image = this.feed.parent_post.image;
-      dataFeed.author = this.feed.author;
+      dataFeed.author = this.feed.parent_post.author;
     }
     const dialogRef = this.dialog.open(AddQuoteComponent, {
       width: '600px',
