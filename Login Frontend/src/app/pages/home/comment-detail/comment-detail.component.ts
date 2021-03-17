@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Inject, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {AddCommentComponent} from '../add-comment/add-comment.component';
 import {AddQuoteComponent} from '../add-quote/add-quote.component';
 import {Feed} from '../../../model/Feed';
@@ -6,6 +6,7 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog
 import {UserService} from '../../../services/user/user.service';
 import {AuthService} from '../../../services/auth/auth.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatMenuTrigger} from '@angular/material/menu';
 // @ts-ignore
 const moment = require('moment');
 
@@ -20,6 +21,7 @@ export class CommentDetailComponent implements OnInit {
   @Input() showUI: boolean;
   @Output() loadDataEmitter = new EventEmitter<boolean>();
   @Output() loadNewFeedEmitter = new EventEmitter<Feed>();
+  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
   moment = moment;
 
@@ -72,6 +74,7 @@ export class CommentDetailComponent implements OnInit {
   }
 
   repost() {
+    this.trigger.closeMenu();
     let feedID;
     if (this.feed) {
         if (this.feed.is_repost) {
@@ -98,6 +101,7 @@ export class CommentDetailComponent implements OnInit {
   }
 
   openQuoteModal() {
+    this.trigger.closeMenu();
     const dataFeed = this.feed;
     if (this.feed.is_repost) {
       dataFeed._id = this.feed.parent_post._id;

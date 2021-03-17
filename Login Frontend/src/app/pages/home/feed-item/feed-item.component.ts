@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter, ViewChild} from '@angular/core';
 import {Feed} from '../../../model/Feed';
 import {UserService} from '../../../services/user/user.service';
 import {AuthService} from '../../../services/auth/auth.service';
@@ -8,6 +8,7 @@ import {AddQuoteComponent} from '../add-quote/add-quote.component';
 import {FeedDetailComponent} from '../feed-detail/feed-detail.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {CopyContentModalComponent} from '../copy-content-modal/copy-content-modal.component';
+import {MatMenuTrigger} from '@angular/material/menu';
 // @ts-ignore
 const moment = require('moment');
 
@@ -25,7 +26,7 @@ export class FeedItemComponent implements OnInit {
 
     @Input() feed: Feed;
     @Output() feedStatusChange = new EventEmitter<boolean>();
-
+    @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
     moment = moment;
 
     ngOnInit(): void {
@@ -82,6 +83,7 @@ export class FeedItemComponent implements OnInit {
             userId: this.authService.currentUser.id,
             parent_id: feedID
         };
+        this.trigger.closeMenu();
         this.userService.postQuoteOrRepost(body).subscribe(response => {
             if (response) {
                 this.feed.repost_count++;
@@ -93,6 +95,7 @@ export class FeedItemComponent implements OnInit {
     }
 
     openQuoteModal() {
+        this.trigger.closeMenu();
         const dataFeed = this.feed;
         if (this.feed.is_repost) {
             dataFeed._id = this.feed._id;

@@ -1,4 +1,4 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnInit, ViewChild} from '@angular/core';
 import {UserService} from '../../../services/user/user.service';
 import {AuthService} from '../../../services/auth/auth.service';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
@@ -6,6 +6,7 @@ import {Feed} from '../../../model/Feed';
 import {AddCommentComponent} from '../add-comment/add-comment.component';
 import {AddQuoteComponent} from '../add-quote/add-quote.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatMenuTrigger} from '@angular/material/menu';
 // @ts-ignore
 const moment = require('moment');
 
@@ -28,6 +29,7 @@ export class FeedDetailComponent implements OnInit {
   }
 
   moment = moment;
+  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
   ngOnInit(): void {
     this.thisDialogRef.updatePosition({ top: '50px' });
@@ -95,6 +97,7 @@ export class FeedDetailComponent implements OnInit {
   }
 
   repost() {
+    this.trigger.closeMenu();
     let feedID;
     if (this.feed) {
         if (this.feed.is_repost) {
@@ -120,6 +123,7 @@ export class FeedDetailComponent implements OnInit {
   }
 
   openQuoteModal() {
+    this.trigger.closeMenu();
     const dataFeed = this.feed;
     if (this.feed.is_repost) {
       dataFeed._id = this.feed._id;
