@@ -124,10 +124,10 @@ export class FeedItemComponent implements OnInit {
                 data: f._id
             });
             dialogRef.afterClosed().subscribe(result => {
-                if (result === 'Load') {
-                    this.feedStatusChange.emit(true);
-                } else if (result && result._id) {
+                if (result && result._id) {
                     this.openDetailModal(result);
+                } else {
+                    this.feedStatusChange.emit(true);
                 }
             });
         }

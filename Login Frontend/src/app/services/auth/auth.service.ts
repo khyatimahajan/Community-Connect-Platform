@@ -13,7 +13,13 @@ import { UserSignupInfo } from '../../model/UserSignupInfo';
 })
 export class AuthService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    const userStr = sessionStorage.getItem('user');
+    if (userStr) {
+      const userObj = JSON.parse(userStr);
+      this.currentUser = userObj;
+    }
+  }
 
   localLink = 'localhost:3000/api';
   awsLink = 'www.communityconnect.cc:3000/api';

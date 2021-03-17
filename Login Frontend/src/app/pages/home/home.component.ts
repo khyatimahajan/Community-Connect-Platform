@@ -72,7 +72,6 @@ export class HomeComponent implements OnInit {
         this.isSelectedItem = i;
         switch (i) {
             case 0:
-                location.reload();
                 break;
             case 1:
                 break;

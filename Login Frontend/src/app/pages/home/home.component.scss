@@ -58,7 +58,6 @@
   .feeds-posts {
     flex: 4;
   }
-  overflow: hidden;
 }
 
 .connections {
@@ -125,9 +124,4 @@
 .example-viewport {
   height: 50em;
   flex: 1;
-}
-
-.virtual-connection-scroll {
-  overflow-y: scroll;
-  max-height: 90vh;
 }
