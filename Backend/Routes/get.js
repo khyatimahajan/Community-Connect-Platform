@@ -37,7 +37,7 @@ router.get("/notifications", async (req, res) => {
               status = notification.incoming_from.user_handle + ' quoted your post.';
               break;
             case "reply":
-              status = notification.incoming_from.user_handle + ' replied your post.';
+              status = notification.incoming_from.user_handle + ' replied to your post.';
               break;
             case "mention":
               status = 'You were mentioned in ' + notification.incoming_from.user_handle +'\'s post.';
