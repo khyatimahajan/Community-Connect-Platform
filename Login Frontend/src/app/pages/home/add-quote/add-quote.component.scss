@@ -35,3 +35,9 @@
   align-items: stretch;
   justify-content: center;
 }
+
+.emoji-stuff {
+  position: absolute;
+  z-index: 1000;
+  box-shadow: rgba(0, 0, 0, 0.5) 0 3px 8px;
+}

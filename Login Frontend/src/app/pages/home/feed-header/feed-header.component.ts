@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthService} from '../../../services/auth/auth.service';
 import {UserService} from '../../../services/user/user.service';
@@ -36,7 +36,12 @@ export class FeedHeaderComponent implements OnInit {
 
   }
 
+  @HostListener('document:click', ['$event']) onDocumentClick(event) {
+    this.toggled = false;
+  }
+
   addPost() {
+    this.toggled = false;
     if (this.messageStuff.length === 0) {
       this.showError = true;
     } else {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import {Component, OnInit, Inject, HostListener} from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 import {Feed} from '../../../model/Feed';
@@ -30,7 +30,9 @@ export class AddCommentComponent implements OnInit {
   ngOnInit() {
     this.thisDialogRef.updatePosition({ top: '50px' });
   }
-
+  @HostListener('document:click', ['$event']) onDocumentClick(event) {
+    this.toggled = false;
+  }
   onCloseConfirm() {
     if (this.commentStr.length > 0) {
       const body = {

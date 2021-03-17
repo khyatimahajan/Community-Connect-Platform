@@ -29,9 +29,9 @@
             <input style="height: 0; width: 0;" type="file" accept="image/*" (change)="onImagePicked($event)" #file>
             <mat-icon (click)="file.click()" style="margin-right: 1em; cursor: pointer">add_photo_alternate</mat-icon>
             <div>
-                <mat-icon (click)="toggled = !toggled" style="justify-self: center; align-self: center; cursor:pointer;">insert_emoticon</mat-icon>
-                <div  *ngIf="toggled"  class="emoji-stuff">
-                    <emoji-mart (emojiClick)="handleSelection($event)" [darkMode]="false"></emoji-mart>
+                <mat-icon (click)="toggled = !toggled; $event.stopPropagation()" style="justify-self: center; align-self: center; cursor:pointer;">insert_emoticon</mat-icon>
+                <div  *ngIf="toggled"  class="emoji-stuff" (click)="$event.stopPropagation()">
+                    <emoji-mart (emojiClick)="handleSelection($event); $event.stopPropagation()" [darkMode]="false"></emoji-mart>
                 </div>
             </div>
         </div>

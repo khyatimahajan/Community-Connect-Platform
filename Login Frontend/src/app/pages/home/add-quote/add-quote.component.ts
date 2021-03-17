@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, HostListener, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Feed} from '../../../model/Feed';
 import {UserService} from '../../../services/user/user.service';
@@ -17,6 +17,9 @@ export class AddQuoteComponent implements OnInit {
   toggled = false;
   imageObj: File;
   imageUrl = '';
+  @HostListener('document:click', ['$event']) onDocumentClick(event) {
+    this.toggled = false;
+  }
 
   constructor(
       public thisDialogRef: MatDialogRef<AddQuoteComponent>,
