@@ -44,7 +44,6 @@ router.get("/notifications", async (req, res) => {
               break;
             case "moderation_notice":
               status = 'Your post was removed 1) based on your request OR 2) in accordance with community rules.'
-              // TODO! should we add that others complained?
               break;
             default:
               status = "error";

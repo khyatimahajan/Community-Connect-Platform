@@ -182,8 +182,6 @@ router.post("/repost", async (req, res) => {
   });
   user_mentions = [...new Set(user_mentions)];
 
-  // TODO! add notif for user mention
-
   const user = await User.findById(req.body.userId);
   groups = user.group_names;
   var parent_id = req.body.parent_id;
