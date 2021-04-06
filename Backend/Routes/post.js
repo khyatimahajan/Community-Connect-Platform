@@ -95,154 +95,160 @@ router.post("/logout", async (req, res) => {
 });
 
 router.post("/feed", async (req, res) => {
-  let user_mentions = [];
-  let post_body_parts = req.body.body.split(" ");
-  post_body_parts.forEach((part) => {
-    if (part.startsWith("@")) {
-      part = part.split("");
-      part.shift();
-      user_mentions.push(part.join("").trim());
-    }
-  });
-  user_mentions = [...new Set(user_mentions)];
-
-  // add support for notifs based on mentions
-
   const user = await User.findById(req.body.userId);
-  groups = user.group_names;
+  if (!user.isAdmin) {
 
-  // Create new feed with type 'tweet'
-  let feed = {
-    user_id: user._id,
-    body: urlify(req.body.body),
-    created_at: Date.now(),
-    liked_by: [],
-    reposted_by: [],
-    like_count: 0,
-    repost_count: 0,
-    reply_count: 0,
-    quote_count: 0,
-    post_type: "post",
-    parent_id: null,
-    conversation_id: null,
-    mentions: user_mentions,
-    image: req.body.image ? req.body.image : null,
-  };
-
-  const newFeed = new Feeds(feed);
-  try {
-    // Save to DB, set conversation_id based on _id, then resave feed
-    let feed = await newFeed.save();
-    feed.conversation_id = feed._id;
-    // set conversation visibility
-    const con_vis = new ConVis({
-      conversation_id: feed.conversation_id,
-      visible_to: [...new Set(user.group_names)],
-      initial_visible_to: [...new Set(user.group_names)]
-    });
-    let new_con_vis = await con_vis.save();
-    feed.conversation_visibility_id = new_con_vis._id;
-    await feed.save();
-    try {
-      // notifications for mentions
-      var mention;
-      for (mention of user_mentions) {
-        let mentioned_user = await User.findOne({user_handle: mention});
-        let notif = new Notifications({
-        incoming_from: user._id,
-        outgoing_to: mentioned_user._id,
-        post_id: feed._id, 
-        activity_type: "mention",
-        timestamp: Date.now(),
-        seen: false
-        });
-        // save to DB
-        notif.save();
+    let user_mentions = [];
+    let post_body_parts = req.body.body.split(" ");
+    post_body_parts.forEach((part) => {
+      if (part.startsWith("@")) {
+        part = part.split("");
+        part.shift();
+        user_mentions.push(part.join("").trim());
       }
+    });
+    user_mentions = [...new Set(user_mentions)];
+
+    // add support for notifs based on mentions
+
+    groups = user.group_names;
+
+    // Create new feed with type 'tweet'
+    let feed = {
+      user_id: user._id,
+      body: urlify(req.body.body),
+      created_at: Date.now(),
+      liked_by: [],
+      reposted_by: [],
+      like_count: 0,
+      repost_count: 0,
+      reply_count: 0,
+      quote_count: 0,
+      post_type: "post",
+      parent_id: null,
+      conversation_id: null,
+      mentions: user_mentions,
+      image: req.body.image ? req.body.image : null,
+    };
+
+    const newFeed = new Feeds(feed);
+    try {
+      // Save to DB, set conversation_id based on _id, then resave feed
+      let feed = await newFeed.save();
+      feed.conversation_id = feed._id;
+      // set conversation visibility
+      const con_vis = new ConVis({
+        conversation_id: feed.conversation_id,
+        visible_to: [...new Set(user.group_names)],
+        initial_visible_to: [...new Set(user.group_names)]
+      });
+      let new_con_vis = await con_vis.save();
+      feed.conversation_visibility_id = new_con_vis._id;
+      await feed.save();
+      try {
+        // notifications for mentions
+        var mention;
+        for (mention of user_mentions) {
+          let mentioned_user = await User.findOne({user_handle: mention});
+          let notif = new Notifications({
+            incoming_from: user._id,
+            outgoing_to: mentioned_user._id,
+            post_id: feed._id,
+            activity_type: "mention",
+            timestamp: Date.now(),
+            seen: false
+          });
+          // save to DB
+          notif.save();
+        }
+      } catch (err) {
+        console.log("Could not save notification for mentions to DB for", feed._id);
+      }
+      // send status
+      res.status(201).send({status: "Created new post successfully!"});
     } catch (err) {
-      console.log("Could not save notification for mentions to DB for", feed._id);
+      res.status(400).send({status: "Could not save post to DB"});
     }
-    // send status
-    res.status(201).send({status: "Created new post successfully!"});
-  } catch (err) {
-    res.status(400).send({status:"Could not save post to DB"});
+  } else {
+    res.status(401).send({status: "You are admin. You cannot post."});
   }
 });
 
 router.post("/repost", async (req, res) => {
-  let user_mentions = [];
-  const body_parts = req.body.body? req.body.body : ""
-  let post_body_parts = body_parts.split(" ");
-  post_body_parts.forEach((part) => {
-    if (part.startsWith("@")) {
-      part = part.split("");
-      part.shift();
-      user_mentions.push(part.join("").trim());
-    }
-  });
-  user_mentions = [...new Set(user_mentions)];
-
   const user = await User.findById(req.body.userId);
-  groups = user.group_names;
-  var parent_id = req.body.parent_id;
+  if (!user.isAdmin) {
 
-  // Create new feed
-  let feed = {
-    user_id: user._id,
-    body: req.body.body? urlify(req.body.body) : null,
-    created_at: Date.now(),
-    liked_by: [],
-    reposted_by: [],
-    like_count: 0,
-    repost_count: 0,
-    reply_count: 0,
-    quote_count: 0,
-    post_type: parent_id && req.body.body ? "quote" : parent_id? "repost" : "error",
-    parent_id: parent_id ? parent_id : null,
-    conversation_id: null,
-    mentions: user_mentions,
-    replies: [],
-    image: req.body.image ? req.body.image : null,
-  };
+    let user_mentions = [];
+    const body_parts = req.body.body ? req.body.body : ""
+    let post_body_parts = body_parts.split(" ");
+    post_body_parts.forEach((part) => {
+      if (part.startsWith("@")) {
+        part = part.split("");
+        part.shift();
+        user_mentions.push(part.join("").trim());
+      }
+    });
+    user_mentions = [...new Set(user_mentions)];
 
-  if (feed.post_type === "error") {
-    res.status(400).send({status: "Invalid post request"});
-  } else {
-    const newFeed = new Feeds(feed);
-    var oldFeed = await Feeds.findById(parent_id);
-    try {
-      // Save to DB
-      // let feed = await newFeed.save();
-      newFeed.conversation_id = oldFeed.conversation_id;
-      if (req.body.body) {
+    groups = user.group_names;
+    var parent_id = req.body.parent_id;
+
+    // Create new feed
+    let feed = {
+      user_id: user._id,
+      body: req.body.body ? urlify(req.body.body) : null,
+      created_at: Date.now(),
+      liked_by: [],
+      reposted_by: [],
+      like_count: 0,
+      repost_count: 0,
+      reply_count: 0,
+      quote_count: 0,
+      post_type: parent_id && req.body.body ? "quote" : parent_id ? "repost" : "error",
+      parent_id: parent_id ? parent_id : null,
+      conversation_id: null,
+      mentions: user_mentions,
+      replies: [],
+      image: req.body.image ? req.body.image : null,
+    };
+
+    if (feed.post_type === "error") {
+      res.status(400).send({status: "Invalid post request"});
+    } else {
+      const newFeed = new Feeds(feed);
+      var oldFeed = await Feeds.findById(parent_id);
+      try {
+        // Save to DB
+        // let feed = await newFeed.save();
+        newFeed.conversation_id = oldFeed.conversation_id;
+        if (req.body.body) {
           oldFeed.quote_count = oldFeed.quote_count + 1;
-      } else {
+        } else {
           oldFeed.repost_count = oldFeed.repost_count + 1;
           if (!oldFeed.reposted_by.includes(user._id)) {
             oldFeed.reposted_by.push(user._id);
           }
+        }
+        const visibility = await ConVis.findOne({conversation_id: oldFeed.conversation_id});
+        visibility.visible_to = [...new Set([...user.group_names, ...visibility.visible_to])];
+        let new_visibility = await visibility.save();
+        newFeed.conversation_visibility_id = new_visibility._id;
+        await newFeed.save();
+        await oldFeed.save();
+        if (newFeed.post_type === "repost") {
+          res.status(201).send({status: "Created new repost successfully!"});
+        } else if (newFeed.post_type === "quote") {
+          res.status(201).send({status: "Created new quote successfully!"});
+        }
+      } catch (err) {
+        // let error = new Error({"Something went wrong"});
+        if (newFeed.post_type === "repost") {
+          res.status(400).send({status: "Could not save repost to DB"});
+        } else if (newFeed.post_type === "quote") {
+          res.status(400).send({status: "Could not save quote to DB"});
+        }
       }
-      const visibility = await ConVis.findOne({conversation_id: oldFeed.conversation_id});
-      visibility.visible_to = [...new Set([...user.group_names, ...visibility.visible_to])];
-      let new_visibility = await visibility.save();
-      newFeed.conversation_visibility_id = new_visibility._id;
-      await newFeed.save();
-      await oldFeed.save();
-      if (newFeed.post_type === "repost") {
-        res.status(201).send({status: "Created new repost successfully!"});
-      }
-      else if (newFeed.post_type === "quote") {
-       res.status(201).send({status: "Created new quote successfully!"}); 
-      }
-    } catch (err) {
-      // let error = new Error({"Something went wrong"});
-      if (newFeed.post_type === "repost") {
-        res.status(400).send({status: "Could not save repost to DB"});
-      } else if (newFeed.post_type === "quote") {
-        res.status(400).send({status: "Could not save quote to DB"});
-      }
-    }
-    try {
+      try {
         // create notification for receiver
         let notif = new Notifications({
           incoming_from: user._id,
@@ -260,23 +266,27 @@ router.post("/repost", async (req, res) => {
         for (mention of user_mentions) {
           let mentioned_user = await User.findOne({user_handle: mention});
           let notif = new Notifications({
-          incoming_from: user._id,
-          outgoing_to: mentioned_user._id,
-          post_id: newFeed._id, 
-          activity_type: "mention",
-          timestamp: Date.now(),
-          seen: false
+            incoming_from: user._id,
+            outgoing_to: mentioned_user._id,
+            post_id: newFeed._id,
+            activity_type: "mention",
+            timestamp: Date.now(),
+            seen: false
           });
           // save to DB
           notif.save();
-        };
-      } catch(err) {
+        }
+        ;
+      } catch (err) {
         if (newFeed.post_type === "repost") {
           console.log("Could not save notification for repost to DB for", oldFeed._id);
         } else if (newFeed.post_type === "quote") {
           console.log("Could not save notification for quote to DB", oldFeed._id);
         }
       }
+    }
+  } else {
+    res.status(401).send({status: "You are admin. You cannot repost or quote."});
   }
 });
 

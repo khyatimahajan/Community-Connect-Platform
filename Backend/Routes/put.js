@@ -14,141 +14,158 @@ const upload = require('./../middleware/file-uploads');
 
 router.put("/like", async (req, res) => {
   const user = await User.findById(req.body.userId);
-  const feed = await Feeds.findById(req.body.feedId);
-  const visibility = await ConVis.findOne({conversation_id: feed.conversation_id});
+  if (!user.isAdmin) {
+    const feed = await Feeds.findById(req.body.feedId);
+    const visibility = await ConVis.findOne({conversation_id: feed.conversation_id});
 
-  let union = [...new Set([...user.group_names, ...visibility.visible_to])];
-  try {
-    visibility.visible_to = union;
-    visibility.save();
-  } catch (err) {
-    console.log("could not update post visibility for", feed._id)
-  }
-
-  var islikepost = false;
-  try {
-    if (feed.liked_by.indexOf(user._id) >= 0) {
-      feed.like_count = feed.like_count - 1;
-      var index = feed.liked_by.indexOf(user._id);
-      feed.liked_by.splice(index, 1);
-    } else {
-      feed.like_count = feed.like_count + 1;
-      islikepost = true;
-      feed.liked_by.push(user._id);
-    }
-    await feed.save();
-    res.status(200).send({status: "Post liked successfully!"});
-  } catch (err) {
-    res.status(400).send({ status: "Could not like post" });
-  }
-  if (islikepost) {
+    let union = [...new Set([...user.group_names, ...visibility.visible_to])];
     try {
-      let notifexists = await Notifications.findOne({"incoming_from": user._id, "outgoing_to": feed.user_id, "post_id": feed._id, "seen": false, "activity_type": "like"});
-      if (!notifexists) {
-        let str_fromuser = user.user_handle;
-        let notif = new Notifications({
-          incoming_from: user._id,
-          outgoing_to: feed.user_id,
-          post_id: feed._id,
-          seen: false,
-          activity_type: "like",
-          timestamp: Date.now()
-        });
-        // save to DB
-        notif.save();
-      }
-    } catch(err) {
-      console.log("Could not save notification for like to DB for", feed._id);
+      visibility.visible_to = union;
+      visibility.save();
+    } catch (err) {
+      console.log("could not update post visibility for", feed._id)
     }
+
+    var islikepost = false;
+    try {
+      if (feed.liked_by.indexOf(user._id) >= 0) {
+        feed.like_count = feed.like_count - 1;
+        var index = feed.liked_by.indexOf(user._id);
+        feed.liked_by.splice(index, 1);
+      } else {
+        feed.like_count = feed.like_count + 1;
+        islikepost = true;
+        feed.liked_by.push(user._id);
+      }
+      await feed.save();
+      res.status(200).send({status: "Post liked successfully!"});
+    } catch (err) {
+      res.status(400).send({status: "Could not like post"});
+    }
+    if (islikepost) {
+      try {
+        let notifexists = await Notifications.findOne({
+          "incoming_from": user._id,
+          "outgoing_to": feed.user_id,
+          "post_id": feed._id,
+          "seen": false,
+          "activity_type": "like"
+        });
+        if (!notifexists) {
+          let str_fromuser = user.user_handle;
+          let notif = new Notifications({
+            incoming_from: user._id,
+            outgoing_to: feed.user_id,
+            post_id: feed._id,
+            seen: false,
+            activity_type: "like",
+            timestamp: Date.now()
+          });
+          // save to DB
+          notif.save();
+        }
+      } catch (err) {
+        console.log("Could not save notification for like to DB for", feed._id);
+      }
+    }
+  } else {
+    res.status(401).send({status: "You are admin. You cannot like posts."});
   }
 });
 
 router.put("/comment", async (req, res) => {
-  let user_mentions = [];
-  let post_body_parts = req.body.body.split(" ");
-  post_body_parts.forEach((part) => {
-    if (part.startsWith("@")) {
-      part = part.split("");
-      part.shift();
-      user_mentions.push(part.join("").trim());
-    }
-  });
-  user_mentions = [...new Set(user_mentions)];
+  const user = await User.findById(req.body.userId);
+  if (!user.isAdmin) {
+    let user_mentions = [];
+    let post_body_parts = req.body.body.split(" ");
+    post_body_parts.forEach((part) => {
+      if (part.startsWith("@")) {
+        part = part.split("");
+        part.shift();
+        user_mentions.push(part.join("").trim());
+      }
+    });
+    user_mentions = [...new Set(user_mentions)];
 
-  var parent_id = req.body.parent_id;
-  let feed = {
-    user_id: req.body.userId,
-    body: urlify(req.body.body),
-    created_at: Date.now(),
-    liked_by: [],
-    reposted_by: [],
-    like_count: 0,
-    repost_count: 0,
-    reply_count: 0,
-    quote_count: 0,
-    post_type: parent_id ? "reply" : "post",
-    parent_id: parent_id ? parent_id : null,
-    conversation_id: null,
-    mentions: user_mentions,
-    image: req.body.image ? req.body.image : null,
-  };
-  const newFeed = new Feeds(feed);
-  var oldFeed = await Feeds.findById(parent_id);
-  try {
-    // Save to DB
-    let feed = await newFeed.save();
-    feed.conversation_id = oldFeed.conversation_id;
-    oldFeed.replies.push(feed._id);
-    oldFeed.reply_count = oldFeed.reply_count + 1;
-    let parent_id = oldFeed._id;
-    const visibility = await ConVis.findOne({conversation_id: oldFeed.conversation_id});
-    const user = await User.findById(req.body.userId);
-    let union = [...new Set([...user.group_names, ...visibility.visible_to])];
+    var parent_id = req.body.parent_id;
+    let feed = {
+      user_id: req.body.userId,
+      body: urlify(req.body.body),
+      created_at: Date.now(),
+      liked_by: [],
+      reposted_by: [],
+      like_count: 0,
+      repost_count: 0,
+      reply_count: 0,
+      quote_count: 0,
+      post_type: parent_id ? "reply" : "post",
+      parent_id: parent_id ? parent_id : null,
+      conversation_id: null,
+      mentions: user_mentions,
+      image: req.body.image ? req.body.image : null,
+    };
+    const newFeed = new Feeds(feed);
+    var oldFeed = await Feeds.findById(parent_id);
     try {
-      visibility.visible_to = union;
-      let new_visibility = await visibility.save();
-      feed.conversation_visibility_id = new_visibility._id;
-    } catch (err) {
-      console.log("could not update post visibility for", feed._id)
-    }
-    // Update to feed
-    try {
-      // create notification for receiver
-      let notif = new Notifications({
-        incoming_from: user._id,
-        outgoing_to: oldFeed.user_id,
-        post_id: parent_id, 
-        activity_type: "reply",
-        timestamp: Date.now(),
-        seen: false
-      });
-      // save to DB
-      notif.save();
-
-      // notifications for mentions
-      var mention;
-      for (mention of user_mentions) {
-        let mentioned_user = await User.findOne({user_handle: mention});
+      // Save to DB
+      let feed = await newFeed.save();
+      feed.conversation_id = oldFeed.conversation_id;
+      oldFeed.replies.push(feed._id);
+      oldFeed.reply_count = oldFeed.reply_count + 1;
+      let parent_id = oldFeed._id;
+      const visibility = await ConVis.findOne({conversation_id: oldFeed.conversation_id});
+      let union = [...new Set([...user.group_names, ...visibility.visible_to])];
+      try {
+        visibility.visible_to = union;
+        let new_visibility = await visibility.save();
+        feed.conversation_visibility_id = new_visibility._id;
+      } catch (err) {
+        console.log("could not update post visibility for", feed._id)
+      }
+      // Update to feed
+      try {
+        // create notification for receiver
         let notif = new Notifications({
-        incoming_from: user._id,
-        outgoing_to: mentioned_user._id,
-        post_id: feed._id, 
-        activity_type: "mention",
-        timestamp: Date.now(),
-        seen: false
+          incoming_from: user._id,
+          outgoing_to: oldFeed.user_id,
+          post_id: parent_id,
+          activity_type: "reply",
+          timestamp: Date.now(),
+          seen: false
         });
         // save to DB
         notif.save();
-      };
-    } catch(err) {
-      console.log("Could not save notification for comment to DB for", oldFeed._id);
-    };
-    await feed.save();
-    await oldFeed.save();
-    res.status(201).send({status: "Created new comment successfully!"});
-  } catch (err) {
-    res.status(400).send({status: "Could not post comment"});
-  };
+
+        // notifications for mentions
+        var mention;
+        for (mention of user_mentions) {
+          let mentioned_user = await User.findOne({user_handle: mention});
+          let notif = new Notifications({
+            incoming_from: user._id,
+            outgoing_to: mentioned_user._id,
+            post_id: feed._id,
+            activity_type: "mention",
+            timestamp: Date.now(),
+            seen: false
+          });
+          // save to DB
+          notif.save();
+        }
+        ;
+      } catch (err) {
+        console.log("Could not save notification for comment to DB for", oldFeed._id);
+      }
+      ;
+      await feed.save();
+      await oldFeed.save();
+      res.status(201).send({status: "Created new comment successfully!"});
+    } catch (err) {
+      res.status(400).send({status: "Could not post comment"});
+    }
+    ;
+  } else {
+    res.status(401).send({status: "You are admin. You cannot like reply on posts."});
+  }
 });
 
 router.put("/mark-one-notif-as-read", async(req, res) => {
