@@ -1,4 +1,4 @@
-<div>
+<div style="max-height: 500px; overflow: scroll;">
     <h2>Replying to {{data.author.user_handle}}</h2>
     <app-feed-item-minimized [authorImage]="data.author.profile_pic" [authorName]="data.author.user_handle"
                              [body]="data.body" [image]="data.image"
@@ -7,7 +7,7 @@
     ></app-feed-item-minimized>
     <div class="comment-area">
         <div class="middle-image" >
-            <img style="max-width: 400px; max-height: 300px;" *ngIf="imageUrl && imageUrl.length > 0" src="{{ imageUrl }}"/>
+            <img style="max-width: 100px; max-height: 100px;" *ngIf="imageUrl && imageUrl.length > 0" src="{{ imageUrl }}"/>
         </div>
         <mat-form-field
                 style="flex: 1;"
