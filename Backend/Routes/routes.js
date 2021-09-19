@@ -552,29 +552,7 @@ router.get("/connections", async (req, res) => {
   }
 });
 
-router.get("/get-notifications", async (req, res) => {
-  const userId = req.header("userId");
-  const user = await User.findById(userId);
-  if (user) {
-    try {
-      const notifs = await Notifications.find({"outconn_id": user._id, "inconn_id": { $ne: user._id }}, null, {sort: { "timestamp" : "descending" , "seen": "descending" }});
 
-      // let response = {};
-      // if (notifs) {
-      //   response["number_of_notifs"] = notifs.length;
-      //   response["notifications"] = notifs;
-      // } else {
-      //   response["number_of_notifs"] = 0;
-      //   response["notifications"] = [];
-      // }
-      res.status(200).send(notifs)
-    } catch(err) {
-      res.status(500).send({status: "Internal server error"})
-    }
-  } else {
-    res.status(404).send({status: "No such user exists"})
-  }
-});
 
 router.put("/mark-notif-as-read", async(req, res) => {
   const user = await User.findById(req.header("userId"));
@@ -754,7 +732,8 @@ router.get("/signup", async (req, res) => {
     res.status(404).send({ status: "Could not find any user matching that userid" });
   } else {
     if (user.password && user.profile_pic) {
-      res.status(403).send({ status: "Access code has already been redeemed"});
+      res.status(200).send(user);
+      // res.status(403).send({ status: "Access code has already been redeemed"});
     } else {
       res.status(200).send(user);
     }

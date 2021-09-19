@@ -1,0 +1,43 @@
+
+
+.comment-button {
+  background-color: #1da1f2;
+  color: white
+}
+
+.comment-button:hover {
+  background-color: #007bff;
+}
+
+.comment-button:disabled {
+  background-color: rgb(247, 247, 247);
+  color: white
+}
+
+.cancel-button {
+  color: black
+}
+
+.separated-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.comment-area {
+  display: flex;
+  justify-content: stretch;
+  margin-top: 0.5em;
+}
+
+.middle-image {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.emoji-stuff {
+  position: absolute;
+  z-index: 1000;
+  box-shadow: rgba(0, 0, 0, 0.5) 0 3px 8px;
+}

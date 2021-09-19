@@ -1,0 +1,46 @@
+<div style="max-height: 500px; overflow: scroll;">
+    <h2>Replying to {{data.author.user_handle}}</h2>
+    <app-feed-item-minimized [authorImage]="data.author.profile_pic" [authorName]="data.author.user_handle"
+                             [body]="data.body" [image]="data.image"
+                             [created_at]="data.created_at"
+
+    ></app-feed-item-minimized>
+    <div class="comment-area">
+        <div class="middle-image" >
+            <img style="max-width: 100px; max-height: 100px;" *ngIf="imageUrl && imageUrl.length > 0" src="{{ imageUrl }}"/>
+        </div>
+        <mat-form-field
+                style="flex: 1;"
+        >
+            <mat-label>Add Reply</mat-label>
+            <textarea
+                    [(ngModel)]='commentStr'
+                    #message
+                    matInput
+                    placeholder="Ex. I am feeling..."
+                    maxlength="280"
+                    rows="5"
+            ></textarea>
+            <mat-hint align="end"> {{ message.value.length }} / 280</mat-hint>
+        </mat-form-field>
+    </div>
+    <mat-dialog-actions class="separated-buttons">
+        <div style="display: flex">
+            <input style="height: 0; width: 0;" type="file" accept="image/*" (change)="onImagePicked($event)" #file>
+            <mat-icon (click)="file.click()" style="margin-right: 1em; cursor: pointer">add_photo_alternate</mat-icon>
+            <div>
+                <mat-icon (click)="toggled = !toggled; $event.stopPropagation()" style="justify-self: center; align-self: center; cursor:pointer;">insert_emoticon</mat-icon>
+                <div  *ngIf="toggled"  class="emoji-stuff" (click)="$event.stopPropagation()">
+                    <emoji-mart (emojiClick)="handleSelection($event); $event.stopPropagation()" [darkMode]="false"></emoji-mart>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <button class="comment-button" mat-button (click)="onCloseConfirm()"
+                    [disabled]="buttonDisabled || commentStr? commentStr.length === 0: true">CONFIRM
+            </button>
+            <button class="cancel-button" mat-button (click)="onCloseCancel()">CANCEL</button>
+        </div>
+    </mat-dialog-actions>
+</div>

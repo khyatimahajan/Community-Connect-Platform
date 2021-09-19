@@ -1,0 +1,28 @@
+.notifications {
+  margin-top: 2em;
+}
+
+.example-card {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.example-card:hover {
+  background-color: rgb(230, 237, 245);
+  cursor: pointer;
+}
+
+.seen {
+  background-color: #fff;
+}
+
+.notSeen {
+  background-color: rgb(237, 245, 253);
+}
+
+.flex-it {
+  display: flex;
+  justify-content: space-between;
+}

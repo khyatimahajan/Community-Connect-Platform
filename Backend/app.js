@@ -1,4 +1,5 @@
 const express = require("express");
+const helmet = require("helmet");
 const dotenv = require('dotenv');
 dotenv.config();
 require('dotenv').config({ path: 'final-env-file.env' });
@@ -6,10 +7,14 @@ require('dotenv').config({ path: 'final-env-file.env' });
 const _ = require("lodash");
 const bodyParser = require("body-parser");
 var cors = require("cors");
-const uri = "mongodb://localhost:27017/27017";
+const uri = "mongodb://localhost:27017/test";
 const mongoose = require("mongoose");
 const port = 3000;
 const routes = require("./Routes/routes");
+const getRoutes = require("./Routes/get");
+const postRoutes = require("./Routes/post");
+const putRoutes = require("./Routes/put");
+// const userRoutes = require("./Routes/user");
 
 mongoose
   .connect(uri, {
@@ -18,10 +23,14 @@ mongoose
   })
   .then(() => {
     const app = express();
+    app.use(helmet.hidePoweredBy());
     app.use(bodyParser.json({limit: '50mb'}));
     app.use(cors());
 
-    app.use("/api", routes);
+    app.use("/api/get", getRoutes);
+    app.use("/api/post", postRoutes);
+    app.use("/api/put", putRoutes);
+    // app.use("/api", routes);
     app.get("/server/status", (req, res) => {
       res.status(200).send("Server OK");
     });

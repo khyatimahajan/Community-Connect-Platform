@@ -1,0 +1,90 @@
+<div class="tweet-container">
+    <mat-card class="tweet-card" (click)="openDetailModal(feed)">
+        <div class="tweet-info">
+            <div *ngIf="!feed.is_repost" class="profile-pic">
+                <img *ngIf="feed.author.profile_pic" [src]="feed.author.profile_pic" alt="Image Source"
+                     class="icon-image">
+                <mat-icon *ngIf="!feed.author.profile_pic">face</mat-icon>
+            </div>
+            <div class="tweet">
+                <div class="name">
+                    <div class="actual-name ">
+                        <div *ngIf="feed.is_repost" style="font-size: 1em; font-weight: normal; margin-left: 2em; display: flex; align-items: center">
+                            <mat-icon style="font-size: 1em; height: 1em;">repeat</mat-icon>
+                            {{feed.author.user_handle}} reposted
+                        </div>
+                        <div *ngIf="!feed.is_repost">
+                            {{feed.author.user_handle}}
+                        </div>
+                    </div>
+                    <div class="time-stuff">
+                        <button *ngIf="feed.author.user_handle === 'news_node'" (click)="copyContent(feed)"
+                                mat-stroked-button color="warn"
+                                style="background-color: white; margin-right: 0.5em;">Copy Content
+                        </button>
+                        {{moment(this.feed.created_at).fromNow()}}
+                    </div>
+                </div>
+                <div class="text" [innerHtml]="feed.body"></div>
+                <img class="image" *ngIf="feed.image != null && feed.image != 'null'" [src]="feed.image" alt="Image Source">
+                <div style="margin-top: 1em;">
+                    <app-feed-item-minimized
+                            *ngIf="feed.parent_post"
+                            [authorImage]="feed.parent_post.author.profile_pic"
+                            [authorName]="feed.parent_post.author.user_handle"
+                            [body]="feed.parent_post.body" [image]="feed.parent_post.image"
+                            [created_at]="feed.parent_post.created_at"
+                            (click)="$event.stopPropagation()">
+                    </app-feed-item-minimized>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="actions" *ngIf="feed.author.user_handle !== 'news_node'">
+            <div class="action-button reply" (click)="showCommentModal(); $event.stopPropagation()">
+                <button
+                        mat-icon-button
+                        class="reply-button"
+                        aria-label="Example icon button with a home icon"
+                >
+                    <mat-icon>insert_comment</mat-icon>
+                </button>
+                <div>{{feed.reply_count}}</div>
+            </div>
+            <div class="action-button repost" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()" [ngClass]="{ reposted: feed.has_reposted }">
+                <button
+                        mat-icon-button
+                        class="repost-button"
+                        aria-label="Example icon button with a home icon"
+                >
+                    <mat-icon>repeat</mat-icon>
+                </button>
+                <div>{{feed.repost_count + feed.quote_count}}</div>
+            </div>
+            <div class="action-button like" [ngClass]="{ liked: feed.has_liked }"
+                 (click)="toggleLike(); $event.stopPropagation()">
+                <button
+                        mat-icon-button
+                        class="like-button"
+                        aria-label="Example icon button with a home icon"
+                >
+                    <mat-icon>favorite_border</mat-icon>
+                </button>
+                <div>{{feed.like_count}}</div>
+            </div>
+        </div>
+    </mat-card>
+</div>
+
+
+<mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="repost(); $event.stopPropagation()">
+        <mat-icon>repeat</mat-icon>
+        <span>Repost</span>
+    </button>
+    <button mat-menu-item (click)="openQuoteModal(); $event.stopPropagation()">
+        <mat-icon>create</mat-icon>
+        <span>Quote</span>
+    </button>
+</mat-menu>

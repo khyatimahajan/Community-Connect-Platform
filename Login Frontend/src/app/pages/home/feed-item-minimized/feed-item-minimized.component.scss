@@ -1,0 +1,51 @@
+.tweet-card {
+  // box-shadow: rgba(0, 0, 0, 0.5) 0 3px 8px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  margin-left: 0.75em;
+  border: 1px solid rgb(215,215,215);
+  border-radius: 0.25em;
+}
+
+.icon-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.tweet-info {
+  margin-top: 0.5em;
+  margin-bottom: 2em;
+  display: flex;
+  .profile-pic {
+    min-width: 50px;
+    min-height: 50px;
+    margin-left: 1em;
+    margin-right: 0.5em;
+  }
+  .tweet {
+    flex: 1;
+    margin-right: 0.5em;
+    display: block;
+    .name {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      .actual-name {
+        font-weight: bold;
+      }
+      .time-stuff {
+        font-size: 12px;
+        color: rgb(111, 111, 111);
+      }
+    }
+    .text {
+      min-width: 60px;
+    }
+    .image {
+      max-width: 20em;
+      max-height: 20em;
+      margin-top: 1em;
+    }
+  }
+}

@@ -8,9 +8,6 @@ let groupSchema = new schema({
 		type: String,
 		required: true,
 	},
-	group_id: {
-		type: String,
-	},
 	group_desc: {
 		type: String,
 	},
