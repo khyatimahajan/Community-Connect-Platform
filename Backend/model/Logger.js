@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 let schema = mongoose.Schema;
 
 let loggerSchema = new schema({
-	user: {
+	user_id: {
 		type: mongoose.Types.ObjectId,
 		ref: 'User'
 	},
